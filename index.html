@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="WHO//ARE//YOU? — An interactive philosophical identity game." />
+  <title>WHO // ARE // YOU?</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Crimson+Pro:ital,wght@0,300;0,400;0,500;1,300;1,400&family=JetBrains+Mono:wght@300;400&display=swap" rel="stylesheet">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🪞</text></svg>">
+</head>
+<body>
+  <!-- Settings Toggle -->
+  <button id="settings-toggle" class="settings-toggle" aria-label="Settings">⚙</button>
+  <div id="settings-panel" class="settings-panel hidden">
+    <h3>Settings</h3>
+    <div class="setting-row"><label>🎵 Music</label><input type="range" id="vol-music" min="0" max="100" value="50"></div>
+    <div class="setting-row"><label>🔊 Effects</label><input type="range" id="vol-sfx" min="0" max="100" value="70"></div>
+    <div class="setting-row"><label><input type="checkbox" id="mute-all"> 🔇 Mute All</label></div>
+  </div>
+
+  <div id="app">
+    <canvas id="particles-canvas"></canvas>
+    <div id="glitch-overlay" class="hidden"></div>
+
+    <!-- TITLE -->
+    <section id="screen-title" class="screen active">
+      <div class="title-container">
+        <div class="title-silhouette">
+          <svg viewBox="0 0 200 300" class="silhouette-svg">
+            <defs><filter id="glow"><feGaussianBlur stdDeviation="3" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+            <linearGradient id="sg" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" style="stop-color:#c9b8ff;stop-opacity:0.8"/><stop offset="100%" style="stop-color:#8b6cc7;stop-opacity:0.4"/></linearGradient></defs>
+            <ellipse cx="100" cy="70" rx="35" ry="40" fill="url(#sg)" filter="url(#glow)"/>
+            <path d="M50 120Q50 100,70 95Q90 90,100 90Q110 90,130 95Q150 100,150 120L160 280Q160 300,140 300L60 300Q40 300,40 280Z" fill="url(#sg)" filter="url(#glow)"/>
+          </svg>
+          <div class="silhouette-pulse"></div>
+        </div>
+        <h1 class="title-text">
+          <span class="title-word" data-delay="0">WHO</span><span class="title-separator">//</span>
+          <span class="title-word" data-delay="200">ARE</span><span class="title-separator">//</span>
+          <span class="title-word" data-delay="400">YOU</span><span class="title-question">?</span>
+        </h1>
+        <p class="title-subtitle">An interactive philosophical exploration of identity</p>
+        <button id="btn-start" class="btn-primary pulse-glow"><span>Begin the journey</span></button>
+        <p class="title-credits">A philosophical game by Prisma, Adya & Breanna</p>
+      </div>
+    </section>
+
+    <!-- PHASE 1: THE MASK -->
+    <section id="screen-phase1" class="screen">
+      <div class="phase-header"><span class="phase-number">Phase I</span><h2 class="phase-title">The Mask</h2><p class="phase-subtitle">You define yourself the way the world taught you to.</p></div>
+      <div class="narrator-box"><p class="narrator-text">"Let's start with the easy part. Tell me who you think you are."</p></div>
+      <div class="phase1-content">
+        <div class="creation-step active" id="step-name"><label class="creation-label">What is your name?</label><input type="text" id="input-name" class="creation-input" placeholder="Enter a name..." maxlength="20" autocomplete="off"/><button class="btn-next" id="btn-name-next" disabled>Continue</button></div>
+        <div class="creation-step" id="step-traits"><label class="creation-label">Choose 3 traits that describe you.</label><div class="chip-grid" id="traits-grid"></div><p class="selection-counter"><span id="traits-count">0</span> / 3 selected</p><button class="btn-next" id="btn-traits-next" disabled>Continue</button></div>
+        <div class="creation-step" id="step-interests"><label class="creation-label">Choose 2 interests.</label><div class="chip-grid" id="interests-grid"></div><p class="selection-counter"><span id="interests-count">0</span> / 2 selected</p><button class="btn-next" id="btn-interests-next" disabled>Continue</button></div>
+        <div class="creation-step" id="step-value"><label class="creation-label">What is your core value?</label><div class="chip-grid single-select" id="values-grid"></div><button class="btn-next" id="btn-value-next" disabled>Continue</button></div>
+        <div class="creation-step" id="step-fear"><label class="creation-label">What do you fear most?</label><div class="chip-grid single-select" id="fears-grid"></div><button class="btn-next" id="btn-fear-next" disabled>Continue</button></div>
+        <div class="creation-step" id="step-aesthetic"><label class="creation-label">Choose an aesthetic.</label><div class="aesthetic-grid" id="aesthetic-grid"></div><button class="btn-next" id="btn-aesthetic-next" disabled>Continue</button></div>
+        <div class="creation-step" id="step-archetype">
+          <div class="archetype-reveal"><div class="archetype-silhouette-wrap" id="archetype-sil-wrap"></div><div class="archetype-info" id="archetype-info"></div></div>
+          <div class="commonality-reveal" id="commonality-reveal"></div>
+          <div class="narrator-box"><p class="narrator-text">"Interesting. You've built a whole person out of labels. But is a costume the same as a soul?"</p></div>
+          <button class="btn-primary" id="btn-phase1-complete">Enter the world →</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- PHASE 2 INTRO -->
+    <section id="screen-phase2-intro" class="screen">
+      <div class="phase-intro"><div class="phase-header"><span class="phase-number">Phase II</span><h2 class="phase-title">The World Shapes You</h2><p class="phase-subtitle">Your choices reveal more than your labels ever could.</p></div>
+      <p class="controls-hint">← → to walk · Space to jump · Collect glowing orbs to choose</p>
+      <button class="btn-primary" id="btn-phase2-begin">Step into the world →</button></div>
+    </section>
+
+    <!-- PHASE 3 INTRO -->
+    <section id="screen-phase3-intro" class="screen">
+      <div class="phase-intro"><div class="phase-header"><span class="phase-number">Phase III</span><h2 class="phase-title">The Shift</h2><p class="phase-subtitle">Identity bends under pressure.</p></div>
+      <div class="world-reveal"><div class="world-name" id="world-name"></div><div class="world-description" id="world-description"></div></div>
+      <p class="controls-hint">← → to walk · Space to jump · Collect glowing orbs to choose</p>
+      <button class="btn-primary" id="btn-phase3-begin">Enter this world →</button></div>
+    </section>
+
+    <!-- PHASE 4 INTRO -->
+    <section id="screen-phase4-intro" class="screen">
+      <div class="phase-intro"><div class="phase-header glitch-header"><span class="phase-number">Phase IV</span><h2 class="phase-title glitch-text">The Glitch</h2><p class="phase-subtitle">Everything you thought you knew disappears.</p></div>
+      <div class="dissolving-identity" id="dissolving-identity"></div></div>
+    </section>
+
+    <!-- FULL-SCREEN GAME CANVAS (shared by phases 2-4) -->
+    <div id="game-screen" class="game-screen hidden">
+      <canvas id="game-canvas"></canvas>
+      <div id="game-hud" class="game-hud"></div>
+    </div>
+
+    <!-- PHASE 5: THE MIRROR -->
+    <section id="screen-phase5" class="screen">
+      <div class="phase-header"><span class="phase-number">Phase V</span><h2 class="phase-title">The Mirror</h2><p class="phase-subtitle">The game reflects you back to yourself.</p></div>
+      <div class="mirror-container" id="mirror-container">
+        <div class="mirror-scene"><div class="mirror-silhouette" id="mirror-silhouette"></div><div class="mirror-glow"></div></div>
+        <div class="identity-profile" id="identity-profile"></div>
+        <div class="identity-insights" id="identity-insights"></div>
+        <div class="narrator-box"><p class="narrator-text" id="narrator-mirror-text"></p></div>
+        <button class="btn-primary" id="btn-phase5-complete">Continue to The Game →</button>
+      </div>
+    </section>
+
+    <!-- PHASE 6: GUESS WHO -->
+    <section id="screen-phase6" class="screen">
+      <div class="phase-header"><span class="phase-number">Phase VI</span><h2 class="phase-title">Guess Who?</h2><p class="phase-subtitle">Twelve identities. One is real. Ask questions. Eliminate suspects. Find the truth.</p></div>
+      <div class="guess-container" id="guess-container">
+        <div class="narrator-box"><p class="narrator-text">"You've built an identity through choices. Now see if someone else can find you in a crowd."</p></div>
+        <div id="gw-answer-box"></div>
+        <div id="gw-question-bar" class="gw-question-bar"></div>
+        <div id="gw-board" class="gw-board"></div>
+        <div id="gw-status" class="gw-status"></div>
+        <button id="gw-final-guess" class="gw-final-btn hidden">Make Final Guess</button>
+        <button id="gw-continue" class="gw-final-btn hidden">Continue →</button>
+      </div>
+    </section>
+
+    <!-- FINAL -->
+    <section id="screen-final" class="screen">
+      <div class="final-container">
+        <div class="final-silhouette" id="final-silhouette"></div>
+        <div class="final-question"><h2>"Which version of you felt the most real — and why?"</h2></div>
+        <textarea id="reflection-input" class="reflection-textarea" placeholder="Take a moment to reflect..." rows="4"></textarea>
+        <div class="final-message" id="final-message"><p class="final-narrator"></p></div>
+        <div class="philosophical-quotes" id="philosophical-quotes"></div>
+        <button class="btn-primary" id="btn-restart">Experience again ↻</button>
+        <p class="final-credits">WHO//ARE//YOU? — Created by Prisma Shrestha, Adya Sastry & Breanna Barrera<br/><span class="final-credits-sub">Great Ideas Final Project · Spring 2026 · Ms. Rejino</span></p>
+      </div>
+    </section>
+  </div>
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>
