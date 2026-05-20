@@ -179,4 +179,404 @@ body{font-family:var(--ff-b);background:var(--bg);color:var(--text);min-height:1
 .final-credits{font-family:var(--ff-m);font-size:.8rem;color:var(--text2);margin-top:1rem;}
 .final-credits-sub{font-size:.7rem;opacity:.6;}
 .hidden{display:none!important;}
-@media(max-width:600px){.title-text{font-size:2.5rem;}.phase-title{font-size:1.8rem;}.aesthetic-grid{grid-template-columns:repeat(2,1fr);}.profile-vectors{grid-template-columns:1fr;}}
+
+/* --- Rulebook UI --- */
+.rulebook-toggle {
+  position: fixed;
+  top: 1rem;
+  right: 4.2rem;
+  z-index: 200;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 1px solid var(--card-border);
+  background: var(--card-bg);
+  color: var(--text);
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: all .3s;
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.rulebook-toggle:hover {
+  border-color: var(--accent);
+  transform: translateY(-2px);
+  box-shadow: 0 0 15px var(--glow);
+}
+.rulebook-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(5, 3, 10, 0.85);
+  backdrop-filter: blur(15px);
+  z-index: 300;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  animation: fadeIn .4s ease;
+}
+.rulebook-content {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  width: 100%;
+  max-width: 680px;
+  max-height: 85vh;
+  border-radius: var(--r);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow: hidden;
+}
+.rulebook-close {
+  position: absolute;
+  top: 1rem;
+  right: 1.2rem;
+  background: transparent;
+  border: none;
+  color: var(--text2);
+  font-size: 1.8rem;
+  cursor: pointer;
+  transition: color .3s;
+  z-index: 10;
+}
+.rulebook-close:hover {
+  color: var(--accent);
+}
+.rulebook-tabs {
+  display: flex;
+  background: rgba(0, 0, 0, 0.3);
+  border-bottom: 1px solid var(--card-border);
+}
+.rulebook-tab-btn {
+  flex: 1;
+  padding: 1rem;
+  background: transparent;
+  border: none;
+  color: var(--text2);
+  font-family: var(--ff-d);
+  font-size: .85rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all .3s;
+  border-bottom: 2px solid transparent;
+  letter-spacing: .05em;
+  text-transform: uppercase;
+}
+.rulebook-tab-btn:hover {
+  color: var(--text);
+  background: rgba(255, 255, 255, 0.02);
+}
+.rulebook-tab-btn.active {
+  color: var(--accent);
+  border-bottom-color: var(--accent);
+  background: rgba(201, 184, 255, 0.04);
+}
+.rulebook-tab-content {
+  display: none;
+  padding: 2rem;
+  overflow-y: auto;
+  line-height: 1.6;
+}
+.rulebook-tab-content.active {
+  display: block;
+}
+.rulebook-tab-content h2 {
+  font-family: var(--ff-d);
+  font-size: 1.4rem;
+  color: var(--accent);
+  margin-bottom: 1rem;
+}
+.rulebook-tab-content h3 {
+  font-family: var(--ff-d);
+  font-size: 1.05rem;
+  margin: 1.2rem 0 .5rem;
+  color: var(--text);
+}
+.rulebook-tab-content p {
+  margin-bottom: 1rem;
+  color: var(--text2);
+  font-size: .95rem;
+}
+.rulebook-tab-content ul {
+  margin-left: 1.5rem;
+  margin-bottom: 1rem;
+  color: var(--text2);
+}
+.rulebook-tab-content li {
+  margin-bottom: .4rem;
+  font-size: .9rem;
+}
+.source-item {
+  border-bottom: 1px solid var(--card-border);
+  padding-bottom: 1rem;
+  margin-bottom: 1rem;
+}
+.source-item:last-child {
+  border-bottom: none;
+}
+
+/* --- Guess Who Duel setup --- */
+.gw-setup-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  animation: fadeIn .5s ease;
+  width: 100%;
+}
+.setup-section h3 {
+  font-family: var(--ff-d);
+  font-size: 1.15rem;
+  color: var(--accent);
+  margin-bottom: .3rem;
+  letter-spacing: .03em;
+}
+.setup-sub {
+  font-family: var(--ff-b);
+  font-size: .92rem;
+  color: var(--text2);
+  margin-bottom: 1rem;
+}
+.gw-role-grid, .gw-opponent-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: .8rem;
+}
+.gw-setup-card {
+  border: 1px solid var(--card-border);
+  border-radius: var(--r);
+  background: var(--card-bg);
+  padding: 1rem;
+  cursor: pointer;
+  transition: all .3s ease;
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+  text-align: left;
+}
+.gw-setup-card:hover {
+  border-color: var(--accent-dim);
+  transform: translateY(-2px);
+}
+.gw-setup-card.selected {
+  border-color: var(--accent);
+  background: rgba(201, 184, 255, 0.08);
+  box-shadow: 0 0 20px var(--glow);
+}
+.card-select-icon {
+  font-size: 1.8rem;
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: var(--rs);
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.card-select-info {
+  display: flex;
+  flex-direction: column;
+  gap: .25rem;
+}
+.card-select-name {
+  font-family: var(--ff-d);
+  font-size: .95rem;
+  font-weight: 600;
+  color: var(--text);
+}
+.card-select-meta {
+  font-family: var(--ff-m);
+  font-size: .65rem;
+  color: var(--accent-dim);
+  text-transform: uppercase;
+}
+.card-select-desc {
+  font-family: var(--ff-b);
+  font-size: .8rem;
+  color: var(--text2);
+  line-height: 1.4;
+}
+
+/* start duel button */
+#gw-btn-start-duel {
+  align-self: center;
+  margin-top: 1rem;
+}
+
+/* --- Guess Who Game Screen --- */
+.gw-game-panel {
+  animation: fadeIn .5s ease;
+  width: 100%;
+}
+.gw-game-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid var(--card-border);
+  padding: .8rem 1.2rem;
+  border-radius: var(--r);
+  margin-bottom: 1.2rem;
+}
+.gw-player-identity, .gw-ai-identity {
+  display: flex;
+  flex-direction: column;
+  gap: .2rem;
+  width: 40%;
+}
+.gw-ai-identity {
+  text-align: right;
+  align-items: flex-end;
+}
+.gw-identity-label {
+  font-family: var(--ff-m);
+  font-size: .6rem;
+  color: var(--text2);
+  text-transform: uppercase;
+  letter-spacing: .05em;
+}
+.gw-secret-display, .gw-opponent-display {
+  font-family: var(--ff-d);
+  font-size: .88rem;
+  color: var(--accent);
+  font-weight: 500;
+}
+.gw-turn-indicator {
+  font-family: var(--ff-d);
+  font-size: .95rem;
+  font-weight: 700;
+  letter-spacing: .05em;
+  text-transform: uppercase;
+  padding: .4rem 1.2rem;
+  border-radius: 50px;
+  background: rgba(251, 201, 255, 0.08);
+  border: 1px solid var(--accent);
+  text-align: center;
+  min-width: 130px;
+  animation: pulse 2s ease-in-out infinite;
+}
+.gw-turn-indicator.ai-turn {
+  color: #ff9966;
+  border-color: #ff9966;
+  background: rgba(255, 153, 102, 0.08);
+}
+
+.gw-ai-speech {
+  margin-bottom: 1.2rem;
+  background: rgba(255, 255, 255, 0.02);
+  border-color: var(--accent-dim);
+}
+
+/* Strategic ability button */
+.gw-ability-wrapper {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 1rem;
+}
+.gw-ability-btn {
+  display: flex;
+  align-items: center;
+  gap: .8rem;
+  padding: .6rem 1.2rem;
+  border-radius: var(--rs);
+  border: 1px solid var(--accent);
+  background: rgba(201, 184, 255, 0.08);
+  color: var(--text);
+  cursor: pointer;
+  transition: all .3s ease;
+  max-width: 320px;
+  width: 100%;
+  text-align: left;
+}
+.gw-ability-btn:hover:not(:disabled) {
+  background: var(--accent);
+  color: var(--bg);
+  box-shadow: 0 0 15px var(--glow);
+  transform: translateY(-1px);
+}
+.gw-ability-btn:disabled {
+  opacity: .35;
+  cursor: not-allowed;
+  border-color: var(--card-border);
+  background: transparent;
+}
+.gw-ability-btn .ability-icon {
+  font-size: 1.4rem;
+  background: rgba(255, 255, 255, 0.05);
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+}
+.gw-ability-btn:hover:not(:disabled) .ability-icon {
+  background: rgba(0, 0, 0, 0.08);
+}
+.gw-ability-btn .ability-text {
+  display: flex;
+  flex-direction: column;
+}
+.gw-ability-btn .ability-name {
+  font-family: var(--ff-d);
+  font-size: .8rem;
+  font-weight: 600;
+}
+.gw-ability-btn .ability-desc {
+  font-family: var(--ff-b);
+  font-size: .68rem;
+  opacity: .8;
+}
+
+/* Card highlight and visual feedback */
+.gw-card.revealed-active {
+  box-shadow: 0 0 15px rgba(255, 209, 126, 0.4);
+}
+.gw-card.ai-eliminated {
+  border-color: rgba(255, 50, 50, 0.3);
+  background: rgba(255, 0, 0, 0.03);
+}
+
+.gw-actions {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+}
+
+/* Media Queries for strategic panel */
+@media(max-width: 700px) {
+  .gw-role-grid, .gw-opponent-grid {
+    grid-template-columns: 1fr;
+  }
+  .gw-board {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  .gw-game-header {
+    flex-direction: column;
+    gap: .8rem;
+  }
+  .gw-player-identity, .gw-ai-identity {
+    width: 100%;
+    text-align: center;
+    align-items: center;
+  }
+  .rulebook-tab-btn {
+    font-size: .7rem;
+    padding: .8rem .4rem;
+  }
+  .rulebook-content {
+    max-height: 90vh;
+  }
+}
+@media(max-width: 480px) {
+  .gw-board {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+

@@ -2,7 +2,8 @@
 import {
   TRAITS, INTERESTS, CORE_VALUES, FEARS, AESTHETICS, ARCHETYPES,
   COMMONALITY_MESSAGES, PHASE2_SCENARIOS, WORLDS, SHIFT_SCENARIOS,
-  GLITCH_SCENARIOS, GUESS_QUESTIONS, PHILOSOPHICAL_QUOTES, VECTOR_DESCRIPTIONS
+  GLITCH_SCENARIOS, GUESS_QUESTIONS, PHILOSOPHICAL_QUOTES, VECTOR_DESCRIPTIONS,
+  ROLES, PHILOSOPHERS, GW_SUSPECTS
 } from './data.js';
 import { ParticleSystem, triggerGlitch, createGlowSilhouette } from './effects.js';
 import { Platformer } from './platformer.js';
@@ -11,7 +12,20 @@ const state = {
   phase:0, name:'', traits:[], interests:[], coreValue:'', fear:'', aesthetic:'',
   archetype:null,
   vectors:{empathy:0,conformity:0,independence:0,curiosity:0,emotionalReasoning:0,logicalReasoning:0,riskTolerance:0,ambition:0},
-  scenarioIndex:0, shiftScenarioIndex:0, glitchScenarioIndex:0, worldType:'', guessQuestionIndex:0
+  scenarioIndex:0, shiftScenarioIndex:0, glitchScenarioIndex:0, worldType:'', guessQuestionIndex:0,
+  
+  // Trial of Personas (Guess Who Duel) state
+  gwRole: null,
+  gwOpponent: null,
+  gwPlayerSecret: null,
+  gwAiSecret: null,
+  gwTurn: 'player', // 'player' or 'ai'
+  gwAiPossibleSuspects: [],
+  gwAbilityUsed: false,
+  gwEliminated: new Set(),
+  gwUsedQs: new Set(),
+  gwGuessing: false,
+  gwOver: false
 };
 let particles, plat;
 const $ = id => document.getElementById(id);
@@ -31,6 +45,7 @@ export function initGame() {
   particles = new ParticleSystem('particles-canvas');
   setTheme(1);
   setupSettings();
+  setupRulebook();
   $('btn-start').addEventListener('click', () => { switchScreen('screen-title','screen-phase1'); state.phase = 1; });
   setupPhase1();
   $('btn-phase2-begin').addEventListener('click', startPlatformer2);
@@ -47,6 +62,26 @@ function setupSettings() {
   $('vol-music').addEventListener('input', e => { if (plat) plat.audio.setMusicVol(e.target.value / 100); });
   $('vol-sfx').addEventListener('input', e => { if (plat) plat.audio.setSfxVol(e.target.value / 100); });
   $('mute-all').addEventListener('change', e => { if (plat) plat.audio.setMute(e.target.checked); });
+}
+
+// ---- RULEBOOK ----
+function setupRulebook() {
+  const toggle = $('rulebook-toggle'), modal = $('rulebook-modal'), close = $('rulebook-close');
+  toggle.addEventListener('click', () => { modal.classList.toggle('hidden'); });
+  close.addEventListener('click', () => { modal.classList.add('hidden'); });
+  modal.addEventListener('click', e => { if (e.target === modal) modal.classList.add('hidden'); });
+  
+  const tabs = modal.querySelectorAll('.rulebook-tab-btn');
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      tabs.forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      const target = tab.getAttribute('data-tab');
+      modal.querySelectorAll('.rulebook-tab-content').forEach(content => {
+        content.classList.toggle('active', content.id === target);
+      });
+    });
+  });
 }
 
 // ---- PHASE 1 ----
@@ -233,128 +268,518 @@ function genInsights(n) {
   return ins;
 }
 
-// ---- PHASE 6: GUESS WHO BOARD GAME ----
-const GW_SUSPECTS = [
-  {name:'The Scholar',icon:'📚',traits:['Analytical','Curious'],value:'Knowledge',fear:'Irrelevance'},
-  {name:'The Guardian',icon:'🛡️',traits:['Loyal','Empathetic'],value:'Justice',fear:'Betrayal'},
-  {name:'The Rebel',icon:'⚡',traits:['Bold','Independent'],value:'Freedom',fear:'Confinement'},
-  {name:'The Dreamer',icon:'🌙',traits:['Creative','Optimistic'],value:'Authenticity',fear:'Mediocrity'},
-  {name:'The Strategist',icon:'♟️',traits:['Analytical','Ambitious'],value:'Knowledge',fear:'Failure'},
-  {name:'The Empath',icon:'💜',traits:['Gentle','Empathetic'],value:'Compassion',fear:'Isolation'},
-  {name:'The Explorer',icon:'🧭',traits:['Curious','Spontaneous'],value:'Freedom',fear:'Stagnation'},
-  {name:'The Builder',icon:'🏗️',traits:['Determined','Patient'],value:'Legacy',fear:'Irrelevance'},
-  {name:'The Healer',icon:'🌿',traits:['Thoughtful','Resilient'],value:'Compassion',fear:'Helplessness'},
-  {name:'The Maverick',icon:'🔥',traits:['Passionate','Bold'],value:'Authenticity',fear:'Conformity'},
-  {name:'The Sage',icon:'🔮',traits:['Patient','Honest'],value:'Truth',fear:'Deception'},
-  {name:'The Catalyst',icon:'✨',traits:['Confident','Adaptable'],value:'Growth',fear:'Stagnation'}
-];
-const GW_QUESTIONS = [
-  {q:'Do they value independence over belonging?',check:v=>v.independence>v.conformity,trait:'Independent',anti:'Loyal'},
-  {q:'Do they lead with emotion over logic?',check:v=>v.emotionalReasoning>v.logicalReasoning,trait:'Empathetic',anti:'Analytical'},
-  {q:'Are they risk-takers?',check:v=>v.riskTolerance>50,trait:'Bold',anti:'Cautious'},
-  {q:'Do they seek knowledge above all?',check:v=>v.curiosity>55,trait:'Curious',anti:'Patient'},
-  {q:'Are they driven by ambition?',check:v=>v.ambition>50,trait:'Ambitious',anti:'Gentle'},
-  {q:'Do they prioritize others\' feelings?',check:v=>v.empathy>55,trait:'Empathetic',anti:'Independent'},
-  {q:'Do they embrace change easily?',check:v=>v.curiosity>50&&v.riskTolerance>45,trait:'Adaptable',anti:'Determined'},
-  {q:'Do they fear being alone?',check:v=>v.conformity>50,trait:'Loyal',anti:'Bold'},
-];
-let gwTarget=null, gwEliminated=new Set(), gwUsedQs=new Set(), gwGuessing=false;
+// ---- PHASE 6: TRIAL OF PERSONAS (GUESS WHO DUEL) ----
 
 function setupPhase6() {
-  $('btn-phase5-complete').addEventListener('click', () => { switchScreen('screen-phase5','screen-phase6'); setTheme(6); initGuessWho(); });
-}
-
-function initGuessWho() {
-  // Find closest suspect to player's actual profile
-  const pTraits=new Set(state.traits), pValue=state.coreValue, pFear=state.fear;
-  let bestScore=-1, bestIdx=0;
-  GW_SUSPECTS.forEach((s,i)=>{
-    let score=0;
-    s.traits.forEach(t=>{if(pTraits.has(t))score+=3;});
-    if(s.value===pValue)score+=2;
-    if(s.fear===pFear)score+=2;
-    if(score>bestScore){bestScore=score;bestIdx=i;}
+  $('btn-phase5-complete').addEventListener('click', () => {
+    switchScreen('screen-phase5', 'screen-phase6');
+    setTheme(6);
+    initGuessWhoSetup();
   });
-  gwTarget=bestIdx; gwEliminated=new Set(); gwUsedQs=new Set(); gwGuessing=false;
-  renderBoard(); renderQuestions();
-  $('gw-status').textContent=`${12-gwEliminated.size} suspects remain. Ask questions to narrow it down.`;
-  $('gw-final-guess').classList.add('hidden');
-  $('gw-continue').classList.add('hidden');
-  $('gw-final-guess').onclick=()=>startFinalGuess();
-  $('gw-continue').onclick=()=>{ switchScreen('screen-phase6','screen-final'); document.body.className='phase-theme-5'; initFinal(); };
 }
 
-function renderBoard(){
-  const board=$('gw-board'); board.innerHTML='';
-  GW_SUSPECTS.forEach((s,i)=>{
-    const card=document.createElement('div');
-    card.className='gw-card'+(gwEliminated.has(i)?' eliminated':'');
-    card.innerHTML=`<div class="gw-card-icon">${s.icon}</div><div class="gw-card-name">${s.name}</div><div class="gw-card-trait">${s.traits.join(' · ')}</div><div class="gw-card-trait">${s.value}</div>`;
-    card.addEventListener('click',()=>{
-      if(gwGuessing){
-        // Final guess mode
+function initGuessWhoSetup() {
+  state.gwRole = null;
+  state.gwOpponent = null;
+  state.gwOver = false;
+  
+  // Render Roles
+  const roleGrid = $('gw-role-selection');
+  roleGrid.innerHTML = '';
+  ROLES.forEach(r => {
+    const card = document.createElement('div');
+    card.className = 'gw-setup-card';
+    card.innerHTML = `
+      <div class="card-select-icon">${r.icon}</div>
+      <div class="card-select-info">
+        <span class="card-select-name">${r.name}</span>
+        <span class="card-select-desc">${r.description}</span>
+      </div>
+    `;
+    card.addEventListener('click', () => {
+      roleGrid.querySelectorAll('.gw-setup-card').forEach(c => c.classList.remove('selected'));
+      card.classList.add('selected');
+      state.gwRole = r;
+      checkSetupReady();
+      if (plat) plat.audio.playClick ? plat.audio.playClick() : plat.audio.playFootstep();
+    });
+    roleGrid.appendChild(card);
+  });
+
+  // Render Opponents
+  const oppGrid = $('gw-opponent-selection');
+  oppGrid.innerHTML = '';
+  PHILOSOPHERS.forEach((p, idx) => {
+    const card = document.createElement('div');
+    card.className = 'gw-setup-card';
+    card.innerHTML = `
+      <div class="card-select-icon">${p.avatar}</div>
+      <div class="card-select-info">
+        <span class="card-select-name">${p.name}</span>
+        <span class="card-select-meta">${p.school}</span>
+        <span class="card-select-desc">Difficulty: ${p.difficulty}</span>
+      </div>
+    `;
+    card.addEventListener('click', () => {
+      oppGrid.querySelectorAll('.gw-setup-card').forEach(c => c.classList.remove('selected'));
+      card.classList.add('selected');
+      state.gwOpponent = p;
+      checkSetupReady();
+      if (plat) plat.audio.playClick ? plat.audio.playClick() : plat.audio.playFootstep();
+    });
+    oppGrid.appendChild(card);
+  });
+
+  $('gw-setup-panel').classList.remove('hidden');
+  $('gw-game-panel').classList.add('hidden');
+  $('gw-btn-start-duel').disabled = true;
+
+  $('gw-btn-start-duel').onclick = startGuessWhoDuel;
+}
+
+function checkSetupReady() {
+  $('gw-btn-start-duel').disabled = !(state.gwRole && state.gwOpponent);
+}
+
+function startGuessWhoDuel() {
+  if (plat) plat.audio.playCrystal();
+  
+  $('gw-setup-panel').classList.add('hidden');
+  $('gw-game-panel').classList.remove('hidden');
+
+  // Match player secret identity closest to their Phase 1 archetype and traits
+  const pTraits = new Set(state.traits);
+  const pValue = state.coreValue;
+  const pFear = state.fear;
+  let bestScore = -1, bestIdx = 0;
+  GW_SUSPECTS.forEach((s, i) => {
+    let score = 0;
+    s.traits.forEach(t => { if (pTraits.has(t)) score += 3; });
+    if (s.value === pValue) score += 2;
+    if (s.fear === pFear) score += 2;
+    if (score > bestScore) { bestScore = score; bestIdx = i; }
+  });
+  state.gwPlayerSecret = bestIdx;
+
+  // Choose AI secret card randomly (different from player)
+  let aiIdx;
+  do {
+    aiIdx = Math.floor(Math.random() * GW_SUSPECTS.length);
+  } while (aiIdx === state.gwPlayerSecret);
+  state.gwAiSecret = aiIdx;
+
+  // Initialize game state
+  state.gwEliminated = new Set();
+  state.gwUsedQs = new Set();
+  state.gwGuessing = false;
+  state.gwAbilityUsed = false;
+  state.gwTurn = 'player';
+  state.gwAiPossibleSuspects = GW_SUSPECTS.map((_, i) => i);
+  state.gwOver = false;
+
+  // Render Displays
+  const playerCard = GW_SUSPECTS[state.gwPlayerSecret];
+  $('gw-secret-display').textContent = `${playerCard.icon} ${playerCard.name}`;
+  $('gw-opponent-display').textContent = `${state.gwOpponent.avatar} ${state.gwOpponent.name}`;
+  $('gw-ai-dialogue').textContent = `"${state.gwOpponent.intro}"`;
+
+  // Turn tracker
+  updateTurnUI();
+
+  // Ability Button
+  const ab = $('gw-ability-btn');
+  ab.disabled = false;
+  ab.querySelector('.ability-icon').textContent = state.gwRole.icon;
+  ab.querySelector('.ability-name').textContent = `Use ${state.gwRole.name}`;
+  ab.querySelector('.ability-desc').textContent = state.gwRole.description;
+  ab.onclick = activateAbility;
+
+  // Reset actions
+  $('gw-final-guess').classList.remove('hidden');
+  $('gw-continue').classList.add('hidden');
+  $('gw-answer-box').innerHTML = '';
+  
+  $('gw-final-guess').onclick = () => {
+    if (state.gwTurn !== 'player' || state.gwOver) return;
+    startFinalGuess();
+  };
+  $('gw-continue').onclick = () => {
+    switchScreen('screen-phase6', 'screen-final');
+    document.body.className = 'phase-theme-5';
+    initFinal();
+  };
+
+  renderBoard();
+  renderQuestions();
+  updateStatusText();
+}
+
+function updateTurnUI() {
+  const indicator = $('gw-turn-indicator');
+  if (state.gwTurn === 'player') {
+    indicator.textContent = 'Your Turn';
+    indicator.classList.remove('ai-turn');
+  } else {
+    indicator.textContent = `${state.gwOpponent.name}'s Turn`;
+    indicator.classList.add('ai-turn');
+  }
+}
+
+function updateStatusText() {
+  if (state.gwOver) return;
+  const remaining = 12 - state.gwEliminated.size;
+  const aiRemaining = state.gwAiPossibleSuspects.length;
+  $('gw-status').textContent = `You: ${remaining} suspects left · Philosopher: ${aiRemaining} suspects left.`;
+}
+
+function renderBoard() {
+  const board = $('gw-board');
+  board.innerHTML = '';
+  GW_SUSPECTS.forEach((s, i) => {
+    const card = document.createElement('div');
+    const isEliminated = state.gwEliminated.has(i);
+    card.className = 'gw-card' + (isEliminated ? ' eliminated' : '');
+    
+    // Add border highlight for player's actual secret identity card to help them know who they are on the board
+    if (i === state.gwPlayerSecret) {
+      card.style.border = '2px solid rgba(201,184,255,0.4)';
+    }
+
+    card.innerHTML = `
+      <div class="gw-card-icon">${s.icon}</div>
+      <div class="gw-card-name">${s.name}</div>
+      <div class="gw-card-trait">${s.traits.join(' · ')}</div>
+      <div class="gw-card-trait">${s.value} · ${s.source}</div>
+    `;
+
+    card.addEventListener('click', () => {
+      if (state.gwOver) return;
+      if (state.gwGuessing) {
         revealGuess(i);
       } else {
-        // Eliminate mode
-        if(gwEliminated.has(i)){gwEliminated.delete(i);} else {gwEliminated.add(i);}
+        if (state.gwEliminated.has(i)) {
+          state.gwEliminated.delete(i);
+        } else {
+          state.gwEliminated.add(i);
+          if (plat) plat.audio.playFootstep(); // Small sound
+        }
         renderBoard();
-        const remaining=12-gwEliminated.size;
-        $('gw-status').textContent=`${remaining} suspect${remaining!==1?'s':''} remain${remaining===1?'s':''}.`;
-        if(remaining<=3) $('gw-final-guess').classList.remove('hidden');
+        updateStatusText();
+        
+        // Show make final guess button if suspects are low
+        const remaining = 12 - state.gwEliminated.size;
+        if (remaining <= 3) {
+          $('gw-final-guess').classList.remove('hidden');
+        }
       }
     });
     board.appendChild(card);
   });
 }
 
-function renderQuestions(){
-  const bar=$('gw-question-bar'); bar.innerHTML='';
-  GW_QUESTIONS.forEach((q,i)=>{
-    const btn=document.createElement('button');
-    btn.className='gw-q-btn'+(gwUsedQs.has(i)?' used':'');
-    btn.textContent=q.q;
-    btn.addEventListener('click',()=>{
-      if(gwUsedQs.has(i))return;
-      gwUsedQs.add(i);
-      // Answer based on player's ACTUAL vectors
-      const mx=Math.max(1,...Object.values(state.vectors).map(Math.abs));
-      const norm={}; for(const k in state.vectors) norm[k]=((state.vectors[k]/mx)*50)+50;
-      const answer=q.check(norm);
-      $('gw-answer-box').innerHTML=`<div class="gw-answer">${answer?'Yes':'No'} — <em>${answer?q.trait+' aligns':q.anti+' is closer'}</em></div>`;
+function renderQuestions() {
+  const bar = $('gw-question-bar');
+  bar.innerHTML = '';
+  GUESS_QUESTIONS.forEach((q, i) => {
+    const btn = document.createElement('button');
+    const isUsed = state.gwUsedQs.has(i);
+    btn.className = 'gw-q-btn' + (isUsed ? ' used' : '');
+    btn.textContent = q.q;
+    
+    btn.addEventListener('click', () => {
+      if (state.gwTurn !== 'player' || isUsed || state.gwOver) return;
+      state.gwUsedQs.add(i);
       btn.classList.add('used');
-      // Auto-suggest: highlight suspects that match
-      $('gw-status').textContent=`${12-gwEliminated.size} suspects remain. Click cards to eliminate them based on the answer.`;
+      
+      // Get answer based on AI's secret card
+      const target = GW_SUSPECTS[state.gwAiSecret];
+      const answer = q.check(target);
+      
+      if (plat) plat.audio.playCollect();
+
+      $('gw-answer-box').innerHTML = `
+        <div class="gw-answer">
+          Answer: <strong>${answer ? 'YES' : 'NO'}</strong> — <em>${q.label}</em>
+          <button id="gw-btn-end-turn" class="gw-final-btn" style="margin: 0.5rem auto 0; font-size: 0.75rem; padding: 0.4rem 1rem;">End Turn & Let AI Move</button>
+        </div>
+      `;
+
+      $('gw-status').textContent = 'Eliminate suspects on your board, then click "End Turn & Let AI Move".';
+      
+      // Disable further questions until turn ends
+      bar.querySelectorAll('.gw-q-btn').forEach(b => b.disabled = true);
+      $('gw-final-guess').classList.add('hidden');
+      
+      $('gw-btn-end-turn').onclick = () => {
+        $('gw-answer-box').innerHTML = '';
+        passTurnToAi();
+      };
     });
     bar.appendChild(btn);
   });
-}
 
-function startFinalGuess(){
-  gwGuessing=true;
-  $('gw-answer-box').innerHTML='<div class="gw-answer">Click on the suspect you think is the real identity!</div>';
-  $('gw-final-guess').classList.add('hidden');
-  $('gw-status').textContent='Make your final guess...';
-}
-
-function revealGuess(idx){
-  gwGuessing=false;
-  const correct=idx===gwTarget;
-  const target=GW_SUSPECTS[gwTarget];
-  // Highlight the correct card
-  const cards=$('gw-board').querySelectorAll('.gw-card');
-  cards[gwTarget].classList.add('target-reveal');
-  if(correct){
-    $('gw-answer-box').innerHTML=`<div class="gw-answer">🎉 Correct! The identity was <strong>${target.name}</strong> — ${target.traits.join(', ')}, driven by ${target.value}.</div>`;
-  } else {
-    $('gw-answer-box').innerHTML=`<div class="gw-answer">Not quite! You guessed <strong>${GW_SUSPECTS[idx].name}</strong>, but the real identity was <strong>${target.name}</strong> — ${target.traits.join(', ')}, driven by ${target.value}.</div>`;
+  // Keep disabled if it's not player turn
+  if (state.gwTurn !== 'player') {
+    bar.querySelectorAll('.gw-q-btn').forEach(b => b.disabled = true);
   }
-  $('gw-status').textContent=correct?'Identity found! You understood the pattern.':'The self is harder to pin down than we think.';
+}
+
+function activateAbility() {
+  if (state.gwTurn !== 'player' || state.gwAbilityUsed || state.gwOver) return;
+  state.gwAbilityUsed = true;
+  $('gw-ability-btn').disabled = true;
+
+  if (plat) plat.audio.playCrystal();
+
+  const target = GW_SUSPECTS[state.gwAiSecret];
+  let message = '';
+
+  switch (state.gwRole.abilityId) {
+    case 'rationalism':
+      // Hobbes Order: Eliminate 2 wrong suspects automatically
+      let count = 0, eliminatedNames = [];
+      for (let i = 0; i < GW_SUSPECTS.length; i++) {
+        if (i !== state.gwAiSecret && !state.gwEliminated.has(i)) {
+          state.gwEliminated.add(i);
+          eliminatedNames.push(GW_SUSPECTS[i].name);
+          count++;
+          if (count >= 2) break;
+        }
+      }
+      renderBoard();
+      message = `Deduction completed. Eliminated: ${eliminatedNames.join(', ')}`;
+      break;
+
+    case 'empiricism':
+      // Hume Impressions: Reveal AI's secret card's core value
+      message = `Sensory Impression: The target identity values <strong>${target.value}</strong>.`;
+      break;
+
+    case 'existentialism':
+      // Emerson Self-reliance: Reveal if AI target is a nonconformist (Independent/Bold)
+      const isNC = target.traits.includes('Independent') || target.traits.includes('Bold');
+      message = `Intuition Sense: The target is ${isNC ? '<strong>a Nonconformist</strong> (Independent/Bold)' : '<strong>not a Nonconformist</strong>'}.`;
+      break;
+
+    case 'subjectivism':
+      // Jackson Qualia: Sense if aesthetic is warm or cool
+      const isWarm = ['Sunrise', 'Neon', 'Storm'].includes(target.aesthetic);
+      message = `Qualia Sense: The target card has a <strong>${isWarm ? 'Warm' : 'Cool'}</strong> aesthetic tone (${isWarm ? 'Sunrise/Neon/Storm' : 'Midnight/Ocean/Forest'}).`;
+      break;
+  }
+
+  $('gw-answer-box').innerHTML = `<div class="gw-answer" style="border-left-color: #ffd17e;">✨ Ability: ${message}</div>`;
+  updateStatusText();
+}
+
+function passTurnToAi() {
+  state.gwTurn = 'ai';
+  updateTurnUI();
+  renderQuestions();
+  updateStatusText();
+
+  // Philosopher speaks during turn
+  const opp = state.gwOpponent;
+  const qQuotes = opp.dialogueAsk;
+  const quote = qQuotes[Math.floor(Math.random() * qQuotes.length)];
+  $('gw-ai-dialogue').textContent = `"${quote}"`;
+
+  setTimeout(() => {
+    runAiTurnLogic();
+  }, 2000);
+}
+
+function runAiTurnLogic() {
+  if (state.gwOver) return;
+  
+  const opp = state.gwOpponent;
+  const pCard = GW_SUSPECTS[state.gwPlayerSecret];
+
+  // AI Strategic deduction: finds a question it hasn't used that splits its remaining suspects closest to 50/50
+  let bestQIdx = -1;
+  let bestQDiff = 999;
+  
+  // Create a list of questions that AI has not asked yet (simulated by checking index)
+  // Let's pick a random unasked question to keep it simple but realistic, or strategic
+  const unasked = GUESS_QUESTIONS.map((_, i) => i).filter(i => !state.gwUsedQs.has(i));
+  
+  if (unasked.length === 0) {
+    // Fallback: pick a random question
+    bestQIdx = Math.floor(Math.random() * GUESS_QUESTIONS.length);
+  } else {
+    // Strategy: find the question that splits the possible suspects best
+    unasked.forEach(qIdx => {
+      const q = GUESS_QUESTIONS[qIdx];
+      let yesCount = 0;
+      state.gwAiPossibleSuspects.forEach(sIdx => {
+        if (q.check(GW_SUSPECTS[sIdx])) yesCount++;
+      });
+      const diff = Math.abs(state.gwAiPossibleSuspects.length / 2 - yesCount);
+      if (diff < bestQDiff) {
+        bestQDiff = diff;
+        bestQIdx = qIdx;
+      }
+    });
+  }
+
+  const chosenQ = GUESS_QUESTIONS[bestQIdx];
+  const answer = chosenQ.check(pCard);
+
+  // AI dialogues its question
+  $('gw-ai-dialogue').textContent = `"${opp.name} asks: ${chosenQ.q}"`;
+
+  setTimeout(() => {
+    // AI processes answer
+    if (plat) plat.audio.playGlitch();
+
+    // AI filters its suspects list
+    state.gwAiPossibleSuspects = state.gwAiPossibleSuspects.filter(sIdx => {
+      return chosenQ.check(GW_SUSPECTS[sIdx]) === answer;
+    });
+
+    $('gw-answer-box').innerHTML = `
+      <div class="gw-answer" style="border-left-color: #ff9966;">
+        Philosopher deduced: <strong>${answer ? 'YES' : 'NO'}</strong>.<br/>
+        <em>"${opp.name} has narrowed their list to ${state.gwAiPossibleSuspects.length} possibilities."</em>
+      </div>
+    `;
+
+    setTimeout(() => {
+      // AI checks for final guess
+      if (state.gwAiPossibleSuspects.length === 1) {
+        // AI makes final guess
+        const finalGuessIdx = state.gwAiPossibleSuspects[0];
+        if (finalGuessIdx === state.gwPlayerSecret) {
+          triggerAiWin();
+        } else {
+          // AI guessed wrong (should not happen with perfect logic, but safeguard)
+          state.gwAiPossibleSuspects = state.gwAiPossibleSuspects.filter(id => id !== finalGuessIdx);
+          returnToPlayerTurn();
+        }
+      } else if (state.gwAiPossibleSuspects.length === 2 && Math.random() > 0.6) {
+        // AI takes a risk on hard/normal
+        const finalGuessIdx = state.gwAiPossibleSuspects[Math.floor(Math.random() * 2)];
+        if (finalGuessIdx === state.gwPlayerSecret) {
+          triggerAiWin();
+        } else {
+          // AI guessed wrong
+          state.gwAiPossibleSuspects = state.gwAiPossibleSuspects.filter(id => id !== finalGuessIdx);
+          $('gw-ai-dialogue').textContent = `"${opp.name}: 'Blast! My deduction was imperfect. I assumed you were ${GW_SUSPECTS[finalGuessIdx].name}.'"`;
+          setTimeout(returnToPlayerTurn, 2000);
+        }
+      } else {
+        returnToPlayerTurn();
+      }
+    }, 1500);
+
+  }, 1500);
+}
+
+function returnToPlayerTurn() {
+  if (state.gwOver) return;
+  state.gwTurn = 'player';
+  updateTurnUI();
+  renderQuestions();
+  updateStatusText();
+  
+  // Re-enable final guess
+  $('gw-final-guess').classList.remove('hidden');
+}
+
+function startFinalGuess() {
+  state.gwGuessing = true;
+  $('gw-answer-box').innerHTML = '<div class="gw-answer">Click on a suspect card to make your Final Guess!</div>';
+  $('gw-final-guess').classList.add('hidden');
+  $('gw-status').textContent = 'Make your final guess...';
+}
+
+function revealGuess(idx) {
+  state.gwGuessing = false;
+  state.gwOver = true;
+  
+  const correct = idx === state.gwAiSecret;
+  const target = GW_SUSPECTS[state.gwAiSecret];
+  const opp = state.gwOpponent;
+
+  // Reveal correct card
+  const cards = $('gw-board').querySelectorAll('.gw-card');
+  cards[state.gwAiSecret].classList.add('target-reveal');
+
+  if (correct) {
+    if (plat) plat.audio.playCollect();
+    // Explode particles
+    for (let i = 0; i < 40; i++) {
+      particles.particles.push({
+        x: window.innerWidth / 2 + (Math.random() - 0.5) * 200,
+        y: window.innerHeight / 2 + (Math.random() - 0.5) * 200,
+        size: Math.random() * 3 + 1,
+        speedX: (Math.random() - 0.5) * 6,
+        speedY: (Math.random() - 0.5) * 6,
+        opacity: 0.9
+      });
+    }
+
+    $('gw-answer-box').innerHTML = `
+      <div class="gw-answer" style="border-left-color: #ffd17e; background: rgba(255, 209, 126, 0.08);">
+        🎉 <strong>VICTORY!</strong> You guessed correctly.<br/>
+        The philosopher's secret identity was <strong>${target.name}</strong> (${target.source}).
+      </div>
+    `;
+    $('gw-ai-dialogue').textContent = `"${opp.name}: '${opp.victory}'"`;
+    $('gw-status').textContent = 'Deduction Successful. You found the true self.';
+  } else {
+    if (plat) plat.audio.playGlitch();
+    $('gw-answer-box').innerHTML = `
+      <div class="gw-answer" style="border-left-color: #ff3333; background: rgba(255, 50, 50, 0.08);">
+        💀 <strong>DEFEAT!</strong> Your guess was incorrect.<br/>
+        You guessed <strong>${GW_SUSPECTS[idx].name}</strong>, but the philosopher was <strong>${target.name}</strong> (${target.source}).
+      </div>
+    `;
+    $('gw-ai-dialogue').textContent = `"${opp.name}: '${opp.defeat}'"`;
+    $('gw-status').textContent = 'Trial Failed. The self remains hidden.';
+  }
+
+  $('gw-final-guess').classList.add('hidden');
+  $('gw-continue').classList.remove('hidden');
+}
+
+function triggerAiWin() {
+  state.gwOver = true;
+  if (plat) plat.audio.playGlitch();
+
+  const opp = state.gwOpponent;
+  const target = GW_SUSPECTS[state.gwAiSecret];
+  const pCard = GW_SUSPECTS[state.gwPlayerSecret];
+
+  // Reveal correct card
+  const cards = $('gw-board').querySelectorAll('.gw-card');
+  cards[state.gwAiSecret].classList.add('target-reveal');
+
+  $('gw-answer-box').innerHTML = `
+    <div class="gw-answer" style="border-left-color: #ff3333; background: rgba(255, 50, 50, 0.08);">
+      💀 <strong>DEFEAT!</strong> The philosopher guessed your identity first.<br/>
+      ${opp.name} deduced that you were <strong>${pCard.name}</strong>.<br/>
+      The philosopher's secret identity was <strong>${target.name}</strong> (${target.source}).
+    </div>
+  `;
+
+  $('gw-ai-dialogue').textContent = `"${opp.name}: 'Aha! I have deduced your pattern. ${opp.defeat}'"`;
+  $('gw-status').textContent = 'Trial Failed. The philosopher found you first.';
+
+  $('gw-final-guess').classList.add('hidden');
   $('gw-continue').classList.remove('hidden');
 }
 
 // ---- FINAL ----
 function initFinal() {
-  const sil = $('final-silhouette'); sil.innerHTML = ''; sil.appendChild(createGlowSilhouette('#c9b8ff', 0.6));
+  const sil = $('final-silhouette');
+  sil.innerHTML = '';
+  sil.appendChild(createGlowSilhouette('#c9b8ff', 0.6));
   $('final-message').querySelector('.final-narrator').textContent = `"There is no single '${state.name || 'you'}.' You are a shifting constellation of choices, contexts, and stories."`;
-  $('philosophical-quotes').innerHTML = [...PHILOSOPHICAL_QUOTES].sort(() => Math.random() - 0.5).slice(0, 4).map((q, i) => `<div class="phil-quote" style="animation-delay:${i * 0.3}s">${q.text}<span class="quote-source">${q.source}</span></div>`).join('');
+  $('philosophical-quotes').innerHTML = [...PHILOSOPHICAL_QUOTES]
+    .sort(() => Math.random() - 0.5)
+    .slice(0, 4)
+    .map((q, i) => `<div class="phil-quote" style="animation-delay:${i * 0.3}s">${q.text}<span class="quote-source">${q.source}</span></div>`)
+    .join('');
 }
+

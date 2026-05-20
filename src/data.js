@@ -80,228 +80,253 @@ export const COMMONALITY_MESSAGES = [
   t => `"${t}" — shared by 12,847 other players.`
 ];
 
-// ---- PHASE 2 SCENARIOS (expanded with environment keys) ----
+// ---- PHASE 2 SCENARIOS (Streamlined to 3) ----
 export const PHASE2_SCENARIOS = [
   {
     env:'twilight',
     narrator:'"The world is quiet. A path stretches ahead. Let\'s see how you walk it."',
-    text:'You\'re walking alone at dusk when you find a journal on a bench. Inside: someone\'s deepest fears, dreams, and secrets. No name. No way to return it.',
+    text:'You find a journal on a bench. Inside: someone\'s deepest fears, dreams, and secrets. No name. No way to return it.',
     choices:[
-      {text:'Read it. Understanding someone\'s inner world — even a stranger\'s — feels important.',vectors:{curiosity:2,empathy:1,independence:1}},
+      {text:'Read it. Understanding someone\'s inner world feels important.',vectors:{curiosity:2,empathy:1,independence:1}},
       {text:'Leave it. Those thoughts were private. You have no right to them.',vectors:{empathy:1,logicalReasoning:1,conformity:1}},
-      {text:'Take it with you. Maybe you\'ll find the owner. Maybe you\'ll learn something.',vectors:{curiosity:1,riskTolerance:1,empathy:1}}
+      {text:'Take it with you. Maybe you\'ll find the owner. Maybe you\'ll learn.',vectors:{curiosity:1,riskTolerance:1,empathy:1}}
     ]
   },
   {
     env:'urban',
     narrator:'"Comfort or truth. Everyone has a preference — even if they deny it."',
-    text:'A close friend has been living a lie — presenting a version of themselves that you know isn\'t real. Everyone else believes the performance. Your friend seems happier this way.',
+    text:'A close friend has been living a lie — presenting a version of themselves that you know isn\'t real. Everyone else believes the performance. They seem happier this way.',
     choices:[
-      {text:'Say nothing. If the mask brings them peace, who are you to remove it?',vectors:{empathy:1,conformity:1,emotionalReasoning:1}},
-      {text:'Gently confront them. Living as a fiction is its own kind of prison.',vectors:{independence:1,empathy:1,curiosity:1}},
-      {text:'Ask yourself first: are you sure their "real self" is more valid than the one they chose?',vectors:{curiosity:2,logicalReasoning:1}}
+      {text:'Say nothing. If the mask brings them peace, leave it be.',vectors:{empathy:1,conformity:1,emotionalReasoning:1}},
+      {text:'Gently confront them. Living as a fiction is its own prison.',vectors:{independence:1,empathy:1,curiosity:1}},
+      {text:'Ask: is the "real self" actually more valid than the chosen one?',vectors:{curiosity:2,logicalReasoning:1}}
     ]
   },
   {
     env:'crossroads',
     narrator:'"Loyalty or independence. Which one do you reach for first?"',
-    text:'Everyone in your community has adopted a belief you find deeply wrong. Speaking up would make you an outcast. Staying silent feels like betrayal — of yourself.',
+    text:'Everyone in your community has adopted a belief you find deeply wrong. Speaking up would make you an outcast. Staying silent feels like betrayal.',
     choices:[
-      {text:'Speak. Integrity isn\'t negotiable, even when it\'s lonely.',vectors:{independence:2,conformity:-2,riskTolerance:1}},
-      {text:'Stay silent for now. Change happens slowly, from within.',vectors:{conformity:1,logicalReasoning:1,empathy:1}},
-      {text:'Find even one person who agrees. Rebellion doesn\'t have to be solo.',vectors:{empathy:1,curiosity:1,independence:1}}
-    ]
-  },
-  {
-    env:'storm',
-    narrator:'"Logic or emotion — which one leads when the stakes are real?"',
-    text:'A stranger collapses on the street. You\'re late for the most important moment of your career — an opportunity that will never come again. No one else is stopping.',
-    choices:[
-      {text:'Stop. A human life outweighs any opportunity. Always.',vectors:{empathy:2,emotionalReasoning:1,riskTolerance:1}},
-      {text:'Keep walking. You can\'t save everyone, and this moment defines your future.',vectors:{logicalReasoning:2,ambition:1,empathy:-1}},
-      {text:'Call for help as you walk. Do what you can without sacrificing everything.',vectors:{logicalReasoning:1,empathy:1,curiosity:1}}
-    ]
-  },
-  {
-    env:'twilight',
-    narrator:'"This one cuts close. There\'s no safe answer."',
-    text:'You can live one of two lives: a life where you achieve everything but no one truly knows you, or a life where you achieve nothing but are deeply, unconditionally known and loved.',
-    choices:[
-      {text:'Achievement. My legacy is what I leave behind — connection fades.',vectors:{independence:2,ambition:2,empathy:-1}},
-      {text:'Connection. Being known is the whole point of being alive.',vectors:{empathy:2,emotionalReasoning:1,independence:-1}},
-      {text:'Neither. I refuse a world where these are mutually exclusive.',vectors:{curiosity:1,independence:1,riskTolerance:1}}
-    ]
-  },
-  {
-    env:'forest',
-    narrator:'"You carry more than you realize. Let\'s see what you set down — and what you hold onto."',
-    text:'You discover you have the power to forget one painful memory permanently. The pain shaped you, taught you something, but it still hurts. Every day.',
-    choices:[
-      {text:'Forget it. The lesson is learned. The pain serves no further purpose.',vectors:{logicalReasoning:1,riskTolerance:1,independence:1}},
-      {text:'Keep it. Pain is part of me. Erasing it would erase who I became because of it.',vectors:{empathy:1,emotionalReasoning:2,curiosity:1}},
-      {text:'Keep the lesson, forget the feeling. If that\'s possible.',vectors:{logicalReasoning:1,curiosity:1,empathy:1}}
-    ]
-  },
-  {
-    env:'urban',
-    narrator:'"Who you protect reveals who you are."',
-    text:'A child asks you: "Is the world a good place?" You know the honest answer is complicated. The child is looking at you with complete trust.',
-    choices:[
-      {text:'"Yes. And it needs good people like you to keep it that way."',vectors:{empathy:2,emotionalReasoning:1,conformity:1}},
-      {text:'"It\'s complicated. But that means you get to help decide what it becomes."',vectors:{curiosity:1,logicalReasoning:1,empathy:1}},
-      {text:'"Sometimes. And when it isn\'t, that\'s when we matter most."',vectors:{independence:1,emotionalReasoning:1,riskTolerance:1}}
+      {text:'Speak. Integrity is not negotiable, even when it is lonely.',vectors:{independence:2,conformity:-2,riskTolerance:1}},
+      {text:'Stay silent. Change happens slowly, from within.',vectors:{conformity:1,logicalReasoning:1,empathy:1}},
+      {text:'Find others who agree. Rebellion does not have to be solo.',vectors:{empathy:1,curiosity:1,independence:1}}
     ]
   }
 ];
 
 // ---- WORLDS ----
 export const WORLDS = [
-  {name:'The Iron Republic',description:'A society built on absolute order. Rules are everything. Deviation is punished. Safety is guaranteed — at the cost of freedom.',type:'strict',env:'iron',
-    narrator:'"Welcome to a world that values structure above all else. Your freedom has been traded for security. Let\'s see if you bend — or break."'},
+  {name:'The Iron Republic',description:'A society built on absolute order. Rules are everything. Safety is guaranteed — at the cost of freedom.',type:'strict',env:'iron',
+    narrator:'"Welcome to a world that values structure above all else. Let\'s see if you bend — or break."'},
   {name:'The Unbound',description:'A world with no rules, no structure, no safety net. Everyone is free. Everyone is alone.',type:'chaotic',env:'chaos',
-    narrator:'"No rules. No one to catch you. No one to blame. Just you and infinite possibility — and infinite danger."'},
+    narrator:'"No rules. No one to catch you. Just you and infinite possibility — and danger."'},
   {name:'The Collective',description:'A society where individuality dissolves. Everyone shares thoughts, resources, identity. The group is all.',type:'collectivist',env:'collective',
-    narrator:'"Here, there is no \'you.\' Only \'us.\' Your thoughts belong to everyone. Does that comfort you — or terrify you?"'},
-  {name:'The Mirror City',description:'A hyper-individualistic world where everything is competition. Your worth is measured by how different you are.',type:'individualistic',env:'mirror',
-    narrator:'"In this world, being ordinary is the only sin. You must be unique — or be invisible."'}
+    narrator:'"Here, there is no \'you.\' Only \'us.\' Does that comfort you — or terrify you?"'},
+  {name:'The Mirror City',description:'A hyper-individualistic world where worth is measured by how different you are.',type:'individualistic',env:'mirror',
+    narrator:'"In this world, being ordinary is the only sin. You must be unique — or invisible."'}
 ];
 
+// ---- PHASE 3 SCENARIOS (Streamlined to 2 per path) ----
 export const SHIFT_SCENARIOS = {
   strict:[
-    {text:'The Iron Republic demands you report a friend who broke a minor rule. If you don\'t, you both face punishment. The rule itself seems pointless — but the system doesn\'t care about your opinion.',
+    {text:'The Iron Republic demands you report a friend who broke a minor rule. If you don\'t, you both face punishment.',
       choices:[
         {text:'Report them. The system works because everyone follows it.',vectors:{conformity:2,empathy:-1,logicalReasoning:1}},
         {text:'Refuse. Some bonds transcend systems.',vectors:{independence:2,empathy:1,riskTolerance:1}},
-        {text:'Find a loophole. Protect them without technically breaking anything.',vectors:{curiosity:1,logicalReasoning:1,empathy:1}}
+        {text:'Find a loophole. Protect them without breaking rules.',vectors:{curiosity:1,logicalReasoning:1,empathy:1}}
       ]},
-    {text:'You\'re offered power — a position that could let you change the system from within. But holding it requires enforcing laws you find unjust. For now.',
+    {text:'You\'re offered power — a position that lets you change the system, but requires enforcing laws you find unjust for now.',
       choices:[
-        {text:'Take it. Change requires compromise. The long game matters more.',vectors:{ambition:2,logicalReasoning:1,conformity:1}},
-        {text:'Refuse. Becoming what you oppose is not progress — it\'s surrender.',vectors:{independence:2,emotionalReasoning:1,riskTolerance:1}},
-        {text:'Accept it and subvert quietly. Let them think you\'re compliant.',vectors:{curiosity:2,riskTolerance:1,independence:1}}
-      ]},
-    {text:'A citizen is being publicly punished for expressing an idea. The crowd watches in silence. You could intervene — but the last person who did disappeared.',
-      choices:[
-        {text:'Intervene. Some moments define who you are forever.',vectors:{independence:2,riskTolerance:2,empathy:1,conformity:-2}},
-        {text:'Stay silent. You can\'t help anyone if you disappear too.',vectors:{logicalReasoning:2,conformity:1,empathy:-1}},
-        {text:'Bear witness. Remember their face. Write it down later.',vectors:{curiosity:1,empathy:1,logicalReasoning:1}}
+        {text:'Take it. Change requires compromise. The long game matters.',vectors:{ambition:2,logicalReasoning:1,conformity:1}},
+        {text:'Refuse. Becoming what you oppose is surrender.',vectors:{independence:2,emotionalReasoning:1,riskTolerance:1}},
+        {text:'Accept and subvert quietly. Let them think you comply.',vectors:{curiosity:2,riskTolerance:1,independence:1}}
       ]}
   ],
   chaotic:[
-    {text:'In The Unbound, someone steals your only food. You track them and find they\'re feeding a child. There is no law here. Only choices.',
+    {text:'In The Unbound, someone steals your only food. You track them and find they\'re feeding a child. There is no law here.',
       choices:[
-        {text:'Let them keep it. The child\'s hunger matters more than yours.',vectors:{empathy:2,emotionalReasoning:1}},
+        {text:'Let them keep it. The child\'s hunger matters more.',vectors:{empathy:2,emotionalReasoning:1}},
         {text:'Take it back. You didn\'t choose to be a martyr.',vectors:{independence:2,riskTolerance:1,empathy:-1}},
-        {text:'Share it. Set a boundary: "Next time, ask."',vectors:{empathy:1,logicalReasoning:1,curiosity:1}}
+        {text:'Share it. Set a boundary: "Next time, ask first."',vectors:{empathy:1,logicalReasoning:1,curiosity:1}}
       ]},
-    {text:'A group offers protection in exchange for absolute loyalty. Alone, you\'re vulnerable. With them, you survive — but lose your autonomy.',
+    {text:'A group offers protection in exchange for absolute loyalty. Alone, you are vulnerable. With them, you lose your autonomy.',
       choices:[
         {text:'Join. Freedom means nothing if you\'re dead.',vectors:{conformity:2,logicalReasoning:1,independence:-1}},
-        {text:'Stay alone. I\'d rather risk everything than belong to someone else.',vectors:{independence:2,riskTolerance:2}},
-        {text:'Negotiate. "I\'ll contribute, but I won\'t surrender my judgment."',vectors:{curiosity:1,logicalReasoning:1,independence:1}}
-      ]},
-    {text:'You find a safe place — truly safe. But it\'s small, isolated, and nothing grows there. Beyond it: danger, but also possibility.',
-      choices:[
-        {text:'Stay. Safety is not nothing. It\'s everything.',vectors:{conformity:1,logicalReasoning:1,riskTolerance:-1}},
-        {text:'Leave. A life without growth isn\'t really living.',vectors:{independence:2,riskTolerance:2,curiosity:1}},
-        {text:'Fortify it. Make the safe place bigger. Bring others in.',vectors:{empathy:1,ambition:1,logicalReasoning:1}}
+        {text:'Stay alone. I\'d rather risk everything than surrender judgment.',vectors:{independence:2,riskTolerance:2}},
+        {text:'Negotiate. "I\'ll contribute, but I won\'t surrender my mind."',vectors:{curiosity:1,logicalReasoning:1,independence:1}}
       ]}
   ],
   collectivist:[
-    {text:'The Collective asks you to share your most private memory. Everyone shares. It\'s how connection works here. Refusal would mark you as... other.',
+    {text:'The Collective asks you to share your most private memory. Everyone shares. Refusal marks you as... other.',
       choices:[
         {text:'Share it. If this is how they build trust, I\'ll try.',vectors:{conformity:1,empathy:1,emotionalReasoning:1}},
-        {text:'Refuse. My inner world is the last thing that\'s truly mine.',vectors:{independence:2,riskTolerance:1,conformity:-1}},
-        {text:'Share something meaningful, but not the deepest truth. Guard the core.',vectors:{curiosity:1,logicalReasoning:1,independence:1}}
+        {text:'Refuse. My inner world is the last thing that is mine.',vectors:{independence:2,riskTolerance:1,conformity:-1}},
+        {text:'Share something meaningful, but guard the deepest core.',vectors:{curiosity:1,logicalReasoning:1,independence:1}}
       ]},
-    {text:'A collective decision is being made that you believe is wrong. Your dissent would be visible to everyone — and deeply unwelcome.',
+    {text:'A collective decision is being made that you believe is wrong. Your dissent would be visible and deeply unwelcome.',
       choices:[
         {text:'Speak up. Even in unity, truth matters.',vectors:{independence:2,riskTolerance:1,conformity:-2}},
         {text:'Accept it. The group\'s harmony is more important than my opinion.',vectors:{conformity:2,empathy:1,independence:-1}},
-        {text:'Privately find allies. Build consensus before going public.',vectors:{logicalReasoning:1,empathy:1,curiosity:1}}
-      ]},
-    {text:'You begin to forget where "you" end and "the group" begins. Your thoughts feel shared. Your emotions feel collective. It\'s peaceful... but something is fading.',
-      choices:[
-        {text:'Let it happen. Maybe the self was always an illusion.',vectors:{conformity:2,emotionalReasoning:1,empathy:1}},
-        {text:'Fight it. I refuse to dissolve. I am someone.',vectors:{independence:2,riskTolerance:1,conformity:-2}},
-        {text:'Observe it. Don\'t resist or surrender. Just watch what happens.',vectors:{curiosity:2,logicalReasoning:1}}
+        {text:'Privately find allies. Build consensus first.',vectors:{logicalReasoning:1,empathy:1,curiosity:1}}
       ]}
   ],
   individualistic:[
     {text:'Your "unique" identity is trending. Thousands copy you. In The Mirror City, being copied means being erased.',
       choices:[
         {text:'Reinvent immediately. Stay ahead. Uniqueness is survival.',vectors:{ambition:2,independence:1,conformity:-1}},
-        {text:'Let them. My identity isn\'t a brand to protect.',vectors:{empathy:1,emotionalReasoning:1,independence:1}},
-        {text:'Question the game. Why is originality the only value here?',vectors:{curiosity:2,logicalReasoning:1}}
+        {text:'Let them. My identity is not a brand to protect.',vectors:{empathy:1,emotionalReasoning:1,independence:1}},
+        {text:'Question the game. Why is originality the only value?',vectors:{curiosity:2,logicalReasoning:1}}
       ]},
-    {text:'You meet someone almost identical to you. In this world, that makes one of you redundant. They suggest working together instead.',
+    {text:'You meet someone almost identical to you. In this world, that makes one of you redundant. They suggest collaborating.',
       choices:[
         {text:'Compete. There can only be one original.',vectors:{ambition:2,independence:1,empathy:-1}},
-        {text:'Collaborate. Together we become something neither of us could be alone.',vectors:{empathy:2,curiosity:1,conformity:1}},
-        {text:'Walk away. I don\'t need to define myself against — or with — anyone.',vectors:{independence:2,emotionalReasoning:1}}
-      ]},
-    {text:'The Mirror City offers you fame — but only if you perform a version of yourself that isn\'t quite real. The audience loves the performance. You hate it.',
-      choices:[
-        {text:'Perform. The world only sees what you show it anyway.',vectors:{conformity:1,ambition:1,logicalReasoning:1}},
-        {text:'Refuse. I\'d rather be invisible than be a lie.',vectors:{independence:2,riskTolerance:1,emotionalReasoning:1}},
-        {text:'Perform — then slowly introduce the real version. Bait and switch.',vectors:{curiosity:2,riskTolerance:1,ambition:1}}
+        {text:'Collaborate. Together we become more than we could alone.',vectors:{empathy:2,curiosity:1,conformity:1}},
+        {text:'Walk away. I don\'t need to define myself against anyone.',vectors:{independence:2,emotionalReasoning:1}}
       ]}
   ]
 };
 
-// ---- PHASE 4: Glitch Scenarios ----
+// ---- PHASE 4 SCENARIOS (Streamlined to 2) ----
 export const GLITCH_SCENARIOS = [
   {
     narrator:'"No name. No traits. No story. Just... you. If there is a you."',
-    text:'You wake in absolute darkness. No memory. No name. Two voices echo: one whispers "safety," the other whispers "truth." You can only follow one. The darkness is patient.',
+    text:'You wake in absolute darkness. No memory. No name. Two voices echo: one whispers "safety," the other "truth."',
     choices:[
-      {text:'Move toward safety. Even without memory, the body knows what it needs.',vectors:{conformity:1,emotionalReasoning:1}},
-      {text:'Move toward truth. If I don\'t know who I am, knowing what\'s real is all I have.',vectors:{curiosity:2,independence:1}},
-      {text:'Stay still. Wait. Listen to what the silence has to say.',vectors:{logicalReasoning:1,empathy:1}}
+      {text:'Move toward safety. The body knows what it needs.',vectors:{conformity:1,emotionalReasoning:1}},
+      {text:'Move toward truth. Knowing what is real is all I have.',vectors:{curiosity:2,independence:1}},
+      {text:'Stay still. Listen to what the silence has to say.',vectors:{logicalReasoning:1,empathy:1}}
     ]
   },
   {
     narrator:'"Stripped of everything, what impulse survives?"',
-    text:'Something is suffering nearby. You can feel it — a presence in pain. Moving toward it means moving further from any exit. There is no reward. No one will know. The only reason to help is that the pain exists.',
+    text:'Something is suffering in the dark nearby. Moving toward it means moving further from any exit. There is no reward.',
     choices:[
       {text:'Move toward it. Pain deserves witness, even in the dark.',vectors:{empathy:2,emotionalReasoning:1,riskTolerance:1}},
-      {text:'Move toward the exit. Self-preservation isn\'t selfishness.',vectors:{logicalReasoning:1,independence:1,riskTolerance:-1}},
+      {text:'Move toward the exit. Self-preservation isn\'t selfish.',vectors:{logicalReasoning:1,independence:1,riskTolerance:-1}},
       {text:'Call out. Let whatever it is know: "You\'re not alone."',vectors:{empathy:1,curiosity:1}}
-    ]
-  },
-  {
-    narrator:'"The void has one last question."',
-    text:'A mirror appears in the darkness. It doesn\'t show your face. It shows a feeling — warm, familiar, unmistakable. The feeling says: you have always been exactly this. Not your labels. Not your history. Just this quiet center. Do you believe it?',
-    choices:[
-      {text:'Yes. Something in me recognizes this as true.',vectors:{emotionalReasoning:2,empathy:1}},
-      {text:'No. I am what I choose, not some predetermined essence.',vectors:{independence:2,logicalReasoning:1}},
-      {text:'I don\'t know. And that honesty might be the most "me" answer of all.',vectors:{curiosity:2,empathy:1}}
-    ]
-  },
-  {
-    narrator:'"One more. From the deepest part of the void."',
-    text:'You are offered the chance to be reborn as someone entirely new — different memories, different personality, different life. The catch: the current "you" ceases to exist entirely. No one remembers you. Not even you.',
-    choices:[
-      {text:'Accept. If I\'m more than my memories, then I\'ll survive the change.',vectors:{riskTolerance:2,curiosity:1,independence:1}},
-      {text:'Refuse. I am my memories. Without them, "I" am nothing.',vectors:{emotionalReasoning:2,conformity:1}},
-      {text:'Ask: "Would the new version of me be happy?" — and choose based on that.',vectors:{empathy:2,logicalReasoning:1}}
     ]
   }
 ];
 
-// ---- Phase 6: Guess Questions ----
-export const GUESS_QUESTIONS = [
-  'How would this person react if they woke up and discovered their entire life was a simulation?',
-  'If forced to choose: save a stranger or preserve an important personal truth?',
-  'Would this person break a just law to help someone they love?',
-  'Does this person trust their gut or their logic more?',
-  'If they could know one absolute truth about the universe, would they choose to know — or stay wondering?',
-  'In a group of strangers, would this person lead, observe, or leave?',
-  'If their identity was completely erased, would they rebuild the same one — or start fresh?',
-  'Does this person believe in a fixed core self, or that identity is always changing?'
+// ---- SUSPECTS FOR GUESS WHO (Associated with Philosophical Authors & Quotes) ----
+export const GW_SUSPECTS = [
+  {name:'The Scholar',icon:'📚',traits:['Analytical','Curious'],value:'Knowledge',fear:'Irrelevance',source:'Thomas Hobbes',quote:'"Order is the foundation of thought."',aesthetic:'Midnight'},
+  {name:'The Guardian',icon:'🛡️',traits:['Loyal','Empathetic'],value:'Justice',fear:'Betrayal',source:'Thomas Hobbes',quote:'"We protect the collective peace."',aesthetic:'Storm'},
+  {name:'The Rebel',icon:'⚡',traits:['Bold','Independent'],value:'Freedom',fear:'Confinement',source:'Ralph Waldo Emerson',quote:'"Whoso would be a man must be a nonconformist."',aesthetic:'Storm'},
+  {name:'The Maverick',icon:'🔥',traits:['Passionate','Bold'],value:'Authenticity',fear:'Conformity',source:'Ralph Waldo Emerson',quote:'"To be yourself is the greatest accomplishment."',aesthetic:'Neon'},
+  {name:'The Dreamer',icon:'🌙',traits:['Creative','Optimistic'],value:'Authenticity',fear:'Mediocrity',source:'Frank Jackson',quote:'"What is the feeling of color in the dark?"',aesthetic:'Sunrise'},
+  {name:'The Empath',icon:'💜',traits:['Gentle','Empathetic'],value:'Compassion',fear:'Isolation',source:'Frank Jackson',quote:'"We experience the world, not just analyze it."',aesthetic:'Neon'},
+  {name:'The Explorer',icon:'🧭',traits:['Curious','Spontaneous'],value:'Freedom',fear:'Stagnation',source:'David Hume',quote:'"We are bundles of perceptions in motion."',aesthetic:'Sunrise'},
+  {name:'The Catalyst',icon:'✨',traits:['Confident','Adaptable'],value:'Growth',fear:'Stagnation',source:'David Hume',quote:'"Nothing is constant but change."',aesthetic:'Forest'},
+  {name:'The Sage',icon:'🔮',traits:['Patient','Honest'],value:'Truth',fear:'Deception',source:'Thomas Hobbes',quote:'"Rules keep the chaos of nature at bay."',aesthetic:'Midnight'},
+  {name:'The Strategist',icon:'♟️',traits:['Analytical','Ambitious'],value:'Knowledge',fear:'Failure',source:'David Hume',quote:'"Reason is, and ought only to be the slave of the passions."',aesthetic:'Ocean'},
+  {name:'The Healer',icon:'🌿',traits:['Thoughtful','Resilient'],value:'Compassion',fear:'Helplessness',source:'Frank Jackson',quote:'"Pain and healing cannot be reduced to physical facts."',aesthetic:'Forest'},
+  {name:'The Hermit',icon:'🛖',traits:['Independent','Patient'],value:'Truth',fear:'Conformity',source:'Ralph Waldo Emerson',quote:'"I walk alone to find what is true."',aesthetic:'Ocean'}
 ];
 
-// ---- Quotes ----
+// ---- STRATEGIC PLAYER ROLES ----
+export const ROLES = [
+  {
+    name: 'Rationalist (Hobbes)',
+    icon: '⚙️',
+    description: 'Use strict deductive logic to instantly eliminate 2 incorrect suspects at the start of the game.',
+    abilityId: 'rationalism'
+  },
+  {
+    name: 'Empiricist (Hume)',
+    icon: '🔍',
+    description: 'Examine sensory impressions. Look at 1 card of the AI\'s eliminated suspects to see what questions they\'ve answered.',
+    abilityId: 'empiricism'
+  },
+  {
+    name: 'Existentialist (Emerson)',
+    icon: '⚡',
+    description: 'Trust your own path. Check whether the target card represents an Independent or Bold suspect.',
+    abilityId: 'existentialism'
+  },
+  {
+    name: 'Subjectivist (Jackson)',
+    icon: '🎨',
+    description: 'Sense raw feeling (qualia). Ask the AI if the target\'s aesthetic is warm (Sunrise, Neon, Storm) or cool (Midnight, Ocean, Forest).',
+    abilityId: 'subjectivism'
+  }
+];
+
+// ---- PHILOSOPHER AI OPPONENTS ----
+export const PHILOSOPHERS = [
+  {
+    name: 'Thomas Hobbes',
+    avatar: '🦁',
+    school: 'Social Contract Theory / Leviathan',
+    difficulty: 'Normal',
+    intro: 'Human life in a state of nature is solitary, poor, nasty, brutish, and short. We require order. Let us see if your mind is structured enough to discover the truth.',
+    dialogueAsk: [
+      '"Do you value the security of the group over the chaos of independence?"',
+      '"Is your logic governed by rules, or do you wander unchecked?"',
+      '"Tell me, does your persona fear betrayal? It is the inevitable result of lawlessness."'
+    ],
+    defeat: 'A predictable result. Without structured rules, your deduction fell into chaos.',
+    victory: 'Impressive. You have successfully structured your inquiry. Perhaps there is hope for order.'
+  },
+  {
+    name: 'David Hume',
+    avatar: '🌊',
+    school: 'Empiricism / Bundle Theory',
+    difficulty: 'Hard',
+    intro: 'You search for a stable, permanent "self," but I see only a bundle of changing perceptions. If identity shifts like water, how can you locate me?',
+    dialogueAsk: [
+      '"Is your persona driven by constant change, or do they cling to a static core?"',
+      '"Does your suspect lead with their feelings? All knowledge arises from raw impressions."',
+      '"Do you fear stagnation? The mind must always be in motion."'
+    ],
+    defeat: 'The self you sought has slipped through your fingers. It was but a passing shadow of perceptions.',
+    victory: 'Remarkable. You traced my bundle of perceptions despite their constant flow. You found me.'
+  },
+  {
+    name: 'Ralph Waldo Emerson',
+    avatar: '🌲',
+    school: 'Transcendentalism / Self-Reliance',
+    difficulty: 'Normal',
+    intro: 'Do not follow where the path may lead. Go instead where there is no path and leave a trail. Trust yourself: can you find my independent spirit?',
+    dialogueAsk: [
+      '"Is your character a nonconformist, or do they follow the herd?"',
+      '"Does your persona value freedom above all else? Confinement is the death of the soul."',
+      '"Do you fear conforming to what society expects of you?"'
+    ],
+    defeat: 'You conformed too closely to obvious patterns. You must trust your own intuition next time.',
+    victory: 'Splendid! You stood firm in your own judgment and found my hidden trail. You trusted yourself.'
+  },
+  {
+    name: 'Frank Jackson',
+    avatar: '👁️',
+    school: 'Qualia / Physicalist Critique',
+    difficulty: 'Easy',
+    intro: 'A scientist could know every physical fact about red, yet still not know what it feels like to actually see it. Let us explore the subjective nature of identity.',
+    dialogueAsk: [
+      '"Does your character lead with empathy and raw feeling, or dry logical facts?"',
+      '"Does your persona value the raw experience of love and compassion?"',
+      '"Do you fear isolation? The feeling of being cut off from others\' subjective experiences is a heavy burden."'
+    ],
+    defeat: 'You relied too much on dry facts, forgetting the subjective feeling of the game.',
+    victory: 'Wonderful. You understood that identity is lived and felt, not just measured. You found me.'
+  }
+];
+
+// ---- PHASE 6 BOARD GAME QUESTIONS ----
+export const GUESS_QUESTIONS = [
+  {q:'Are they a nonconformist (Independent/Bold)?',check:s=>s.traits.includes('Independent')||s.traits.includes('Bold'),field:'traits',label:'Nonconformist'},
+  {q:'Do they value Knowledge or Truth above all?',check:s=>s.value==='Knowledge'||s.value==='Truth',field:'value',label:'Intellectual Value'},
+  {q:'Do they fear Stagnation or Mediocrity?',check:s=>s.fear==='Stagnation'||s.fear==='Mediocrity',field:'fear',label:'Fear of Stagnation'},
+  {q:'Are they an Empathetic or Loyal soul?',check:s=>s.traits.includes('Empathetic')||s.traits.includes('Loyal'),field:'traits',label:'Altruistic'},
+  {q:'Do they seek Freedom or Autonomy?',check:s=>s.value==='Freedom',field:'value',label:'Freedom Seekers'},
+  {q:'Do they fear isolation or being alone?',check:s=>s.fear==='Being alone'||s.fear==='Isolation',field:'fear',label:'Fear of Solitude'},
+  {q:'Do they have a warm color aesthetic?',check:s=>['Sunrise','Neon','Storm'].includes(s.aesthetic),field:'aesthetic',label:'Warm Aesthetic'},
+  {q:'Is their source Ralph Waldo Emerson?',check:s=>s.source==='Ralph Waldo Emerson',field:'source',label:'Emerson\'s Influence'},
+  {q:'Is their source David Hume?',check:s=>s.source==='David Hume',field:'source',label:'Hume\'s Influence'},
+  {q:'Is their source Thomas Hobbes?',check:s=>s.source==='Thomas Hobbes',field:'source',label:'Hobbes\' Influence'}
+];
+
+// ---- QUOTES ----
 export const PHILOSOPHICAL_QUOTES = [
   {text:'"Trust thyself: every heart vibrates to that iron string."',source:'— Emerson, Self-Reliance'},
   {text:'"There is something it is like to be a conscious being — something it is like for the being itself."',source:'— Frank Jackson, Epiphenomenal Qualia'},
@@ -309,7 +334,7 @@ export const PHILOSOPHICAL_QUOTES = [
   {text:'"What I call \'the self\' is nothing but a bundle of perceptions."',source:'— David Hume, A Treatise of Human Nature'},
   {text:'"Have you ever had a dream that you were so sure was real?"',source:'— The Matrix (1999)'},
   {text:'"The unexamined life is not worth living."',source:'— Plato, Apology'},
-  {text:'"Human nature is not a machine to be built after a model."',source:'— Stanford Encyclopedia of Philosophy'},
+  {text:'"Human nature is not a machine to be built after a model."',source:'— John Stuart Mill, On Liberty'},
   {text:'"There is no single, unified self — only a constantly shifting stream of consciousness."',source:'— The No-Self Theory'}
 ];
 

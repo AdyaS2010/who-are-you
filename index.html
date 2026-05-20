@@ -20,6 +20,64 @@
     <div class="setting-row"><label><input type="checkbox" id="mute-all"> 🔇 Mute All</label></div>
   </div>
 
+  <!-- Rulebook Toggle and Modal -->
+  <button id="rulebook-toggle" class="rulebook-toggle" aria-label="Rulebook">📖</button>
+  <div id="rulebook-modal" class="rulebook-modal hidden">
+    <div class="rulebook-content">
+      <button id="rulebook-close" class="rulebook-close" aria-label="Close Guide">&times;</button>
+      <div class="rulebook-tabs">
+        <button class="rulebook-tab-btn active" data-tab="rb-tab-story">Story</button>
+        <button class="rulebook-tab-btn" data-tab="rb-tab-gameplay">How to Play</button>
+        <button class="rulebook-tab-btn" data-tab="rb-tab-sources">Philosophy & Sources</button>
+      </div>
+      
+      <div class="rulebook-tab-content active" id="rb-tab-story">
+        <h2>The Quest for the True Self</h2>
+        <p>In <strong>WHO//ARE//YOU?</strong>, you begin by constructing a <em>Mask</em> — a collection of social tags, traits, and aesthetics. But is a costume the same as a soul?</p>
+        <p>As you step into the world, your choices will shape you, shift you under environmental pressures, and ultimately glitch away, stripping you of all labels. You will see your reflection in the <em>Mirror</em>, demonstrating how you navigated the tensions between conformity, independence, logic, and emotion.</p>
+        <p>Finally, in the <strong>Trial of Personas (Guess Who)</strong>, you must test whether your constructed identity can be deduced using structured reasoning. You will choose a philosophical school of thought and duel against a legendary philosopher. Discover who you are, before they deduce your persona first!</p>
+      </div>
+      
+      <div class="rulebook-tab-content" id="rb-tab-gameplay">
+        <h2>Gameplay Manual</h2>
+        <h3>Part 1: The Platformer Journey</h3>
+        <ul>
+          <li><strong>Movement</strong>: Use the <code>← / →</code> arrows or <code>A / D</code> keys to walk.</li>
+          <li><strong>Jumping</strong>: Press <code>Space</code>, <code>W</code>, or <code>↑</code> to jump.</li>
+          <li><strong>Objectives</strong>: Walk forward to reveal the story nodes. Collect the glowing orbs by walking into them to lock in your choices. Each choice adjusts your psychological alignment.</li>
+        </ul>
+        <h3>Part 2: The Trial of Personas (Board Game)</h3>
+        <ul>
+          <li><strong>Role Selection</strong>: Select your philosophical school (e.g., Rationalism, Empiricism) to gain a unique game ability.</li>
+          <li><strong>Opponent Selection</strong>: Choose which Philosopher AI you want to challenge (e.g., Thomas Hobbes, David Hume).</li>
+          <li><strong>Turns</strong>: On your turn, ask a question from the question bar, then click on suspect cards to manually eliminate them based on the answer.</li>
+          <li><strong>AI Turns</strong>: The Philosopher AI will ask questions about your identity and narrow down their board.</li>
+          <li><strong>Victory</strong>: Click <em>Make Final Guess</em> when you're confident you know the AI's secret persona card. Guess correctly before the AI guesses yours to win!</li>
+        </ul>
+      </div>
+      
+      <div class="rulebook-tab-content" id="rb-tab-sources">
+        <h2>Philosophical Sources</h2>
+        <div class="source-item">
+          <h3>Thomas Hobbes — <em>Leviathan</em> (1651)</h3>
+          <p>Hobbes argued that human life in a state of nature is "solitary, poor, nasty, brutish, and short." To escape this chaos, humans form a Social Contract, sacrificing some freedom for the safety and order of a sovereign state. In the game, Hobbes represents <strong>Conformity and Order</strong>.</p>
+        </div>
+        <div class="source-item">
+          <h3>David Hume — <em>A Treatise of Human Nature</em> (1739)</h3>
+          <p>Hume's "Bundle Theory" claims that there is no fixed, permanent "self." Instead, the self is merely a bundle of fleeting sensory perceptions and thoughts in constant motion. In the game, Hume represents <strong>Curiosity, Change, and Empiricism</strong>.</p>
+        </div>
+        <div class="source-item">
+          <h3>Ralph Waldo Emerson — <em>Self-Reliance</em> (1841)</h3>
+          <p>Emerson championed nonconformity and listening to one's own inner voice. He urged individuals to trust themselves and resist social pressures to fit in. In the game, Emerson represents <strong>Independence and Existentialism</strong>.</p>
+        </div>
+        <div class="source-item">
+          <h3>Frank Jackson — <em>Epiphenomenal Qualia</em> (1982)</h3>
+          <p>Jackson presented the "Mary's Room" thought experiment, arguing that subjective, conscious experiences (qualia) — like the feeling of seeing the color red — cannot be fully explained by physical facts. In the game, Jackson represents <strong>Empathy, Subjective Experience, and Qualia</strong>.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <div id="app">
     <canvas id="particles-canvas"></canvas>
     <div id="glitch-overlay" class="hidden"></div>
@@ -106,17 +164,75 @@
       </div>
     </section>
 
-    <!-- PHASE 6: GUESS WHO -->
+    <!-- PHASE 6: GUESS WHO DUEL -->
     <section id="screen-phase6" class="screen">
-      <div class="phase-header"><span class="phase-number">Phase VI</span><h2 class="phase-title">Guess Who?</h2><p class="phase-subtitle">Twelve identities. One is real. Ask questions. Eliminate suspects. Find the truth.</p></div>
+      <div class="phase-header">
+        <span class="phase-number">Phase VI</span>
+        <h2 class="phase-title">Trial of Personas</h2>
+        <p class="phase-subtitle">Duel against a historical philosopher. Ask questions. Eliminate suspects. Find the truth before they deduce yours.</p>
+      </div>
+      
       <div class="guess-container" id="guess-container">
-        <div class="narrator-box"><p class="narrator-text">"You've built an identity through choices. Now see if someone else can find you in a crowd."</p></div>
-        <div id="gw-answer-box"></div>
-        <div id="gw-question-bar" class="gw-question-bar"></div>
-        <div id="gw-board" class="gw-board"></div>
-        <div id="gw-status" class="gw-status"></div>
-        <button id="gw-final-guess" class="gw-final-btn hidden">Make Final Guess</button>
-        <button id="gw-continue" class="gw-final-btn hidden">Continue →</button>
+        
+        <!-- Setup Screen -->
+        <div id="gw-setup-panel" class="gw-setup-panel">
+          <div class="setup-section">
+            <h3>1. Choose Your Philosophical School</h3>
+            <p class="setup-sub">Select your school of thought to unlock a unique strategic ability:</p>
+            <div id="gw-role-selection" class="gw-role-grid"></div>
+          </div>
+          
+          <div class="setup-section">
+            <h3>2. Choose Your Philosopher Opponent</h3>
+            <p class="setup-sub">Each philosopher employs different deductive strategies and holds different views on the self:</p>
+            <div id="gw-opponent-selection" class="gw-opponent-grid"></div>
+          </div>
+          
+          <button id="gw-btn-start-duel" class="btn-primary" disabled>Begin the Duel →</button>
+        </div>
+
+        <!-- Gameplay Screen (Hidden during setup) -->
+        <div id="gw-game-panel" class="gw-game-panel hidden">
+          <!-- Game Header / Turn Tracker -->
+          <div class="gw-game-header">
+            <div class="gw-player-identity">
+              <span class="gw-identity-label">Your Secret Identity:</span>
+              <div id="gw-secret-display" class="gw-secret-display"></div>
+            </div>
+            <div class="gw-turn-indicator" id="gw-turn-indicator">Your Turn</div>
+            <div class="gw-ai-identity">
+              <span class="gw-identity-label">Philosopher AI:</span>
+              <div id="gw-opponent-display" class="gw-opponent-display"></div>
+            </div>
+          </div>
+
+          <!-- Philosopher Dialogue Box -->
+          <div class="narrator-box gw-ai-speech">
+            <p id="gw-ai-dialogue" class="narrator-text">"Let us begin. The quest for truth is a structured path."</p>
+          </div>
+
+          <!-- Strategic Ability Button -->
+          <div class="gw-ability-wrapper">
+            <button id="gw-ability-btn" class="gw-ability-btn">
+              <span class="ability-icon">✨</span>
+              <div class="ability-text">
+                <span class="ability-name">Activate Ability</span>
+                <span class="ability-desc">Unlock deductive path</span>
+              </div>
+            </button>
+          </div>
+
+          <div id="gw-answer-box"></div>
+          <div id="gw-question-bar" class="gw-question-bar"></div>
+          <div id="gw-board" class="gw-board"></div>
+          <div id="gw-status" class="gw-status"></div>
+          
+          <div class="gw-actions">
+            <button id="gw-final-guess" class="gw-final-btn hidden">Make Final Guess</button>
+            <button id="gw-continue" class="gw-final-btn hidden">Continue →</button>
+          </div>
+        </div>
+
       </div>
     </section>
 
