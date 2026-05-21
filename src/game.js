@@ -155,15 +155,32 @@ function buildAesthetics() {
   AESTHETICS.forEach(a => {
     const c = document.createElement('div'); c.className = 'aesthetic-card';
     c.innerHTML = `<div class="aesthetic-icon">${a.icon}</div><div class="aesthetic-name">${a.name}</div>`;
-    c.addEventListener('click', () => { g.querySelectorAll('.aesthetic-card').forEach(x => x.classList.remove('selected')); c.classList.add('selected'); state.aesthetic = a.name; $('btn-aesthetic-next').disabled = false; });
+    c.addEventListener('click', () => {
+      g.querySelectorAll('.aesthetic-card').forEach(x => x.classList.remove('selected'));
+      c.classList.add('selected');
+      state.aesthetic = a.name;
+      $('btn-aesthetic-next').disabled = false;
+      if (_titleAudio) _titleAudio.startMusic(a.name);
+    });
     g.appendChild(c);
   });
 }
 function revealArchetype() {
   const tv = { Creative:{curiosity:1},Analytical:{logicalReasoning:1},Empathetic:{empathy:1},Ambitious:{ambition:1},Curious:{curiosity:1},Loyal:{conformity:1,empathy:1},Independent:{independence:1},Optimistic:{emotionalReasoning:1},Cautious:{logicalReasoning:1,riskTolerance:-1},Passionate:{emotionalReasoning:1,riskTolerance:1},Resilient:{independence:1,riskTolerance:1},Honest:{independence:1},Adaptable:{conformity:1,curiosity:1},Confident:{ambition:1,independence:1},Patient:{logicalReasoning:1},Spontaneous:{riskTolerance:1,curiosity:1},Thoughtful:{empathy:1,logicalReasoning:1},Determined:{ambition:1,riskTolerance:1},Gentle:{empathy:1,emotionalReasoning:1},Bold:{riskTolerance:1,independence:1} };
   state.traits.forEach(t => { if (tv[t]) addVectors(tv[t]); });
-  const arch = ARCHETYPES.find(a => a.match(state.vectors)) || ARCHETYPES[ARCHETYPES.length - 1];
-  state.archetype = arch;
+  
+  let bestArch = ARCHETYPES[0];
+  let maxScore = -999;
+  ARCHETYPES.forEach(a => {
+    const s = a.score(state.vectors, state);
+    if (s > maxScore) {
+      maxScore = s;
+      bestArch = a;
+    }
+  });
+  state.archetype = bestArch;
+  
+  const arch = bestArch;
   $('archetype-sil-wrap').innerHTML = ''; $('archetype-sil-wrap').appendChild(createGlowSilhouette('#c9b8ff', 0.7));
   $('archetype-info').innerHTML = `<div class="archetype-name">${arch.name}</div><div class="archetype-title-line">${arch.title}</div><div class="archetype-backstory">${arch.backstory}</div><div class="archetype-stats">${Object.entries(arch.stats).map(([k,v]) => `<div class="arch-stat">${k}: <span>${v}</span></div>`).join('')}</div>`;
   const rm = () => COMMONALITY_MESSAGES[Math.floor(Math.random() * COMMONALITY_MESSAGES.length)];
@@ -380,19 +397,10 @@ function startGuessWhoDuel() {
   $('gw-setup-panel').classList.add('hidden');
   $('gw-game-panel').classList.remove('hidden');
 
-  // Match player secret identity closest to their Phase 1 archetype and traits
-  const pTraits = new Set(state.traits);
-  const pValue = state.coreValue;
-  const pFear = state.fear;
-  let bestScore = -1, bestIdx = 0;
-  GW_SUSPECTS.forEach((s, i) => {
-    let score = 0;
-    s.traits.forEach(t => { if (pTraits.has(t)) score += 3; });
-    if (s.value === pValue) score += 2;
-    if (s.fear === pFear) score += 2;
-    if (score > bestScore) { bestScore = score; bestIdx = i; }
-  });
-  state.gwPlayerSecret = bestIdx;
+  // Assign player secret identity from their Phase 1 archetype
+  const archName = state.archetype ? state.archetype.name : '';
+  const matchedIdx = GW_SUSPECTS.findIndex(s => s.name === archName);
+  state.gwPlayerSecret = matchedIdx !== -1 ? matchedIdx : 0;
 
   // Choose AI secret card randomly (different from player)
   let aiIdx;

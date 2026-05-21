@@ -36,12 +36,68 @@ export class AudioEngine {
   }
 
   // ─── CALM MYSTICAL BACKGROUND MUSIC ─────────────────────────────────────────
-  // Layered sine/triangle drones + slow melodic arpeggios + subtle reverb
-  startMusic() {
+  // Layered sine/triangle/saw drones + slow melodic arpeggios + theme aesthetic
+  startMusic(aestheticName) {
     if (!this.ctx) return;
     this.stopMusic();
 
+    if (aestheticName) this.activeAesthetic = aestheticName;
+    const aes = this.activeAesthetic || 'Ocean';
+
     const t = this.ctx.currentTime;
+
+    // Default parameters
+    let filterFreq = 600;
+    let basePitchMultiplier = 1.0;
+    let arpSpeed = 2.1;
+    let mainOscType = 'triangle';
+    let droneOscType = 'sine';
+    let dryVol = 0.65;
+    let revVol = 0.35;
+
+    // Apply aesthetic constraints (Midnight, Sunrise, Storm, Ocean, Forest, Neon)
+    if (aes === 'Midnight') {
+      filterFreq = 260;
+      basePitchMultiplier = 0.75;
+      arpSpeed = 2.4;
+      mainOscType = 'sine';
+      droneOscType = 'sine';
+      dryVol = 0.55;
+    } else if (aes === 'Sunrise') {
+      filterFreq = 1000;
+      basePitchMultiplier = 1.25;
+      arpSpeed = 1.6;
+      mainOscType = 'triangle';
+      droneOscType = 'triangle';
+    } else if (aes === 'Storm') {
+      filterFreq = 420;
+      basePitchMultiplier = 0.85;
+      arpSpeed = 2.5;
+      mainOscType = 'triangle';
+      droneOscType = 'triangle';
+      revVol = 0.45;
+    } else if (aes === 'Ocean') {
+      filterFreq = 480;
+      basePitchMultiplier = 1.0;
+      arpSpeed = 2.2;
+      mainOscType = 'sine';
+      droneOscType = 'sine';
+      dryVol = 0.5;
+      revVol = 0.5;
+    } else if (aes === 'Forest') {
+      filterFreq = 720;
+      basePitchMultiplier = 1.05;
+      arpSpeed = 1.9;
+      mainOscType = 'triangle';
+      droneOscType = 'sine';
+    } else if (aes === 'Neon') {
+      filterFreq = 1200;
+      basePitchMultiplier = 1.2;
+      arpSpeed = 1.4;
+      mainOscType = 'triangle';
+      droneOscType = 'triangle';
+      dryVol = 0.7;
+    }
 
     // --- Reverb convolver for warmth ---
     const revLen  = this.ctx.sampleRate * 2.5;
@@ -51,11 +107,11 @@ export class AudioEngine {
       for (let i = 0; i < revLen; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / revLen, 2.5);
     }
     const reverb = this.ctx.createConvolver(); reverb.buffer = revBuf;
-    const revGain = this.ctx.createGain(); revGain.gain.value = 0.35;
+    const revGain = this.ctx.createGain(); revGain.gain.value = revVol;
     reverb.connect(revGain); revGain.connect(this.musicBus);
 
     // Dry gain path
-    const dryGain = this.ctx.createGain(); dryGain.gain.value = 0.65;
+    const dryGain = this.ctx.createGain(); dryGain.gain.value = dryVol;
     dryGain.connect(this.musicBus);
 
     // Helper: create a sustained drone oscillator
@@ -63,8 +119,8 @@ export class AudioEngine {
       const o = this.ctx.createOscillator();
       const g = this.ctx.createGain();
       const f = this.ctx.createBiquadFilter();
-      o.type = type; o.frequency.value = freq;
-      f.type = 'lowpass'; f.frequency.value = 600; f.Q.value = 0.8;
+      o.type = type; o.frequency.value = freq * basePitchMultiplier;
+      f.type = 'lowpass'; f.frequency.value = filterFreq; f.Q.value = 0.8;
       g.gain.setValueAtTime(0, t);
       g.gain.linearRampToValueAtTime(vol, t + attack);
       o.connect(f); f.connect(g);
@@ -74,12 +130,12 @@ export class AudioEngine {
 
     // Root drone chord — Am/C/G ethereal cluster (mystical, open-ended)
     const nodes = [
-      drone(55,  'sine',     0.055, 4),  // A1  sub-bass
-      drone(110, 'sine',     0.07,  3),  // A2  bass
-      drone(165, 'triangle', 0.05,  4),  // E3
-      drone(220, 'sine',     0.06,  5),  // A3
-      drone(261, 'triangle', 0.04,  5),  // C4
-      drone(330, 'sine',     0.035, 6),  // E4
+      drone(55,  'sine',        0.055, 4),  // A1 sub-bass
+      drone(110, droneOscType,  0.07,  3),  // A2 bass
+      drone(165, mainOscType,   0.05,  4),  // E3
+      drone(220, droneOscType,  0.06,  5),  // A3
+      drone(261, mainOscType,   0.04,  5),  // C4
+      drone(330, droneOscType,  0.035, 6),  // E4
     ];
 
     // Slow, barely perceptible vibrato on mid drones for life
@@ -94,9 +150,8 @@ export class AudioEngine {
     });
 
     // --- Melodic arpeggio layer (soft triangle, slow loop) ---
-    const scale = [220, 261.6, 293.7, 329.6, 392, 440, 523.3]; // A minor pentatonic+
+    const scale = [220, 261.6, 293.7, 329.6, 392, 440, 523.3].map(p => p * basePitchMultiplier); // A minor pentatonic+
     let step = 0;
-    const arpSpeed = 2.1; // seconds per note
 
     const scheduleArp = () => {
       if (!this._music) return;
@@ -104,7 +159,7 @@ export class AudioEngine {
       const o = this.ctx.createOscillator();
       const g = this.ctx.createGain();
       const now = this.ctx.currentTime;
-      o.type = 'triangle'; o.frequency.value = freq;
+      o.type = mainOscType; o.frequency.value = freq;
       g.gain.setValueAtTime(0, now);
       g.gain.linearRampToValueAtTime(0.028, now + 0.4);
       g.gain.linearRampToValueAtTime(0.012, now + arpSpeed * 0.8);
@@ -117,7 +172,7 @@ export class AudioEngine {
     const arpTimer = setInterval(scheduleArp, arpSpeed * 1000);
 
     // --- High shimmer sparkles (rare, crystal-like) ---
-    const shimmerNotes = [880, 1047, 1319, 1568];
+    const shimmerNotes = [880, 1047, 1319, 1568].map(p => p * basePitchMultiplier);
     let shimmerStep = 0;
     const shimmerTimer = setInterval(() => {
       if (!this._music || Math.random() > 0.45) return;

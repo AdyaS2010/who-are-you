@@ -21,55 +21,112 @@ export const AESTHETICS = [
   {name:'Ocean',icon:'🌊'},{name:'Forest',icon:'🌿'},{name:'Neon',icon:'💜'}
 ];
 
-// ---- CHARACTER ARCHETYPES ----
+// ---- CHARACTER ARCHETYPES (aligned with 7 Guess Who suspect characters) ----
 export const ARCHETYPES = [
   {
-    id:'seeker', name:'The Seeker', title:'Wanderer of Questions',
-    match: v => v.curiosity >= 2 && v.independence >= 1,
-    backstory: `Born restless, the Seeker has never been satisfied with easy answers. They wander not because they are lost, but because they believe the journey itself is the destination. Every locked door is an invitation, every stranger a potential teacher. They carry a quiet fire — the kind that doesn't burn others, but lights the way forward into the unknown.`,
-    stats: {openness:'High',resolve:'Moderate',attachment:'Low',intuition:'High'}
+    id: 'alex',
+    name: 'Alex Mercer',
+    title: 'The Label-Only Identity',
+    backstory: 'You define yourself through your relationships, titles, and community. To you, labels are not chains - they are the very structure that gives you shape. Without them, there is nothing to identify.',
+    stats: { Security: 'High', Roles: 'Max', Conformity: 'High' },
+    score: (v, s) => {
+      let pt = 0;
+      if (s.coreValue === 'Community') pt += 3;
+      if (s.aesthetic === 'Midnight') pt += 2;
+      if (s.fear === 'Being forgotten') pt += 1.5;
+      s.traits.forEach(t => { if (['Analytical', 'Confident', 'Loyal', 'Adaptable'].includes(t)) pt += 1; });
+      return pt + (v.conformity || 0);
+    }
   },
   {
-    id:'guardian', name:'The Guardian', title:'Shield of the Unseen',
-    match: v => v.empathy >= 2 && v.emotionalReasoning >= 1,
-    backstory: `The Guardian feels the world more deeply than most. They sense tension in a room before anyone speaks, and carry the weight of others' pain as if it were their own. Their strength isn't in force — it's in presence. They are the one who stays when everyone else leaves, the one who remembers what others forget. Their weakness? They sometimes forget to guard themselves.`,
-    stats: {empathy:'Very High',resilience:'High',boundaries:'Low',perception:'High'}
+    id: 'mira',
+    name: 'Mira Lockwood',
+    title: 'The Memory-Based Self',
+    backstory: 'You are defined by the accumulation of your memories and experiences. To you, personal identity is a continuous chain of conscious recollection. If the thread of memory breaks, the self ceases to exist.',
+    stats: { Continuity: 'Max', Reflection: 'High', Adaptability: 'Moderate' },
+    score: (v, s) => {
+      let pt = 0;
+      if (s.coreValue === 'Truth') pt += 3;
+      if (s.aesthetic === 'Ocean') pt += 2;
+      if (s.fear === 'Losing loved ones') pt += 1.5;
+      s.traits.forEach(t => { if (['Thoughtful', 'Patient', 'Creative', 'Cautious'].includes(t)) pt += 1; });
+      return pt + (v.empathy || 0);
+    }
   },
   {
-    id:'architect', name:'The Architect', title:'Builder of Hidden Worlds',
-    match: v => v.logicalReasoning >= 2 && v.ambition >= 1,
-    backstory: `The Architect sees patterns where others see chaos. They build — not just things, but systems, ideas, futures. Every problem is a puzzle, every failure a data point. They move through life with a blueprint in their mind, always three steps ahead. But sometimes they forget that not everything worth building can be planned, and that the most beautiful structures are the ones that surprise their creator.`,
-    stats: {strategy:'Very High',creativity:'High',spontaneity:'Low',focus:'Very High'}
+    id: 'riley',
+    name: 'Riley Flux',
+    title: 'The Flowing Stream',
+    backstory: 'You believe there is no fixed, permanent "you." Instead, you are a shifting bundle of fleeting perceptions, experiences, and impulses. You embrace change and refuse to be pinned down.',
+    stats: { Fluidity: 'Max', Consistency: 'Low', Spontaneity: 'Very High' },
+    score: (v, s) => {
+      let pt = 0;
+      if (s.coreValue === 'Freedom') pt += 3;
+      if (s.aesthetic === 'Storm') pt += 2;
+      if (s.fear === 'Being trapped') pt += 1.5;
+      s.traits.forEach(t => { if (['Spontaneous', 'Adaptable', 'Optimistic', 'Bold'].includes(t)) pt += 1; });
+      return pt + (v.riskTolerance || 0);
+    }
   },
   {
-    id:'rebel', name:'The Rebel', title:'Voice Against the Tide',
-    match: v => v.independence >= 2 && v.conformity <= -1,
-    backstory: `The Rebel doesn't break rules for the thrill — they break them because the rules were wrong. They carry a moral compass that doesn't point north, but points toward truth. Every institution is questioned, every authority challenged. They walk alone often, but when they find their people, the bond is fierce. Their gift is courage; their burden is isolation.`,
-    stats: {conviction:'Very High',adaptability:'Moderate',conformity:'Very Low',courage:'Very High'}
+    id: 'solara',
+    name: 'Solara Vale',
+    title: 'The Inner Qualia',
+    backstory: 'You believe that even if every label, memory, and physical description is stripped away, a raw, private core of subjective consciousness remains. There is a fundamental "what it is like to be you" that can never be reduced or explained away.',
+    stats: { InnerCore: 'Max', Subjectivity: 'High', Resilience: 'High' },
+    score: (v, s) => {
+      let pt = 0;
+      if (s.coreValue === 'Authenticity') pt += 3;
+      if (s.aesthetic === 'Sunrise') pt += 2;
+      if (s.fear === 'Being misunderstood') pt += 1.5;
+      s.traits.forEach(t => { if (['Gentle', 'Resilient', 'Honest', 'Thoughtful'].includes(t)) pt += 1; });
+      return pt + (v.emotionalReasoning || 0);
+    }
   },
   {
-    id:'mirror', name:'The Mirror', title:'Reflection of All Things',
-    match: v => v.empathy >= 1 && v.conformity >= 1,
-    backstory: `The Mirror becomes what they need to be. In a room full of strangers, they are everyone's friend. In conflict, they are the peacemaker. They absorb the world and reflect it back — transformed, softened, made beautiful. But late at night, alone, they sometimes wonder: if I am everyone's reflection, who am I when no one is looking? The question haunts them like a song they can't quite remember.`,
-    stats: {adaptability:'Very High',empathy:'High',identity:'Fluid',perception:'Very High'}
+    id: 'dylan',
+    name: 'Dylan Ward',
+    title: 'The Social Contract',
+    backstory: 'You view the self as fully constructed and molded by the social systems, laws, and pressures around you. Strip away society\'s scaffolding, and you are left only with raw survival instincts.',
+    stats: { Conformity: 'High', SystemReliance: 'Max', Autonomy: 'Moderate' },
+    score: (v, s) => {
+      let pt = 0;
+      if (s.coreValue === 'Justice' || s.coreValue === 'Security') pt += 3;
+      if (s.aesthetic === 'Midnight') pt += 1.5;
+      if (s.fear === 'Losing control') pt += 1.5;
+      s.traits.forEach(t => { if (['Analytical', 'Independent', 'Determined', 'Cautious'].includes(t)) pt += 1; });
+      return pt + (v.logicalReasoning || 0);
+    }
   },
   {
-    id:'flame', name:'The Flame', title:'Light That Cannot Be Contained',
-    match: v => v.riskTolerance >= 2 && v.emotionalReasoning >= 1,
-    backstory: `The Flame burns bright and unapologetically. They feel everything at full volume — joy is ecstasy, anger is a storm, love is a wildfire. They move through life with an intensity that draws people in and sometimes pushes them away. They are the first to leap, the first to speak, the first to feel. Their power is their passion; their risk is burnout. But even ashes can reignite.`,
-    stats: {intensity:'Very High',passion:'Very High',stability:'Low',impact:'Very High'}
+    id: 'axel',
+    name: 'Axel Mirage',
+    title: 'The Glitched Mind',
+    backstory: 'You question the reality of the self itself, viewing it as a sophisticated mental illusion or simulation constructed by the brain to navigate existence. Break out of the illusion to discover who you truly are.',
+    stats: { Skepticism: 'Max', Perception: 'High', Grounding: 'Low' },
+    score: (v, s) => {
+      let pt = 0;
+      if (s.coreValue === 'Knowledge' || s.coreValue === 'Creativity') pt += 3;
+      if (s.aesthetic === 'Neon') pt += 2;
+      if (s.fear === 'Being ordinary') pt += 1.5;
+      s.traits.forEach(t => { if (['Curious', 'Bold', 'Creative', 'Passionate'].includes(t)) pt += 1; });
+      return pt + (v.curiosity || 0);
+    }
   },
   {
-    id:'sage', name:'The Sage', title:'Keeper of Quiet Truths',
-    match: v => v.logicalReasoning >= 1 && v.curiosity >= 1,
-    backstory: `The Sage doesn't seek the spotlight — they seek understanding. While others argue, they listen. While others react, they observe. They carry a library in their mind and a stillness in their heart. People come to them for answers, but the Sage knows the best answer is usually another question. They are patient, deliberate, and sometimes mistaken for cold — when in truth, they simply feel at a frequency others can't hear.`,
-    stats: {wisdom:'Very High',patience:'Very High',expressiveness:'Low',depth:'Very High'}
-  },
-  {
-    id:'dreamer', name:'The Dreamer', title:'Architect of the Impossible',
-    match: () => true, // default fallback
-    backstory: `The Dreamer lives between worlds — the one that is, and the one that could be. They see beauty in broken things and possibility in dead ends. Their imagination is both their greatest gift and their deepest escape. They create not because they must, but because the world inside them is so vivid it demands to be shared. The question they carry: is the dream more real than the waking world?`,
-    stats: {imagination:'Very High',grounding:'Low',vision:'Very High',sensitivity:'High'}
+    id: 'skyler',
+    name: 'Skyler Drew',
+    title: 'The Self-Author',
+    backstory: 'You believe identity is an active choice, not a discovery. You are what you choose to become in each moment through your actions and radical nonconformity. You author your own path.',
+    stats: { Autonomy: 'Max', Willpower: 'Very High', Adaptability: 'High' },
+    score: (v, s) => {
+      let pt = 0;
+      if (s.coreValue === 'Growth' || s.coreValue === 'Love') pt += 3;
+      if (s.aesthetic === 'Forest') pt += 2;
+      if (s.fear === 'Being forgotten') pt += 1.5;
+      s.traits.forEach(t => { if (['Confident', 'Passionate', 'Bold', 'Determined'].includes(t)) pt += 1; });
+      return pt + (v.independence || 0);
+    }
   }
 ];
 
