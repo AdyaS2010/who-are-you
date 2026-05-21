@@ -1,5 +1,5 @@
 // ============================================
-// WHO // ARE // YOU? — Visual Effects
+// WHO // ARE // YOU? : Visual Effects
 // Particles, silhouettes, scene management
 // ============================================
 

@@ -1,7 +1,7 @@
-// WHO//ARE//YOU? — Game Engine (Full-Screen Platformer)
+// WHO//ARE//YOU? : Game Engine (Full-Screen Platformer)
 import {
   TRAITS, INTERESTS, CORE_VALUES, FEARS, AESTHETICS, ARCHETYPES,
-  COMMONALITY_MESSAGES, PHASE2_SCENARIOS, WORLDS, SHIFT_SCENARIOS,
+  TRAIT_INSIGHTS, VALUE_INSIGHTS, AESTHETIC_INSIGHTS, PHASE2_SCENARIOS, WORLDS, SHIFT_SCENARIOS,
   GLITCH_SCENARIOS, GUESS_QUESTIONS, PHILOSOPHICAL_QUOTES, VECTOR_DESCRIPTIONS,
   ROLES, PHILOSOPHERS, GW_SUSPECTS
 } from './data.js';
@@ -50,6 +50,39 @@ export function initGame() {
   setupSettings();
   setupRulebook();
 
+  // Initialize Qualia Sandbox
+  const sandbox = new QualiaSandbox('sandbox-canvas');
+  $('btn-sandbox-toggle').addEventListener('click', () => {
+    $('sandbox-modal').classList.remove('hidden');
+    sandbox.start();
+  });
+  $('btn-sandbox-close').addEventListener('click', () => {
+    $('sandbox-modal').classList.add('hidden');
+    sandbox.stop();
+  });
+  $('btn-sandbox-clear').addEventListener('click', () => {
+    sandbox.clear();
+  });
+  $('sandbox-modal').addEventListener('click', e => {
+    if (e.target === $('sandbox-modal')) {
+      $('sandbox-modal').classList.add('hidden');
+      sandbox.stop();
+    }
+  });
+
+  // Keyboard accessibility: Escape key closes modals
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') {
+      $('rulebook-modal').classList.add('hidden');
+      const sm = $('settings-modal');
+      if (sm) sm.classList.add('hidden');
+      if (sandbox.active) {
+        $('sandbox-modal').classList.add('hidden');
+        sandbox.stop();
+      }
+    }
+  });
+
   // Start calm mystical music on first user gesture
   const startMusic = () => {
     if (!_titleAudio) {
@@ -74,9 +107,10 @@ export function initGame() {
 
 // ---- SETTINGS ----
 function setupSettings() {
-  const toggle = $('settings-toggle'), panel = $('settings-panel');
-  toggle.addEventListener('click', () => panel.classList.toggle('hidden'));
-  document.addEventListener('click', e => { if (!panel.contains(e.target) && e.target !== toggle) panel.classList.add('hidden'); });
+  const toggle = $('settings-toggle'), modal = $('settings-modal'), close = $('settings-close');
+  toggle.addEventListener('click', () => { modal.classList.toggle('hidden'); });
+  if (close) close.addEventListener('click', () => { modal.classList.add('hidden'); });
+  modal.addEventListener('click', e => { if (e.target === modal) modal.classList.add('hidden'); });
   $('vol-music').addEventListener('input', e => {
     const v = e.target.value / 100;
     if (plat) plat.audio.setMusicVol(v);
@@ -183,8 +217,25 @@ function revealArchetype() {
   const arch = bestArch;
   $('archetype-sil-wrap').innerHTML = ''; $('archetype-sil-wrap').appendChild(createGlowSilhouette('#c9b8ff', 0.7));
   $('archetype-info').innerHTML = `<div class="archetype-name">${arch.name}</div><div class="archetype-title-line">${arch.title}</div><div class="archetype-backstory">${arch.backstory}</div><div class="archetype-stats">${Object.entries(arch.stats).map(([k,v]) => `<div class="arch-stat">${k}: <span>${v}</span></div>`).join('')}</div>`;
-  const rm = () => COMMONALITY_MESSAGES[Math.floor(Math.random() * COMMONALITY_MESSAGES.length)];
-  $('commonality-reveal').innerHTML = [rm()(state.traits[0]), rm()(state.coreValue), rm()(state.aesthetic)].map(m => `<p>${m}</p>`).join('');
+  const traitInsight = TRAIT_INSIGHTS[state.traits[0]] || 'Your chosen qualities guide your path.';
+  const valueInsight = VALUE_INSIGHTS[state.coreValue] || 'Your core value anchors your decisions.';
+  const aestheticInsight = AESTHETIC_INSIGHTS[state.aesthetic] || 'Your aesthetic colors your worldview.';
+  $('commonality-reveal').innerHTML = `
+    <div class="insight-form">
+      <div class="insight-row">
+        <span class="insight-label">Primary Trait</span>
+        <span class="insight-value">${traitInsight}</span>
+      </div>
+      <div class="insight-row">
+        <span class="insight-label">Core Principle</span>
+        <span class="insight-value">${valueInsight}</span>
+      </div>
+      <div class="insight-row">
+        <span class="insight-label">Aesthetic Vibe</span>
+        <span class="insight-value">${aestheticInsight}</span>
+      </div>
+    </div>
+  `;
 }
 
 // ---- PLATFORMER PHASES ----
@@ -198,6 +249,9 @@ function ensurePlatformer() {
     if (_titleAudio) { _titleAudio.stopMusic(); }
     plat.audio.init();
     plat.audio.startMusic();
+  }
+  if (state.archetype) {
+    plat.setArchetype(state.archetype.id);
   }
   $('game-screen').classList.remove('hidden');
 }
@@ -301,7 +355,7 @@ function genProfile(n) {
   if (n.independence > 65) p.push('You resist the crowd.'); else if (n.independence < 35) p.push('You find strength in belonging.');
   if (n.curiosity > 65) p.push('Questions drive you more than answers.'); else if (n.curiosity < 35) p.push('You trust what you know.');
   if (n.emotionalReasoning > n.logicalReasoning + 15) p.push('Your heart leads.'); else if (n.logicalReasoning > n.emotionalReasoning + 15) p.push('Your mind leads.'); else p.push('You navigate between heart and mind.');
-  if (n.riskTolerance > 65) p.push('You leap — standing still feels like surrender.'); else if (n.riskTolerance < 35) p.push('Every step is intentional.');
+  if (n.riskTolerance > 65) p.push('You leap, standing still feels like surrender.'); else if (n.riskTolerance < 35) p.push('Every step is intentional.');
   return p.join(' ');
 }
 function genInsights(n) {
@@ -310,11 +364,11 @@ function genInsights(n) {
   if (n.conformity > 55 && n.curiosity > 55) ins.push('You question everything but still seek belonging.');
   if (n.riskTolerance > 60 && n.emotionalReasoning > 55) ins.push('Your courage comes from feeling, not calculation.');
   const wn = {strict:'The Iron Republic',chaotic:'The Unbound',collectivist:'The Collective',individualistic:'The Mirror City'};
-  ins.push(`In ${wn[state.worldType]}, your identity shifted — context reshapes who we become.`);
+  ins.push(`In ${wn[state.worldType]}, your identity shifted: context reshapes who we become.`);
   if (n.independence > 60) ins.push('Emerson: "Trust thyself: every heart vibrates to that iron string."');
-  if (n.empathy > 60) ins.push('Your pattern echoes Jackson\'s qualia — the irreducible reality of subjective experience.');
+  if (n.empathy > 60) ins.push('Your pattern echoes Jackson\'s qualia, the irreducible reality of subjective experience.');
   if (n.conformity > 55) ins.push('Hobbes: your instinct for order reflects humanity\'s deepest need.');
-  if (n.curiosity > 60) ins.push('Hume: the self is "a bundle of perceptions" — always shifting.');
+  if (n.curiosity > 60) ins.push('Hume: the self is "a bundle of perceptions", always shifting.');
   return ins;
 }
 
@@ -487,13 +541,24 @@ function renderBoard() {
     if (i === state.gwPlayerSecret) {
       card.style.border = '2px solid rgba(201,184,255,0.5)';
       card.title = 'This is your secret identity';
+    } else {
+      card.title = `Belief: ${s.belief}`;
     }
 
     card.innerHTML = `
-      <div class="gw-card-icon">${s.icon}</div>
+      <div class="gw-card-header-accent"></div>
+      <div class="gw-card-icon-wrap">
+        <span class="gw-card-icon">${s.icon}</span>
+      </div>
       <div class="gw-card-name">${s.name}</div>
-      <div class="gw-card-trait">${s.theory}</div>
-      <div class="gw-card-belief">${s.belief}</div>
+      <div class="gw-card-theory">${s.theory}</div>
+      <div class="gw-card-details">
+        <div class="gw-card-detail"><span>Value:</span> ${s.value}</div>
+        <div class="gw-card-detail"><span>Traits:</span> ${s.traits.join(', ')}</div>
+        <div class="gw-card-detail"><span>Fear:</span> ${s.fear}</div>
+        <div class="gw-card-detail"><span>Theme:</span> ${s.aesthetic}</div>
+        <div class="gw-card-detail"><span>Source:</span> ${s.source}</div>
+      </div>
     `;
 
     card.addEventListener('click', () => {
@@ -539,7 +604,7 @@ function renderQuestions() {
 
       $('gw-answer-box').innerHTML = `
         <div class="gw-answer">
-          Answer: <strong>${answer ? 'YES' : 'NO'}</strong> — <em>${q.label}</em>
+          Answer: <strong>${answer ? 'YES' : 'NO'}</strong>: <em>${q.label}</em>
           <button id="gw-btn-end-turn" class="gw-final-btn" style="margin: 0.5rem auto 0; font-size: 0.75rem; padding: 0.4rem 1rem;">End Turn & Let AI Move</button>
         </div>
       `;
@@ -821,5 +886,228 @@ function initFinal() {
     .slice(0, 4)
     .map((q, i) => `<div class="phil-quote" style="animation-delay:${i * 0.3}s">${q.text}<span class="quote-source">${q.source}</span></div>`)
     .join('');
+}
+
+class QualiaSandbox {
+  constructor(canvasId) {
+    this.canvas = document.getElementById(canvasId);
+    this.ctx = this.canvas.getContext('2d');
+    this.nodes = [];
+    this.ripples = [];
+    this.active = false;
+    this.mouse = { x: null, y: null };
+    this.notesScale = [220, 246.9, 277.2, 329.6, 369.9, 440, 493.9, 554.4, 659.3, 739.9, 880]; // Ethereal pentatonic scale
+
+    window.addEventListener('resize', () => {
+      if (this.active) this.resize();
+    });
+    this.canvas.addEventListener('mousemove', e => this.onMouseMove(e));
+    this.canvas.addEventListener('mouseleave', () => this.onMouseLeave());
+    this.canvas.addEventListener('mousedown', e => this.onMouseDown(e));
+  }
+
+  start() {
+    this.active = true;
+    this.resize();
+    this.nodes = [];
+    this.ripples = [];
+    // Spawn 8 starting random thought nodes
+    for (let i = 0; i < 8; i++) {
+      this.spawnNode(
+        Math.random() * this.canvas.width,
+        Math.random() * this.canvas.height,
+        false
+      );
+    }
+    this.loop();
+  }
+
+  stop() {
+    this.active = false;
+  }
+
+  resize() {
+    if (!this.canvas) return;
+    const rect = this.canvas.parentElement.getBoundingClientRect();
+    this.canvas.width = rect.width;
+    this.canvas.height = rect.height;
+  }
+
+  spawnNode(x, y, playSound = true) {
+    const normalizedY = 1 - (y / this.canvas.height);
+    const scaleIndex = Math.min(
+      this.notesScale.length - 1,
+      Math.max(0, Math.floor(normalizedY * this.notesScale.length))
+    );
+    const freq = this.notesScale[scaleIndex];
+
+    const node = {
+      x,
+      y,
+      vx: (Math.random() * 2 - 1) * 0.4,
+      vy: (Math.random() * 2 - 1) * 0.4,
+      radius: 6 + Math.random() * 5,
+      color: `hsla(${240 + Math.random() * 60}, 100%, 80%, 0.85)`,
+      freq
+    };
+    this.nodes.push(node);
+
+    this.ripples.push({
+      x,
+      y,
+      radius: 5,
+      maxRadius: 60,
+      opacity: 1,
+      color: node.color
+    });
+
+    if (playSound && _titleAudio) {
+      _titleAudio.playSandboxNote(freq);
+    }
+  }
+
+  onMouseMove(e) {
+    const rect = this.canvas.getBoundingClientRect();
+    this.mouse.x = e.clientX - rect.left;
+    this.mouse.y = e.clientY - rect.top;
+  }
+
+  onMouseLeave() {
+    this.mouse.x = null;
+    this.mouse.y = null;
+  }
+
+  onMouseDown(e) {
+    const rect = this.canvas.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+
+    let clickedExisting = false;
+    for (const node of this.nodes) {
+      const dist = Math.hypot(node.x - x, node.y - y);
+      if (dist < node.radius + 15) {
+        if (_titleAudio) {
+          _titleAudio.playSandboxNote(node.freq);
+        }
+        this.ripples.push({
+          x: node.x,
+          y: node.y,
+          radius: node.radius,
+          maxRadius: 80,
+          opacity: 1,
+          color: node.color
+        });
+        node.vx += (Math.random() * 2 - 1) * 1.5;
+        node.vy += (Math.random() * 2 - 1) * 1.5;
+        clickedExisting = true;
+        break;
+      }
+    }
+
+    if (!clickedExisting) {
+      this.spawnNode(x, y, true);
+    }
+  }
+
+  clear() {
+    this.nodes = [];
+    this.ripples = [];
+  }
+
+  loop() {
+    if (!this.active) return;
+    this.update();
+    this.draw();
+    requestAnimationFrame(() => this.loop());
+  }
+
+  update() {
+    for (const node of this.nodes) {
+      node.x += node.vx;
+      node.y += node.vy;
+
+      if (node.x - node.radius < 0) { node.x = node.radius; node.vx *= -1; }
+      if (node.x + node.radius > this.canvas.width) { node.x = this.canvas.width - node.radius; node.vx *= -1; }
+      if (node.y - node.radius < 0) { node.y = node.radius; node.vy *= -1; }
+      if (node.y + node.radius > this.canvas.height) { node.y = this.canvas.height - node.radius; node.vy *= -1; }
+
+      if (this.mouse.x !== null && this.mouse.y !== null) {
+        const dx = this.mouse.x - node.x;
+        const dy = this.mouse.y - node.y;
+        const dist = Math.hypot(dx, dy);
+        if (dist < 180) {
+          const force = (180 - dist) / 1500;
+          node.vx += (dx / dist) * force;
+          node.vy += (dy / dist) * force;
+
+          const speed = Math.hypot(node.vx, node.vy);
+          if (speed > 1.8) {
+            node.vx = (node.vx / speed) * 1.8;
+            node.vy = (node.vy / speed) * 1.8;
+          }
+        }
+      }
+
+      node.vx *= 0.985;
+      node.vy *= 0.985;
+    }
+
+    for (let i = this.ripples.length - 1; i >= 0; i--) {
+      const rip = this.ripples[i];
+      rip.radius += 2.5;
+      rip.opacity -= 0.035;
+      if (rip.opacity <= 0 || rip.radius >= rip.maxRadius) {
+        this.ripples.splice(i, 1);
+      }
+    }
+  }
+
+  draw() {
+    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+
+    this.ctx.lineWidth = 1;
+    for (let i = 0; i < this.nodes.length; i++) {
+      for (let j = i + 1; j < this.nodes.length; j++) {
+        const n1 = this.nodes[i];
+        const n2 = this.nodes[j];
+        const dist = Math.hypot(n1.x - n2.x, n1.y - n2.y);
+        if (dist < 140) {
+          const alpha = (140 - dist) / 140 * 0.35;
+          this.ctx.strokeStyle = `rgba(201, 184, 255, ${alpha})`;
+          this.ctx.beginPath();
+          this.ctx.moveTo(n1.x, n1.y);
+          this.ctx.lineTo(n2.x, n2.y);
+          this.ctx.stroke();
+        }
+      }
+    }
+
+    for (const rip of this.ripples) {
+      this.ctx.strokeStyle = rip.color.replace('0.85', rip.opacity);
+      this.ctx.lineWidth = 1.5;
+      this.ctx.beginPath();
+      this.ctx.arc(rip.x, rip.y, rip.radius, 0, Math.PI * 2);
+      this.ctx.stroke();
+    }
+
+    for (const node of this.nodes) {
+      this.ctx.shadowBlur = 15;
+      this.ctx.shadowColor = node.color;
+      this.ctx.fillStyle = node.color;
+      this.ctx.beginPath();
+      this.ctx.arc(node.x, node.y, node.radius, 0, Math.PI * 2);
+      this.ctx.fill();
+      this.ctx.shadowBlur = 0;
+      this.ctx.shadowColor = 'transparent';
+    }
+
+    if (this.mouse.x !== null && this.mouse.y !== null) {
+      this.ctx.strokeStyle = 'rgba(201, 184, 255, 0.08)';
+      this.ctx.lineWidth = 1;
+      this.ctx.beginPath();
+      this.ctx.arc(this.mouse.x, this.mouse.y, 180, 0, Math.PI * 2);
+      this.ctx.stroke();
+    }
+  }
 }
 

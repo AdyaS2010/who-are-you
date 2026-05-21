@@ -46,6 +46,37 @@ export class Platformer {
     this.c.addEventListener('touchstart',e=>{if(!this.audio.initialized){this.audio.init();this.audio.resume();this.audio.startAmbient(this.phase);}for(const t of e.changedTouches){const r=t.clientX/window.innerWidth;if(r<.3)this.keys._tl=true;else if(r>.7)this.keys._tr=true;else this.keys._tj=true;}e.preventDefault();},{passive:false});
     this.c.addEventListener('touchend',()=>{this.keys._tl=false;this.keys._tr=false;this.keys._tj=false;});
   }
+  setArchetype(id){
+    this.playerArchetype = id;
+    this.doubleJumpUsed = false;
+    this.wasSpacePressed = false;
+    this._renderPowerupBadge();
+  }
+  _renderPowerupBadge(){
+    let badge = this.hud.querySelector('.ghud-powerup-badge');
+    if (!badge) {
+      badge = document.createElement('div');
+      badge.className = 'ghud-powerup-badge';
+      this.hud.appendChild(badge);
+    }
+    const info = {
+      alex: { name: 'Shielded Mind', desc: 'Maintains steady velocity', icon: '🛡️' },
+      mira: { name: 'Continuity Jump', desc: 'Allows a Double Jump in mid-air', icon: '✨' },
+      riley: { name: 'Wind Dash', desc: 'Jump in mid-air to Dash forward', icon: '💨' },
+      solara: { name: 'Ethereal Float', desc: 'Hold Space to glide slowly', icon: '🪶' },
+      dylan: { name: 'Magnetic Pull', desc: 'Attracts orbs from a distance', icon: '🧲' },
+      axel: { name: 'Glitched Gravity', desc: 'Jump 15% higher and fall slower', icon: '⚡' },
+      skyler: { name: 'Super Speed', desc: 'Move 40% faster through the level', icon: '🏃' }
+    }[this.playerArchetype] || { name: 'Inner Self', desc: 'No active powerup', icon: '⭐' };
+
+    badge.innerHTML = `
+      <span class="powerup-icon">${info.icon}</span>
+      <div class="powerup-info">
+        <span class="powerup-name">${info.name}</span>
+        <span class="powerup-source">${info.desc}</span>
+      </div>
+    `;
+  }
   setPhase(p){this.phase=p;}
   onChoice(cb){this.choiceCb=cb;}
 
@@ -89,20 +120,20 @@ export class Platformer {
 
     // --- PHASE-SPECIFIC LEVEL DESIGN ---
     if(ph===2){
-      // Phase 2: Open journey — gentle ground, welcoming terrain
+      // Phase 2: Open journey, gentle ground, welcoming terrain
       for(let x=0;x<300;x+=4) this.platforms.push({x,y:GY,w:4,h:28,solid:true});
       this.platforms.push({x:70,y:135,w:28,h:4,solid:false});
       this.platforms.push({x:130,y:125,w:24,h:4,solid:false});
       this.platforms.push({x:190,y:130,w:20,h:4,solid:false});
     } else if(ph===3){
-      // Phase 3: Constrained world — tighter spaces, ceiling pressure
+      // Phase 3: Constrained world, tighter spaces, ceiling pressure
       for(let x=0;x<300;x+=4) this.platforms.push({x,y:GY,w:4,h:28,solid:true});
       // Ceiling tiles to feel oppressive
       for(let x=60;x<280;x+=4) this.platforms.push({x,y:60,w:4,h:4,solid:true,ceiling:true});
       this.platforms.push({x:100,y:135,w:16,h:4,solid:false});
       this.platforms.push({x:170,y:128,w:14,h:4,solid:false});
     } else {
-      // Phase 4: Crumbling void — ground breaks apart
+      // Phase 4: Crumbling void, ground breaks apart
       for(let x=0;x<280;x+=4){
         const isSafe=x<60||Math.random()>.25;
         this.platforms.push({x,y:GY,w:4,h:28,solid:true,
@@ -139,7 +170,7 @@ export class Platformer {
           this.platforms.push({x:px,y:py+Math.random()*4-2,w:pw,h:4,solid:false});
         }
       } else if(ph===3){
-        // P3: Paths are hostile — moving platforms, tight spaces
+        // P3: Paths are hostile, moving platforms, tight spaces
         let px=startX;
         while(px<endX-40){
           if(i===0){
@@ -153,7 +184,7 @@ export class Platformer {
           }
         }
       } else {
-        // P4: Everything is unstable — flickering platforms
+        // P4: Everything is unstable, flickering platforms
         let px=startX;
         while(px<endX-30){
           this.platforms.push({x:px,y:py+Math.random()*6-3,w:12+Math.random()*6,h:4,solid:false,
@@ -168,7 +199,7 @@ export class Platformer {
         vectors:scenario.choices[i].vectors,collected:false,t:Math.random()*6.28,color:pathColors[i]});
     });
 
-    // HUD — only narrator, story reveals through walking
+    // HUD: only narrator, story reveals through walking
     this.hud.innerHTML='';
     const nar=document.createElement('div');nar.className='ghud-narrator';
     nar.textContent=scenario.narrator?.replace(/"/g,'')||'';
@@ -181,14 +212,11 @@ export class Platformer {
     let el=this.hud.querySelector('.ghud-scenario');
     if(!el&&show){
       el=document.createElement('div');el.className='ghud-scenario';
-      let h=`<div class="ghud-question">${this._scenarioText}</div><div class="ghud-choices">`;
-      this.orbs.forEach(o=>{
-        h+=`<div class="ghud-choice-row"><span class="ghud-dot" style="background:${o.color}"></span>${o.fullText}</div>`;
-      });
-      h+='</div><div class="ghud-hint">Walk into a colored path to choose</div>';
+      let h=`<div class="ghud-question">${this._scenarioText}</div>`;
+      h+='<div class="ghud-hint">Explore the paths ahead and touch an orb to choose</div>';
       el.innerHTML=h; this.hud.appendChild(el);
     }
-    if(el) el.style.opacity=show?'1':'0';
+    if(el) el.style.opacity=(show && !this.collected)?'1':'0';
   }
   _showCollect(text){
     let el=this.hud.querySelector('.ghud-collect');
@@ -198,7 +226,7 @@ export class Platformer {
   }
   _updateProximity(){
     let el=this.hud.querySelector('.ghud-proximity');
-    if(!this.questionTriggered){if(el)el.style.opacity='0';return;}
+    if(!this.questionTriggered || this.collected){if(el)el.style.opacity='0';return;}
     let closest=null,minD=999;
     for(const o of this.orbs){if(o.collected)continue;const d=Math.abs(this.player.x+4-o.x)+Math.abs(this.player.y+8-o.y);if(d<minD){minD=d;closest=o;}}
     if(closest&&minD<40){
@@ -218,8 +246,40 @@ export class Platformer {
   }
 
   _update(dt){
-    if(this.collected)return;
-    const p=this.player, spd=95, acc=700, fric=500, grav=600, jmpF=-210;
+    if(this.collected) {
+      this._showBanner(false);
+      return;
+    }
+    const p=this.player;
+
+    // Archetype powerup attributes
+    const isSkyler = this.playerArchetype === 'skyler';
+    const isAlex = this.playerArchetype === 'alex';
+    const isAxel = this.playerArchetype === 'axel';
+    const isSolara = this.playerArchetype === 'solara';
+    const isDylan = this.playerArchetype === 'dylan';
+    const isRiley = this.playerArchetype === 'riley';
+    const isMira = this.playerArchetype === 'mira';
+
+    const spd = isSkyler ? 145 : 100;
+    const acc = isSkyler ? 950 : 750;
+    const fric = isAlex ? 180 : 500;
+    const grav = isAxel ? 440 : (isSolara && p.vy > 0 && (this.keys.Space||this.keys.ArrowUp||this.keys.KeyW||this.keys._tj) ? 220 : 550);
+    const jmpF = isAxel ? -225 : -200;
+
+    // Magnetic pull for Dylan
+    if(isDylan){
+      this.orbs.forEach(orb=>{
+        if(orb.collected)return;
+        const dx=(p.x+4)-orb.x, dy=(p.y+8)-orb.y, dist=Math.sqrt(dx*dx+dy*dy);
+        if(dist<80){
+          const pullSpeed=90*(1-dist/80)*dt;
+          orb.x+= (dx>0?-1:1)*pullSpeed;
+          orb.y+= (dy>0?-1:1)*pullSpeed;
+        }
+      });
+    }
+
     let dir=0;
     if(this.keys.ArrowLeft||this.keys.KeyA||this.keys._tl) dir=-1;
     if(this.keys.ArrowRight||this.keys.KeyD||this.keys._tr) dir=1;
@@ -236,8 +296,51 @@ export class Platformer {
     if(p.jumpBuf>0) p.jumpBuf-=dt;
     if(p.coyote>0) p.coyote-=dt;
 
-    if(p.jumpBuf>0&&p.coyote>0){p.vy=jmpF;p.coyote=0;p.jumpBuf=0;p.grounded=false;this.audio.playJump();}
-    // Variable jump height — release early = lower jump
+    const jmpPressed = wantJmp && !this.wasSpacePressed;
+    this.wasSpacePressed = wantJmp;
+
+    if(p.grounded){
+      this.doubleJumpUsed = false;
+    }
+
+    if(p.jumpBuf>0&&p.coyote>0){
+      p.vy=jmpF;
+      p.coyote=0;
+      p.jumpBuf=0;
+      p.grounded=false;
+      this.audio.playJump();
+      // Burst of mystical dust particles on jump
+      for(let i=0; i<8; i++){
+        this.particles.push({
+          x: p.x + 4,
+          y: p.y + 14,
+          vx: (Math.random() - 0.5) * 40,
+          vy: (Math.random() - 0.5) * 15,
+          life: 0.5,
+          color: this.env.accent
+        });
+      }
+    } else if((isMira || isRiley) && !p.grounded && !this.doubleJumpUsed && jmpPressed){
+      if(isMira){
+        p.vy=jmpF;
+        this.doubleJumpUsed=true;
+        this.audio.playJump();
+        // Spawn double jump particles
+        for(let i=0;i<8;i++){
+          this.particles.push({x:p.x+4,y:p.y+14,vx:(Math.random()-0.5)*50,vy:(Math.random()-0.5)*30,life:0.6,color:'#ffdd66'});
+        }
+      } else if(isRiley){
+        p.vx=p.dir*280;
+        p.vy=-40;
+        this.doubleJumpUsed=true;
+        this.audio.playJump();
+        // Spawn dash particles
+        for(let i=0;i<10;i++){
+          this.particles.push({x:p.x+4,y:p.y+8,vx:-p.dir*(Math.random()*60+20),vy:(Math.random()-0.5)*15,life:0.5,color:'#ff6666'});
+        }
+      }
+    }
+    // Variable jump height: release early = lower jump
     if(!wantJmp&&p.vy<-50) p.vy*=.85;
 
     p.vy+=grav*dt; p.x+=p.vx*dt; p.y+=p.vy*dt;
@@ -284,7 +387,7 @@ export class Platformer {
 
     // Bounds & respawn
     p.x=Math.max(0,Math.min(560,p.x));
-    if(p.y>190){p.x=20;p.y=120;p.vy=0;p.vx=0;} // fell off — respawn at start
+    if(p.y>190){p.x=20;p.y=120;p.vy=0;p.vx=0;} // fell off: respawn at start
 
     // Camera
     const tx=p.x-NW/2+30;
@@ -305,6 +408,7 @@ export class Platformer {
       if(orb.collected)continue; orb.t+=dt;
       if(Math.abs(p.x+4-orb.x)<10&&Math.abs(p.y+8-orb.y)<12){
         orb.collected=true;this.collected=true;
+        this._showBanner(false);
         this.audio.playCollect();this.shakeX=3;this.shakeY=3;
         if(this.phase===4) this.audio.playGlitch();
         for(let i=0;i<20;i++) this.particles.push({x:orb.x,y:orb.y,vx:(Math.random()-.5)*100,vy:(Math.random()-.5)*100,life:1,color:orb.color});
@@ -454,6 +558,24 @@ export class Platformer {
     const leg=p.grounded?Math.sin(p.frame*2)*2:1;
     const bob=p.grounded&&Math.abs(p.vx)>5?Math.sin(p.frame*2)*.5:0;
     const by=py+bob;
+
+    // Shield aura for Alex
+    if (this.playerArchetype === 'alex') {
+      b.fillStyle = 'rgba(201, 184, 255, 0.15)';
+      b.strokeStyle = 'rgba(201, 184, 255, 0.4)';
+      b.lineWidth = 1;
+      b.beginPath();
+      b.arc(px + 4, by + 8, 12, 0, Math.PI * 2);
+      b.fill();
+      b.stroke();
+    }
+
+    // Glitched shadow offset for Axel
+    if (this.playerArchetype === 'axel' && Math.random() > 0.6) {
+      b.fillStyle = 'rgba(255, 102, 102, 0.3)';
+      b.fillRect(px + (Math.random() > 0.5 ? 3 : -3), Math.floor(by) + (Math.random() > 0.5 ? 1 : -1), 8, 14);
+    }
+
     b.fillStyle='#000';b.globalAlpha=.2;b.fillRect(px+1,Math.floor(by)+15,6,1);b.globalAlpha=1;
     b.fillStyle=col;
     b.fillRect(px+2,Math.floor(by),4,4); // head

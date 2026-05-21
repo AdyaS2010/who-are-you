@@ -1,4 +1,4 @@
-// WHO//ARE//YOU? — Audio Engine
+// WHO//ARE//YOU? : Audio Engine
 // Calm mystical ambient music + SFX, all settings-compliant
 export class AudioEngine {
   constructor() {
@@ -128,7 +128,7 @@ export class AudioEngine {
       o.start(t); return { o, g };
     };
 
-    // Root drone chord — Am/C/G ethereal cluster (mystical, open-ended)
+    // Root drone chord: Am/C/G ethereal cluster (mystical, open-ended)
     const nodes = [
       drone(55,  'sine',        0.055, 4),  // A1 sub-bass
       drone(110, droneOscType,  0.07,  3),  // A2 bass
@@ -308,5 +308,31 @@ export class AudioEngine {
     if (!this.ctx) return;
     this._noise(0.05, 1200, 0.07);
     setTimeout(() => this._noise(0.03, 2400, 0.04), 55);
+  }
+
+  // Beautiful ambient note for sandbox thought nodes
+  playSandboxNote(freq) {
+    if (!this.ctx) return;
+    const o = this.ctx.createOscillator();
+    const g = this.ctx.createGain();
+    const now = this.ctx.currentTime;
+    const aes = this.activeAesthetic || 'Ocean';
+    o.type = (aes === 'Neon' || aes === 'Sunrise' || aes === 'Storm') ? 'triangle' : 'sine';
+    o.frequency.value = freq;
+    
+    g.gain.setValueAtTime(0, now);
+    g.gain.linearRampToValueAtTime(0.05, now + 0.12);
+    g.gain.exponentialRampToValueAtTime(0.0001, now + 1.5);
+    
+    if (this._music && this._music.reverb) {
+      o.connect(g);
+      g.connect(this._music.reverb);
+      g.connect(this.musicBus);
+    } else {
+      o.connect(g);
+      g.connect(this.musicBus);
+    }
+    o.start(now);
+    o.stop(now + 1.6);
   }
 }

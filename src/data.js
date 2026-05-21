@@ -1,5 +1,5 @@
 // ============================================
-// WHO // ARE // YOU? — Expanded Game Data
+// WHO // ARE // YOU? : Expanded Game Data
 // Character archetypes, deeper scenarios, worlds
 // ============================================
 
@@ -130,12 +130,50 @@ export const ARCHETYPES = [
   }
 ];
 
-export const COMMONALITY_MESSAGES = [
-  t => `"${t}" was also chosen by 34% of players.`,
-  t => `${t}? That's the most popular choice today.`,
-  t => `Interesting. 1 in 3 people pick "${t}" too.`,
-  t => `"${t}" — shared by 12,847 other players.`
-];
+export const TRAIT_INSIGHTS = {
+  Creative: 'You see your life as a canvas, refusing to accept that your identity is fixed. To you, selfhood is an active, ongoing creation.',
+  Analytical: 'You look for the underlying rules of who you are, dissecting your thoughts rather than just feeling them.',
+  Empathetic: 'Your boundary between "self" and "other" is fluid. You find parts of who you are reflected in the experiences of people around you.',
+  Ambitious: 'You define yourself by what you can become, moving forward and shaping your future self through pure willpower.',
+  Curious: 'You care more about asking questions than finding final, static answers. Your identity is a state of constant questioning.',
+  Loyal: 'You anchor your sense of self in relationships, finding stability and purpose in the commitments you make to others.',
+  Independent: 'You trust your own internal compass above all else, believing that a self must be self-authored to be real.',
+  Optimistic: 'You build your identity around potential and hope, choosing to believe in growth even when the present feels heavy.',
+  Cautious: 'You tread carefully, reflecting before you act, knowing that every choice leaves a permanent mark on who you are.',
+  Passionate: 'You are driven by intensity, allowing your emotions to direct your path rather than cold, calculated logic.',
+  Resilient: 'Your identity is forged through adversity; you are defined not by what breaks you, but by how you put yourself back together.',
+  Honest: 'Honesty prioritizes transparency and alignment between your inner self and external actions.',
+  Adaptable: 'You are comfortable shifting with your surroundings, recognizing that a fluid self is often the most resilient one.',
+  Confident: 'You carry a quiet trust in your own value, refusing to let external validation define your core worth.',
+  Patient: 'You understand that finding yourself takes time, allowing your identity to unfold slowly without forcing it into rigid boxes.',
+  Spontaneous: 'You live in the immediate moment, viewing the self as a shifting stream of impulses rather than a rigid plan.',
+  Thoughtful: 'You spend time in the quiet spaces of your own mind, constructing an identity built on deep, slow reflection.',
+  Determined: 'You set your jaw against obstacles, finding that your true character is revealed when you refuse to back down.',
+  Gentle: 'You treat the fragile, subjective world of consciousness with care, moving through the lives of others with quiet respect.',
+  Bold: 'You assert your presence clearly, willing to stand out and challenge the world\'s expectations of who you should be.'
+};
+
+export const VALUE_INSIGHTS = {
+  Freedom: 'You believe that a self only exists when it is free to choose. To you, constraint is a form of non-existence.',
+  Justice: 'You view your identity through the lens of duty and fairness, believing that who we are is defined by how we treat others.',
+  Knowledge: 'You search for objective truth, believing that to find the self, one must first understand the reality of the world.',
+  Love: 'You define your existence through vulnerability and connection, believing we only become real in the eyes of someone else.',
+  Authenticity: 'You refuse to wear the masks society hands you, searching for the raw, unpolished truth of who you are underneath.',
+  Security: 'You value stability and order, believing that a safe foundation is required before a self can truly grow.',
+  Community: 'You find your reflection in the group, believing that individuals are shaped by and responsible to the collective.',
+  Growth: 'Growth means you view the self as a continuous, evolving journey of improvement.',
+  Creativity: 'You find meaning in self-expression, believing that to live is to actively bring new things into the world.',
+  Truth: 'You search for absolute clarity, refusing comforting illusions in favor of what is real, no matter how difficult.'
+};
+
+export const AESTHETIC_INSIGHTS = {
+  Midnight: 'Your choice of Midnight reflects a quiet, introspective nature, comfortable in the shadow and mystery of the unknown.',
+  Sunrise: 'Choosing Sunrise suggests a spirit oriented toward beginnings, warmth, and the hopeful potential of a new dawn.',
+  Storm: 'A Storm aesthetic reveals that you find beauty in conflict, motion, and the electric energy of dramatic change.',
+  Ocean: 'Your affinity for the Ocean points to a deep, fluid inner life, vast and comfortable with the slow pull of consciousness.',
+  Forest: 'A Forest aesthetic points to an organic, grounded, and living connection to nature.',
+  Neon: 'A Neon aesthetic signals a vibrant, expressive nature, comfortable in the artificial, electric pulse of modern life.'
+};
 
 // ---- PHASE 2 SCENARIOS (Streamlined to 3) ----
 export const PHASE2_SCENARIOS = [
@@ -151,8 +189,8 @@ export const PHASE2_SCENARIOS = [
   },
   {
     env:'urban',
-    narrator:'"Comfort or truth. Everyone has a preference — even if they deny it."',
-    text:'A close friend has been living a lie — presenting a version of themselves that you know isn\'t real. Everyone else believes the performance. They seem happier this way.',
+    narrator:'"Comfort or truth. Everyone has a preference, even if they deny it."',
+    text:'A close friend has been living a lie, presenting a version of themselves that you know isn\'t real. Everyone else believes the performance. They seem happier this way.',
     choices:[
       {text:'Say nothing. If the mask brings them peace, leave it be.',vectors:{empathy:1,conformity:1,emotionalReasoning:1}},
       {text:'Gently confront them. Living as a fiction is its own prison.',vectors:{independence:1,empathy:1,curiosity:1}},
@@ -173,14 +211,14 @@ export const PHASE2_SCENARIOS = [
 
 // ---- WORLDS ----
 export const WORLDS = [
-  {name:'The Iron Republic',description:'A society built on absolute order. Rules are everything. Safety is guaranteed — at the cost of freedom.',type:'strict',env:'iron',
-    narrator:'"Welcome to a world that values structure above all else. Let\'s see if you bend — or break."'},
+  {name:'The Iron Republic',description:'A society built on absolute order. Rules are everything. Safety is guaranteed, at the cost of freedom.',type:'strict',env:'iron',
+    narrator:'"Welcome to a world that values structure above all else. Let\'s see if you bend or break."'},
   {name:'The Unbound',description:'A world with no rules, no structure, no safety net. Everyone is free. Everyone is alone.',type:'chaotic',env:'chaos',
-    narrator:'"No rules. No one to catch you. Just you and infinite possibility — and danger."'},
+    narrator:'"No rules. No one to catch you. Just you and infinite possibility, and danger."'},
   {name:'The Collective',description:'A society where individuality dissolves. Everyone shares thoughts, resources, identity. The group is all.',type:'collectivist',env:'collective',
-    narrator:'"Here, there is no \'you.\' Only \'us.\' Does that comfort you — or terrify you?"'},
+    narrator:'"Here, there is no \'you.\' Only \'us.\' Does that comfort you, or terrify you?"'},
   {name:'The Mirror City',description:'A hyper-individualistic world where worth is measured by how different you are.',type:'individualistic',env:'mirror',
-    narrator:'"In this world, being ordinary is the only sin. You must be unique — or invisible."'}
+    narrator:'"In this world, being ordinary is the only sin. You must be unique, or invisible."'}
 ];
 
 // ---- PHASE 3 SCENARIOS (Streamlined to 2 per path) ----
@@ -192,7 +230,7 @@ export const SHIFT_SCENARIOS = {
         {text:'Refuse. Some bonds transcend systems.',vectors:{independence:2,empathy:1,riskTolerance:1}},
         {text:'Find a loophole. Protect them without breaking rules.',vectors:{curiosity:1,logicalReasoning:1,empathy:1}}
       ]},
-    {text:'You\'re offered power — a position that lets you change the system, but requires enforcing laws you find unjust for now.',
+    {text:'You\'re offered power, a position that lets you change the system, but requires enforcing laws you find unjust for now.',
       choices:[
         {text:'Take it. Change requires compromise. The long game matters.',vectors:{ambition:2,logicalReasoning:1,conformity:1}},
         {text:'Refuse. Becoming what you oppose is surrender.',vectors:{independence:2,emotionalReasoning:1,riskTolerance:1}},
@@ -277,7 +315,7 @@ export const GW_SUSPECTS = [
     aesthetic: 'Midnight',
     source: 'Olson / Personal Identity',
     belief: 'I am a student, a daughter, a friend. Remove the labels and there is nothing left to define.',
-    response: '"Without my roles and relationships, there is simply nothing to identify. Labels are not limitations — they are the self."'
+    response: '"Without my roles and relationships, there is simply nothing to identify. Labels are not limitations, they are the self."'
   },
   {
     name: 'Mira Lockwood',
@@ -289,7 +327,7 @@ export const GW_SUSPECTS = [
     aesthetic: 'Ocean',
     source: 'Olson / Personal Identity',
     belief: 'I am the accumulation of everything I remember happening in my life. If I forget everything, I stop being me.',
-    response: '"Memory is the thread that makes me continuous. Without it, I would be a stranger — even to myself."'
+    response: '"Memory is the thread that makes me continuous. Without it, I would be a stranger, even to myself."'
   },
   {
     name: 'Riley Flux',
@@ -300,7 +338,7 @@ export const GW_SUSPECTS = [
     fear: 'Being trapped',
     aesthetic: 'Storm',
     source: 'Pike / Hume Bundle Theory',
-    belief: 'There is no "I" — only a collection of past experiences loosely strung together. I am always shifting.',
+    belief: 'There is no "I", only a collection of past experiences loosely strung together. I am always shifting.',
     response: '"Ask me who I am tomorrow and I will give you a different answer. There is no fixed point. Only flux."'
   },
   {
@@ -312,7 +350,7 @@ export const GW_SUSPECTS = [
     fear: 'Being misunderstood',
     aesthetic: 'Sunrise',
     source: 'Jackson / Epiphenomenal Qualia',
-    belief: 'Even if everything is removed — labels, memories, roles — something still remains. A raw, private core.',
+    belief: 'Even if everything is removed: labels, memories, roles: something still remains. A raw, private core.',
     response: '"There is something it is like to be me. That feeling cannot be taken away. It is what I am, at heart."'
   },
   {
@@ -325,7 +363,7 @@ export const GW_SUSPECTS = [
     aesthetic: 'Midnight',
     source: 'Hobbes / Leviathan',
     belief: 'Who I am is built entirely by society, fear, rules, and expectations. Remove the system and nothing remains.',
-    response: '"Strip away society and you strip away me. Identity is not discovered — it is manufactured by the world around us."'
+    response: '"Strip away society and you strip away me. Identity is not discovered, it is manufactured by the world around us."'
   },
   {
     name: 'Axel Mirage',
@@ -337,7 +375,7 @@ export const GW_SUSPECTS = [
     aesthetic: 'Neon',
     source: 'Nelson / Maslow\'s Matrix',
     belief: 'The self is a mental illusion created by the brain to construct a false sense of reality.',
-    response: '"What if the you asking this question is itself the illusion? I cannot answer what remains — because nothing was ever really there."'
+    response: '"What if the you asking this question is itself the illusion? I cannot answer what remains, because nothing was ever really there."'
   },
   {
     name: 'Skyler Drew',
@@ -349,7 +387,7 @@ export const GW_SUSPECTS = [
     aesthetic: 'Forest',
     source: 'Emerson / Self-Reliance',
     belief: 'Identity is actively chosen, not discovered. I am what I choose to become in each moment.',
-    response: '"I am not something to be found — I am something to be made. Every choice is an act of self-creation."'
+    response: '"I am not something to be found, I am something to be made. Every choice is an act of self-creation."'
   }
 ];
 
@@ -459,14 +497,14 @@ export const PHILOSOPHERS = [
 // ---- QUOTES ----
 
 export const PHILOSOPHICAL_QUOTES = [
-  {text:'"Trust thyself: every heart vibrates to that iron string."',source:'— Emerson, Self-Reliance'},
-  {text:'"There is something it is like to be a conscious being — something it is like for the being itself."',source:'— Frank Jackson, Epiphenomenal Qualia'},
-  {text:'"The life of man: solitary, poor, nasty, brutish, and short."',source:'— Thomas Hobbes, Leviathan'},
-  {text:'"What I call \'the self\' is nothing but a bundle of perceptions."',source:'— David Hume, A Treatise of Human Nature'},
-  {text:'"Have you ever had a dream that you were so sure was real?"',source:'— The Matrix (1999)'},
-  {text:'"The unexamined life is not worth living."',source:'— Plato, Apology'},
-  {text:'"Human nature is not a machine to be built after a model."',source:'— John Stuart Mill, On Liberty'},
-  {text:'"There is no single, unified self — only a constantly shifting stream of consciousness."',source:'— The No-Self Theory'}
+  {text:'"Trust thyself: every heart vibrates to that iron string."',source:', Emerson, Self-Reliance'},
+  {text:'"There is something it is like to be a conscious being, something it is like for the being itself."',source:', Frank Jackson, Epiphenomenal Qualia'},
+  {text:'"The life of man: solitary, poor, nasty, brutish, and short."',source:', Thomas Hobbes, Leviathan'},
+  {text:'"What I call \'the self\' is nothing but a bundle of perceptions."',source:', David Hume, A Treatise of Human Nature'},
+  {text:'"Have you ever had a dream that you were so sure was real?"',source:', The Matrix (1999)'},
+  {text:'"The unexamined life is not worth living."',source:', Plato, Apology'},
+  {text:'"Human nature is not a machine to be built after a model."',source:', John Stuart Mill, On Liberty'},
+  {text:'"There is no single, unified self, only a constantly shifting stream of consciousness."',source:', The No-Self Theory'}
 ];
 
 export const VECTOR_DESCRIPTIONS = {

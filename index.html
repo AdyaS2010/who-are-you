@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="WHO//ARE//YOU? — An interactive philosophical identity game." />
+  <meta name="description" content="WHO//ARE//YOU? : An interactive philosophical identity game." />
   <title>WHO // ARE // YOU?</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -16,18 +16,23 @@
 
   <!-- Settings Toggle -->
   <button id="settings-toggle" class="settings-toggle" aria-label="Open settings panel">⚙</button>
-  <div id="settings-panel" class="settings-panel hidden" role="dialog" aria-label="Settings">
-    <h3>Settings</h3>
-    <div class="setting-row">
-      <label for="vol-music">🎵 Music</label>
-      <input type="range" id="vol-music" min="0" max="100" value="50" aria-label="Music volume">
-    </div>
-    <div class="setting-row">
-      <label for="vol-sfx">🔊 Effects</label>
-      <input type="range" id="vol-sfx" min="0" max="100" value="70" aria-label="Sound effects volume">
-    </div>
-    <div class="setting-row">
-      <label><input type="checkbox" id="mute-all" aria-label="Mute all audio"> 🔇 Mute All</label>
+  <div id="settings-modal" class="settings-modal hidden" role="dialog" aria-modal="true" aria-label="Settings Modal">
+    <div id="settings-panel" class="settings-panel" role="document">
+      <div class="settings-header">
+        <h3>Settings</h3>
+        <button id="settings-close" class="settings-close" aria-label="Close settings">&times;</button>
+      </div>
+      <div class="setting-row">
+        <label for="vol-music">🎵 Music</label>
+        <input type="range" id="vol-music" min="0" max="100" value="50" aria-label="Music volume">
+      </div>
+      <div class="setting-row">
+        <label for="vol-sfx">🔊 Effects</label>
+        <input type="range" id="vol-sfx" min="0" max="100" value="70" aria-label="Sound effects volume">
+      </div>
+      <div class="setting-row">
+        <label><input type="checkbox" id="mute-all" aria-label="Mute all audio"> 🔇 Mute All</label>
+      </div>
     </div>
   </div>
 
@@ -96,44 +101,44 @@
         
         <div class="source-item">
           <h3>Ralph Waldo Emerson: <em>Self-Reliance</em> <span class="source-year">1841</span></h3>
-          <p class="source-cite">Essays: First Series</p>
-          <p>Emerson calls for radical self-trust: do not follow society's expectations, and instead listen to your own inner voice. In the game, this shapes <strong>Skyler Drew</strong>, who believes you are not something to be found, but something you actively create through your choices.</p>
+          <p class="source-cite">Essays: First Series, 1841.</p>
+          <p>Emerson’s argument in Self-Reliance is that instead of conforming to societal norms, we should rely on ourselves. This source, when used for our particular question, provides the perspective that “we are who we believe”: we can be anything, and the real “self” emerges once one stops performing for the world and starts trusting their own intuition. This source really explores who we can be as unique individuals if we don’t constantly conform to society and attempt to adopt identities that aren’t completely ours. Emerson urges people to be authentic, meaning that it is imperative that you stop being what others expect in order to find the “you” underneath all the labels, which does exist. As such, Self-Reliance provides a hopeful, almost empowering angle that the core self isn’t lost, but just waiting to be realized. His perspective balances Hobbes’ well, reminding us that identity can be formed internally with self-consciousness, not only as imposed by society.</p>
         </div>
 
         <div class="source-item">
           <h3>Thomas Hobbes: <em>Leviathan</em> <span class="source-year">1651</span></h3>
-          <p class="source-cite">Project Gutenberg, gutenberg.org/files/3207/3207-h/3207-h</p>
-          <p>Hobbes argued that human life without structure is solitary, poor, nasty, brutish, and short. Our identity is molded by rules and the need for security. This powers the Iron Republic in Phase III and defines <strong>Dylan Ward</strong>, who believes identity is manufactured by society.</p>
+          <p class="source-cite">Gutenberg.org, 1651, www.gutenberg.org/files/3207/3207-h/3207-h.</p>
+          <p>In Leviathan, Hobbes argues that humans are fundamentally shaped by fear, the preservation of oneself, and the need for order in life and society. His view thereby implies that identity is not something that is of a fixed nature or inherent, but instead molded by our environment and social structures and pressures we live under. Additionally, this perspective challenges the idea of a stable inner self and suggests that who we are is largely determined as a product of our environment and our own survival instincts. In relation to our questions, Hobbes raises the possibility that once you remove labels and roles, you may not uncover a “true self” at all, but only a human being shaped by fear and the immense desire for security, conveying the extent to which identity is constructed by society rather than internal discovery for the most part.</p>
         </div>
 
         <div class="source-item">
           <h3>Frank Jackson: <em>Epiphenomenal Qualia</em> <span class="source-year">1982</span></h3>
-          <p class="source-cite">The Philosophical Quarterly, vol. 32, no. 127, pp. 127-136</p>
-          <p>Through the Mary's Room thought experiment, Jackson shows that subjective, personal experiences (qualia) cannot be reduced to physical facts. This shapes Phase IV's glitch sequence and defines <strong>Solara Vale</strong>, who holds that a raw, private core remains even when all labels are gone.</p>
+          <p class="source-cite">The Philosophical Quarterly, vol. 32, no. 127, Apr. 1982, pp. 127-136, https://doi.org/10.2307/2960077.</p>
+          <p>“Epiphenomenal Qualia” by Frank Jackson offers insight into ‘qualia’: the unique, private, and subjective “feels” of experiences, providing one of the most intimate perspectives regarding identity. He essentially says that the inner sensations experienced by oneself can’t be reduced to comprehensible physical facts. This view proves incredibly plausible in answering our question: “Who are you at heart?”, as it suggests that once stripped of all external labels, roles, possessions, physical characteristics, etc., there is still something deeply personal to each person that remains. Through this article, one is able to come to the conclusion that the “self” may not be found in anything observable, but rather in the raw, natural texture of experiences unique to an individual. Thus, we may explore whether a core “you” actually exists beneath everything else, and whether individuality is in fact rooted in consciousness instead of simple identity markers.</p>
         </div>
 
         <div class="source-item">
-          <h3>Adrian D. Nelson: <em>Maslow's Matrix</em> <span class="source-year">2014</span></h3>
-          <p class="source-cite">Academia.edu, academia.edu/9447426</p>
-          <p>Nelson connects self-actualization with breaking out of simulated illusions. If our environment is built on facades, is the self real? This inspires the glitch environment in Phase IV and shapes <strong>Axel Mirage</strong>, who views the self as a mental illusion.</p>
+          <h3>Adrian D. Nelson: <em>Maslow’s Matrix: Depictions of Self-Actualization in the Motion Picture, The Matrix</em> <span class="source-year">2014</span></h3>
+          <p class="source-cite">Academia.edu, 22 Nov. 2014, www.academia.edu/9447426/Maslows_Matrix_Depictions_of_Self_actualization_in_the_Motion_Picture_The_Matrix.</p>
+          <p>Nelson’s analysis of The Matrix through Maslow’s “hierarchy of needs”, the inspiration to the simulated reality observed in The Matrix, reframes the film as a story regarding ‘self-actualization’, which consists of breaking out of an illusion to discover who you truly are. This is incredibly relevant to our concept of study, as the movie directly confronts the debate whether identity can be considered ‘real’ if the world around you is fake or manipulated. The paper helps us think about identity as something that can be distorted by the environment, supporting similar views as expressed in Hobbes’ Leviathan, and something that may emerge only when one confronts uncomfortable truths. His perspective also adds a psychological and cinematic dimension to our topic, proposing that maybe the “self” is something you grow into once you stop accepting the world at face value.</p>
         </div>
 
         <div class="source-item">
-          <h3>Eric T. Olson: <em>Personal Identity</em> <span class="source-year">2023</span></h3>
-          <p class="source-cite">Stanford Encyclopedia of Philosophy, plato.stanford.edu/entries/identity-personal</p>
-          <p>Olson details how we stay the same person over time. Does continuity come from memory, labels, or the physical body? This fuels the Mirror in Phase V and guides <strong>Mira Lockwood</strong> (memory self) and <strong>Alex Mercer</strong> (label self).</p>
+          <h3>Eric T. Olson: <em>Personal Identity (Stanford Encyclopedia of Philosophy)</em> <span class="source-year">2023</span></h3>
+          <p class="source-cite">Stanford.edu, 30 June 2023, plato.stanford.edu/entries/identity-personal/.</p>
+          <p>This Stanford article provides a comprehensive overview of theories of personal identity, including those like psychological as well as bodily continuity, memory theory, and the no-self view. Olson’s discussion helps us examine whether identity is rooted in memory, consciousness, physical form, or something else entirely, and proposes ideas regarding what happens to the “self” when these components are removed, thus laying out the major frameworks philosophers use to understand what makes someone considerably the “same person” over time. Overall, the source serves as a structured manner in which we may analyze our question and evaluate the many competing and compelling answers as to what remains when everything external to one’s identity is taken away.</p>
         </div>
 
         <div class="source-item">
-          <h3>Nelson Pike: <em>Hume's Bundle Theory: A Limited Defense</em> <span class="source-year">1967</span></h3>
-          <p class="source-cite">American Philosophical Quarterly, vol. 4, no. 2, pp. 159-165</p>
-          <p>Pike defends Hume's view that the self is not a single, permanent entity, but a loose bundle of changing perceptions in constant motion. This is the foundation of <strong>Riley Flux</strong>, whose identity shifts constantly like a stream.</p>
+          <h3>Nelson Pike: <em>Hume’s Bundle Theory of the Self: A Limited Defense</em> <span class="source-year">1967</span></h3>
+          <p class="source-cite">American Philosophical Quarterly, vol. 4, no. 2, 1967, pp. 159-165, www.jstor.org/stable/20009239.</p>
+          <p>In this article, Pike examines Hume’s “Bundle Theory of Self”, which essentially argues that no cohesive ‘self’ exists. Instead, humans are different only by loosely connected and constantly shifting individual perceptions and experiences that happen to us: we are just properties, and without them, there is nothing to define. Pike then further expands on this concept by bringing in Buddhism and philosopher Parfit’s idea of self, which aligns with Hume’s Bundle Theory in that there is, in fact, no “self” hiding under anything, as the bundle actually is the self. This article touches on the idea proposed by Parfit that we don’t have a single stream of consciousness, and provides one of the most radical answers to our question, as it suggests that indeed, once you remove yourself from your associations, there might be nothing left, and not because the self is ‘hidden’, per se, but since it was never a singular thing to begin with; it adds a destabilizing perspective that identity is similar to gas particles in a sense, fluid, unstable, and always in motion.</p>
         </div>
 
         <div class="source-item">
           <h3>Neil Roughley: <em>Human Nature</em> <span class="source-year">2021</span></h3>
-          <p class="source-cite">Stanford Encyclopedia of Philosophy, plato.stanford.edu/entries/human-nature/</p>
-          <p>Roughley explores what qualities make us fundamentally human. Is there a fixed human essence, or are we entirely molded by culture and environment? This tension drives Phase III's world shifts, where environmental pressures test your starting nature.</p>
+          <p class="source-cite">Stanford Encyclopedia of Philosophy, Metaphysics Research Lab, Stanford University, 15 Mar. 2021, plato.stanford.edu/entries/human-nature/.</p>
+          <p>Roughley’s entry “Human Nature” in the Stanford Encyclopedia of Philosophy provides a detailed philosophical overview of what “human nature” means and how different thinkers have interpreted it. The article explains that there is no single agreed-upon definition of humanity, but instead multiple varying views, known as psychological and philosophical understandings. It is also discussed how some philosophers see human nature as a set of traits shared by all humans, while others may argue that human beings are shaped by the culture and environment around them, along with their own individual development. Roughley also examines how the same concept is utilized in debates about subjects familiar to us, such as ethics, evolution, and identity. All in all, this source is useful in answering our question because it breaks down such a complex, perhaps vague concept into many different theories, and shows why the question of humanity and individuality is still established as one of the most prominent debates in philosophy today.</p>
         </div>
       </div>
 
@@ -163,7 +168,10 @@
           <span class="title-word" data-delay="400">YOU</span><span class="title-question">?</span>
         </h1>
         <p class="title-subtitle">An interactive philosophical exploration of identity</p>
-        <button id="btn-start" class="btn-primary pulse-glow"><span>Begin the journey</span></button>
+        <div class="title-buttons-container">
+          <button id="btn-start" class="btn-primary pulse-glow"><span>Begin the journey</span></button>
+          <button id="btn-sandbox-toggle" class="btn-secondary"><span>Weave Qualia (Zen Sandbox)</span></button>
+        </div>
         <p class="title-credits">A philosophical game by Prisma, Adya & Breanna</p>
       </div>
     </section>
@@ -285,10 +293,10 @@
             </button>
           </div>
 
-          <div id="gw-answer-box"></div>
+          <div id="gw-answer-box" aria-live="polite"></div>
           <div id="gw-question-bar" class="gw-question-bar"></div>
           <div id="gw-board" class="gw-board"></div>
-          <div id="gw-status" class="gw-status"></div>
+          <div id="gw-status" class="gw-status" aria-live="polite"></div>
           
           <div class="gw-actions">
             <button id="gw-final-guess" class="gw-final-btn hidden">Make Final Guess</button>
@@ -312,6 +320,24 @@
       </div>
     </section>
   </div>
+
+  <!-- ZEN SANDBOX MODAL (QUALIA WEAVER) -->
+  <div id="sandbox-modal" class="sandbox-modal hidden" role="dialog" aria-modal="true" aria-labelledby="sandbox-heading">
+    <div class="sandbox-content">
+      <div class="sandbox-header">
+        <h2 id="sandbox-heading">The Qualia Sandbox</h2>
+        <p class="sandbox-subtitle">Click to place thought nodes. Drag to affect gravity. Tap nodes to hear their frequency. Weave your own shifting bundle of perceptions.</p>
+        <div class="sandbox-actions">
+          <button id="btn-sandbox-clear" class="btn-secondary-action" aria-label="Clear all thought nodes">Clear Canvas</button>
+          <button id="btn-sandbox-close" class="btn-close-action" aria-label="Close Sandbox modal">&times;</button>
+        </div>
+      </div>
+      <div class="sandbox-canvas-container">
+        <canvas id="sandbox-canvas"></canvas>
+      </div>
+    </div>
+  </div>
+
   <script type="module" src="/src/main.js"></script>
 </body>
 </html>
