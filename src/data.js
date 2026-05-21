@@ -208,20 +208,106 @@ export const GLITCH_SCENARIOS = [
   }
 ];
 
-// ---- SUSPECTS FOR GUESS WHO (Associated with Philosophical Authors & Quotes) ----
+// ---- SUSPECTS FOR GUESS WHO (7 philosophy-linked characters) ----
 export const GW_SUSPECTS = [
-  {name:'The Scholar',icon:'📚',traits:['Analytical','Curious'],value:'Knowledge',fear:'Irrelevance',source:'Thomas Hobbes',quote:'"Order is the foundation of thought."',aesthetic:'Midnight'},
-  {name:'The Guardian',icon:'🛡️',traits:['Loyal','Empathetic'],value:'Justice',fear:'Betrayal',source:'Thomas Hobbes',quote:'"We protect the collective peace."',aesthetic:'Storm'},
-  {name:'The Rebel',icon:'⚡',traits:['Bold','Independent'],value:'Freedom',fear:'Confinement',source:'Ralph Waldo Emerson',quote:'"Whoso would be a man must be a nonconformist."',aesthetic:'Storm'},
-  {name:'The Maverick',icon:'🔥',traits:['Passionate','Bold'],value:'Authenticity',fear:'Conformity',source:'Ralph Waldo Emerson',quote:'"To be yourself is the greatest accomplishment."',aesthetic:'Neon'},
-  {name:'The Dreamer',icon:'🌙',traits:['Creative','Optimistic'],value:'Authenticity',fear:'Mediocrity',source:'Frank Jackson',quote:'"What is the feeling of color in the dark?"',aesthetic:'Sunrise'},
-  {name:'The Empath',icon:'💜',traits:['Gentle','Empathetic'],value:'Compassion',fear:'Isolation',source:'Frank Jackson',quote:'"We experience the world, not just analyze it."',aesthetic:'Neon'},
-  {name:'The Explorer',icon:'🧭',traits:['Curious','Spontaneous'],value:'Freedom',fear:'Stagnation',source:'David Hume',quote:'"We are bundles of perceptions in motion."',aesthetic:'Sunrise'},
-  {name:'The Catalyst',icon:'✨',traits:['Confident','Adaptable'],value:'Growth',fear:'Stagnation',source:'David Hume',quote:'"Nothing is constant but change."',aesthetic:'Forest'},
-  {name:'The Sage',icon:'🔮',traits:['Patient','Honest'],value:'Truth',fear:'Deception',source:'Thomas Hobbes',quote:'"Rules keep the chaos of nature at bay."',aesthetic:'Midnight'},
-  {name:'The Strategist',icon:'♟️',traits:['Analytical','Ambitious'],value:'Knowledge',fear:'Failure',source:'David Hume',quote:'"Reason is, and ought only to be the slave of the passions."',aesthetic:'Ocean'},
-  {name:'The Healer',icon:'🌿',traits:['Thoughtful','Resilient'],value:'Compassion',fear:'Helplessness',source:'Frank Jackson',quote:'"Pain and healing cannot be reduced to physical facts."',aesthetic:'Forest'},
-  {name:'The Hermit',icon:'🛖',traits:['Independent','Patient'],value:'Truth',fear:'Conformity',source:'Ralph Waldo Emerson',quote:'"I walk alone to find what is true."',aesthetic:'Ocean'}
+  {
+    name: 'Alex Mercer',
+    icon: '🏷️',
+    theory: 'Label-Only Identity',
+    traits: ['Analytical', 'Confident'],
+    value: 'Community',
+    fear: 'Being forgotten',
+    aesthetic: 'Midnight',
+    source: 'Olson / Personal Identity',
+    belief: 'I am a student, a daughter, a friend. Remove the labels and there is nothing left to define.',
+    response: '"Without my roles and relationships, there is simply nothing to identify. Labels are not limitations — they are the self."'
+  },
+  {
+    name: 'Mira Lockwood',
+    icon: '🧠',
+    theory: 'Memory-Based Self',
+    traits: ['Thoughtful', 'Patient'],
+    value: 'Truth',
+    fear: 'Losing loved ones',
+    aesthetic: 'Ocean',
+    source: 'Olson / Personal Identity',
+    belief: 'I am the accumulation of everything I remember happening in my life. If I forget everything, I stop being me.',
+    response: '"Memory is the thread that makes me continuous. Without it, I would be a stranger — even to myself."'
+  },
+  {
+    name: 'Riley Flux',
+    icon: '🌊',
+    theory: 'Bundle Theory',
+    traits: ['Spontaneous', 'Adaptable'],
+    value: 'Freedom',
+    fear: 'Being trapped',
+    aesthetic: 'Storm',
+    source: 'Pike / Hume Bundle Theory',
+    belief: 'There is no "I" — only a collection of past experiences loosely strung together. I am always shifting.',
+    response: '"Ask me who I am tomorrow and I will give you a different answer. There is no fixed point. Only flux."'
+  },
+  {
+    name: 'Solara Vale',
+    icon: '✨',
+    theory: 'Essential Self',
+    traits: ['Gentle', 'Resilient'],
+    value: 'Authenticity',
+    fear: 'Being misunderstood',
+    aesthetic: 'Sunrise',
+    source: 'Jackson / Epiphenomenal Qualia',
+    belief: 'Even if everything is removed — labels, memories, roles — something still remains. A raw, private core.',
+    response: '"There is something it is like to be me. That feeling cannot be taken away. It is what I am, at heart."'
+  },
+  {
+    name: 'Dylan Ward',
+    icon: '⚙️',
+    theory: 'Society-Constructed Self',
+    traits: ['Analytical', 'Independent'],
+    value: 'Justice',
+    fear: 'Losing control',
+    aesthetic: 'Midnight',
+    source: 'Hobbes / Leviathan',
+    belief: 'Who I am is built entirely by society, fear, rules, and expectations. Remove the system and nothing remains.',
+    response: '"Strip away society and you strip away me. Identity is not discovered — it is manufactured by the world around us."'
+  },
+  {
+    name: 'Axel Mirage',
+    icon: '🪞',
+    theory: 'Illusion / Simulation',
+    traits: ['Curious', 'Bold'],
+    value: 'Knowledge',
+    fear: 'Being ordinary',
+    aesthetic: 'Neon',
+    source: 'Nelson / Maslow\'s Matrix',
+    belief: 'The self is a mental illusion created by the brain to construct a false sense of reality.',
+    response: '"What if the you asking this question is itself the illusion? I cannot answer what remains — because nothing was ever really there."'
+  },
+  {
+    name: 'Skyler Drew',
+    icon: '🔥',
+    theory: 'Self-Creator / Existential',
+    traits: ['Confident', 'Passionate'],
+    value: 'Growth',
+    fear: 'Being forgotten',
+    aesthetic: 'Forest',
+    source: 'Emerson / Self-Reliance',
+    belief: 'Identity is actively chosen, not discovered. I am what I choose to become in each moment.',
+    response: '"I am not something to be found — I am something to be made. Every choice is an act of self-creation."'
+  }
+];
+
+// ---- PHASE 6 BOARD GAME QUESTIONS (tailored to the 7 characters) ----
+export const GUESS_QUESTIONS = [
+  { q: 'Does this character believe a core self survives if everything is removed?', check: s => ['Solara Vale'].includes(s.name), field: 'theory', label: 'Essential Self' },
+  { q: 'Is their identity defined primarily by social labels and roles?', check: s => ['Alex Mercer'].includes(s.name), field: 'theory', label: 'Label Identity' },
+  { q: 'Do they believe identity is constructed by society and fear?', check: s => ['Dylan Ward'].includes(s.name), field: 'theory', label: 'Society-Constructed' },
+  { q: 'Is their sense of self always shifting and inconsistent?', check: s => ['Riley Flux'].includes(s.name), field: 'theory', label: 'Bundle/Flux' },
+  { q: 'Do they lead with memory as the foundation of who they are?', check: s => ['Mira Lockwood'].includes(s.name), field: 'theory', label: 'Memory-Based' },
+  { q: 'Do they treat identity as something actively chosen, not inherited?', check: s => ['Skyler Drew'].includes(s.name), field: 'theory', label: 'Self-Creator' },
+  { q: 'Do they believe the self is a mental illusion or simulation?', check: s => ['Axel Mirage'].includes(s.name), field: 'theory', label: 'Illusion Theory' },
+  { q: 'Do they value Freedom or Growth above all else?', check: s => ['Freedom', 'Growth'].includes(s.value), field: 'value', label: 'Values Freedom/Growth' },
+  { q: 'Are they Analytical or Confident in their personality?', check: s => s.traits.includes('Analytical') || s.traits.includes('Confident'), field: 'traits', label: 'Analytical/Confident' },
+  { q: 'Is their aesthetic warm (Sunrise, Neon, Forest, Storm)?', check: s => ['Sunrise', 'Neon', 'Forest', 'Storm'].includes(s.aesthetic), field: 'aesthetic', label: 'Warm Aesthetic' }
 ];
 
 // ---- STRATEGIC PLAYER ROLES ----
@@ -312,21 +398,9 @@ export const PHILOSOPHERS = [
   }
 ];
 
-// ---- PHASE 6 BOARD GAME QUESTIONS ----
-export const GUESS_QUESTIONS = [
-  {q:'Are they a nonconformist (Independent/Bold)?',check:s=>s.traits.includes('Independent')||s.traits.includes('Bold'),field:'traits',label:'Nonconformist'},
-  {q:'Do they value Knowledge or Truth above all?',check:s=>s.value==='Knowledge'||s.value==='Truth',field:'value',label:'Intellectual Value'},
-  {q:'Do they fear Stagnation or Mediocrity?',check:s=>s.fear==='Stagnation'||s.fear==='Mediocrity',field:'fear',label:'Fear of Stagnation'},
-  {q:'Are they an Empathetic or Loyal soul?',check:s=>s.traits.includes('Empathetic')||s.traits.includes('Loyal'),field:'traits',label:'Altruistic'},
-  {q:'Do they seek Freedom or Autonomy?',check:s=>s.value==='Freedom',field:'value',label:'Freedom Seekers'},
-  {q:'Do they fear isolation or being alone?',check:s=>s.fear==='Being alone'||s.fear==='Isolation',field:'fear',label:'Fear of Solitude'},
-  {q:'Do they have a warm color aesthetic?',check:s=>['Sunrise','Neon','Storm'].includes(s.aesthetic),field:'aesthetic',label:'Warm Aesthetic'},
-  {q:'Is their source Ralph Waldo Emerson?',check:s=>s.source==='Ralph Waldo Emerson',field:'source',label:'Emerson\'s Influence'},
-  {q:'Is their source David Hume?',check:s=>s.source==='David Hume',field:'source',label:'Hume\'s Influence'},
-  {q:'Is their source Thomas Hobbes?',check:s=>s.source==='Thomas Hobbes',field:'source',label:'Hobbes\' Influence'}
-];
 
 // ---- QUOTES ----
+
 export const PHILOSOPHICAL_QUOTES = [
   {text:'"Trust thyself: every heart vibrates to that iron string."',source:'— Emerson, Self-Reliance'},
   {text:'"There is something it is like to be a conscious being — something it is like for the being itself."',source:'— Frank Jackson, Epiphenomenal Qualia'},

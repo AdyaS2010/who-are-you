@@ -7,6 +7,9 @@ import {
 } from './data.js';
 import { ParticleSystem, triggerGlitch, createGlowSilhouette } from './effects.js';
 import { Platformer } from './platformer.js';
+import { AudioEngine } from './audio.js';
+
+let _titleAudio = null;
 
 const state = {
   phase:0, name:'', traits:[], interests:[], coreValue:'', fear:'', aesthetic:'',
@@ -46,6 +49,21 @@ export function initGame() {
   setTheme(1);
   setupSettings();
   setupRulebook();
+
+  // Start calm mystical music on first user gesture
+  const startMusic = () => {
+    if (!_titleAudio) {
+      _titleAudio = new AudioEngine();
+      _titleAudio.init();
+      _titleAudio.setMusicVol($('vol-music').value / 100);
+      _titleAudio.setSfxVol($('vol-sfx').value / 100);
+      _titleAudio.setMute($('mute-all').checked);
+      _titleAudio.startMusic();
+    }
+  };
+  document.addEventListener('click', startMusic, { once: true });
+  document.addEventListener('keydown', startMusic, { once: true });
+
   $('btn-start').addEventListener('click', () => { switchScreen('screen-title','screen-phase1'); state.phase = 1; });
   setupPhase1();
   $('btn-phase2-begin').addEventListener('click', startPlatformer2);
@@ -59,9 +77,21 @@ function setupSettings() {
   const toggle = $('settings-toggle'), panel = $('settings-panel');
   toggle.addEventListener('click', () => panel.classList.toggle('hidden'));
   document.addEventListener('click', e => { if (!panel.contains(e.target) && e.target !== toggle) panel.classList.add('hidden'); });
-  $('vol-music').addEventListener('input', e => { if (plat) plat.audio.setMusicVol(e.target.value / 100); });
-  $('vol-sfx').addEventListener('input', e => { if (plat) plat.audio.setSfxVol(e.target.value / 100); });
-  $('mute-all').addEventListener('change', e => { if (plat) plat.audio.setMute(e.target.checked); });
+  $('vol-music').addEventListener('input', e => {
+    const v = e.target.value / 100;
+    if (plat) plat.audio.setMusicVol(v);
+    if (_titleAudio) _titleAudio.setMusicVol(v);
+  });
+  $('vol-sfx').addEventListener('input', e => {
+    const v = e.target.value / 100;
+    if (plat) plat.audio.setSfxVol(v);
+    if (_titleAudio) _titleAudio.setSfxVol(v);
+  });
+  $('mute-all').addEventListener('change', e => {
+    const m = e.target.checked;
+    if (plat) plat.audio.setMute(m);
+    if (_titleAudio) _titleAudio.setMute(m);
+  });
 }
 
 // ---- RULEBOOK ----
@@ -144,10 +174,13 @@ function revealArchetype() {
 function ensurePlatformer() {
   if (!plat) {
     plat = new Platformer($('game-canvas'), $('game-hud'));
-    // Apply current settings
     plat.audio.setMusicVol($('vol-music').value / 100);
     plat.audio.setSfxVol($('vol-sfx').value / 100);
     plat.audio.setMute($('mute-all').checked);
+    // Seamlessly hand off music from title engine to platformer engine
+    if (_titleAudio) { _titleAudio.stopMusic(); }
+    plat.audio.init();
+    plat.audio.startMusic();
   }
   $('game-screen').classList.remove('hidden');
 }
@@ -412,6 +445,9 @@ function startGuessWhoDuel() {
   renderBoard();
   renderQuestions();
   updateStatusText();
+
+  // Continue music in platformer context
+  if (plat) { plat.audio.resume(); plat.audio.startMusic(); }
 }
 
 function updateTurnUI() {
@@ -427,9 +463,9 @@ function updateTurnUI() {
 
 function updateStatusText() {
   if (state.gwOver) return;
-  const remaining = 12 - state.gwEliminated.size;
+  const remaining = GW_SUSPECTS.length - state.gwEliminated.size;
   const aiRemaining = state.gwAiPossibleSuspects.length;
-  $('gw-status').textContent = `You: ${remaining} suspects left · Philosopher: ${aiRemaining} suspects left.`;
+  $('gw-status').textContent = `You: ${remaining} characters left · Philosopher: ${aiRemaining} possibilities left.`;
 }
 
 function renderBoard() {
@@ -439,17 +475,17 @@ function renderBoard() {
     const card = document.createElement('div');
     const isEliminated = state.gwEliminated.has(i);
     card.className = 'gw-card' + (isEliminated ? ' eliminated' : '');
-    
-    // Add border highlight for player's actual secret identity card to help them know who they are on the board
+
     if (i === state.gwPlayerSecret) {
-      card.style.border = '2px solid rgba(201,184,255,0.4)';
+      card.style.border = '2px solid rgba(201,184,255,0.5)';
+      card.title = 'This is your secret identity';
     }
 
     card.innerHTML = `
       <div class="gw-card-icon">${s.icon}</div>
       <div class="gw-card-name">${s.name}</div>
-      <div class="gw-card-trait">${s.traits.join(' · ')}</div>
-      <div class="gw-card-trait">${s.value} · ${s.source}</div>
+      <div class="gw-card-trait">${s.theory}</div>
+      <div class="gw-card-belief">${s.belief}</div>
     `;
 
     card.addEventListener('click', () => {
@@ -461,16 +497,12 @@ function renderBoard() {
           state.gwEliminated.delete(i);
         } else {
           state.gwEliminated.add(i);
-          if (plat) plat.audio.playFootstep(); // Small sound
+          if (plat) plat.audio.playCardFlip();
         }
         renderBoard();
         updateStatusText();
-        
-        // Show make final guess button if suspects are low
-        const remaining = 12 - state.gwEliminated.size;
-        if (remaining <= 3) {
-          $('gw-final-guess').classList.remove('hidden');
-        }
+        const remaining = GW_SUSPECTS.length - state.gwEliminated.size;
+        if (remaining <= 2) $('gw-final-guess').classList.remove('hidden');
       }
     });
     board.appendChild(card);

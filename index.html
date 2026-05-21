@@ -11,72 +11,122 @@
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🪞</text></svg>">
 </head>
 <body>
+  <!-- Accessibility: skip to main content -->
+  <a href="#app" class="skip-link">Skip to main content</a>
+
   <!-- Settings Toggle -->
-  <button id="settings-toggle" class="settings-toggle" aria-label="Settings">⚙</button>
-  <div id="settings-panel" class="settings-panel hidden">
+  <button id="settings-toggle" class="settings-toggle" aria-label="Open settings panel">⚙</button>
+  <div id="settings-panel" class="settings-panel hidden" role="dialog" aria-label="Settings">
     <h3>Settings</h3>
-    <div class="setting-row"><label>🎵 Music</label><input type="range" id="vol-music" min="0" max="100" value="50"></div>
-    <div class="setting-row"><label>🔊 Effects</label><input type="range" id="vol-sfx" min="0" max="100" value="70"></div>
-    <div class="setting-row"><label><input type="checkbox" id="mute-all"> 🔇 Mute All</label></div>
+    <div class="setting-row">
+      <label for="vol-music">🎵 Music</label>
+      <input type="range" id="vol-music" min="0" max="100" value="50" aria-label="Music volume">
+    </div>
+    <div class="setting-row">
+      <label for="vol-sfx">🔊 Effects</label>
+      <input type="range" id="vol-sfx" min="0" max="100" value="70" aria-label="Sound effects volume">
+    </div>
+    <div class="setting-row">
+      <label><input type="checkbox" id="mute-all" aria-label="Mute all audio"> 🔇 Mute All</label>
+    </div>
   </div>
 
   <!-- Rulebook Toggle and Modal -->
-  <button id="rulebook-toggle" class="rulebook-toggle" aria-label="Rulebook">📖</button>
-  <div id="rulebook-modal" class="rulebook-modal hidden">
+  <button id="rulebook-toggle" class="rulebook-toggle" aria-label="Open guide and rulebook" aria-haspopup="dialog">📖</button>
+  <div id="rulebook-modal" class="rulebook-modal hidden" role="dialog" aria-modal="true" aria-labelledby="rulebook-heading">
     <div class="rulebook-content">
-      <button id="rulebook-close" class="rulebook-close" aria-label="Close Guide">&times;</button>
-      <div class="rulebook-tabs">
-        <button class="rulebook-tab-btn active" data-tab="rb-tab-story">Story</button>
-        <button class="rulebook-tab-btn" data-tab="rb-tab-gameplay">How to Play</button>
-        <button class="rulebook-tab-btn" data-tab="rb-tab-sources">Philosophy & Sources</button>
+
+      <div class="rulebook-tabs" role="tablist">
+        <button class="rulebook-tab-btn active" data-tab="rb-tab-story" role="tab" aria-selected="true">Story</button>
+        <button class="rulebook-tab-btn" data-tab="rb-tab-gameplay" role="tab" aria-selected="false">How to Play</button>
+        <button class="rulebook-tab-btn" data-tab="rb-tab-sources" role="tab" aria-selected="false">Philosophy &amp; Sources</button>
+        <button id="rulebook-close" class="rulebook-close" aria-label="Close guide">&times;</button>
       </div>
-      
-      <div class="rulebook-tab-content active" id="rb-tab-story">
-        <h2>The Quest for the True Self</h2>
-        <p>In <strong>WHO//ARE//YOU?</strong>, you begin by constructing a <em>Mask</em> — a collection of social tags, traits, and aesthetics. But is a costume the same as a soul?</p>
-        <p>As you step into the world, your choices will shape you, shift you under environmental pressures, and ultimately glitch away, stripping you of all labels. You will see your reflection in the <em>Mirror</em>, demonstrating how you navigated the tensions between conformity, independence, logic, and emotion.</p>
-        <p>Finally, in the <strong>Trial of Personas (Guess Who)</strong>, you must test whether your constructed identity can be deduced using structured reasoning. You will choose a philosophical school of thought and duel against a legendary philosopher. Discover who you are, before they deduce your persona first!</p>
+
+      <div class="rulebook-tab-content active" id="rb-tab-story" role="tabpanel">
+        <h2 id="rulebook-heading">The Quest for the True Self</h2>
+        <p class="story-intro">At the heart of <strong>WHO//ARE//YOU?</strong> lies a single, disquieting question — one philosophy has wrestled with for centuries. This is your personal journey into it. Not a game you win by being fast, but one you win by being <em>honest</em>.</p>
+        <div class="story-phase-block"><span class="story-phase-tag">Phase I · The Mask</span><p>You build yourself from scratch — traits, interests, a core value, a deepest fear, an aesthetic. The game reveals your <strong>Archetype</strong>: a philosophical persona mirroring your selections. But is this profile actually <em>you</em>, or a costume you've chosen to wear?</p></div>
+        <div class="story-phase-block"><span class="story-phase-tag">Phase II · The World</span><p>You enter a living world and face real moral crossroads. Every choice — about loyalty, silence, rebellion, compassion — invisibly shapes a psychological profile beneath your Mask. The world watches. The world <em>records</em>.</p></div>
+        <div class="story-phase-block"><span class="story-phase-tag">Phase III · The Shift</span><p>Your world transforms. Dropped into one of four societies — the Iron Republic, the Unbound, the Collective, the Mirror City — does your identity hold under pressure, or does environment reshape you? Hobbes would argue you never had a choice.</p></div>
+        <div class="story-phase-block"><span class="story-phase-tag">Phase IV · The Glitch</span><p>Everything breaks. Your name, your traits, your archetype — stripped away one by one. What remains when the labels dissolve? This phase channels Frank Jackson's haunting question: is there a raw, irreducible <em>you</em> that no description can capture?</p></div>
+        <div class="story-phase-block"><span class="story-phase-tag">Phase V · The Mirror</span><p>The game reflects your choices back at you. A full psychological profile emerges — not the self you declared in Phase I, but the self revealed by your decisions. The Mirror doesn't lie. Are the two selves the same?</p></div>
+        <div class="story-phase-block"><span class="story-phase-tag">Phase VI · Trial of Personas</span><p>Seven philosophical characters each hold a different answer to "What remains when everything is removed?" You must deduce which one the Philosopher AI is playing — before they deduce <em>you</em>. Choose your school of thought. Choose your opponent. The trial begins.</p></div>
       </div>
-      
-      <div class="rulebook-tab-content" id="rb-tab-gameplay">
+
+      <div class="rulebook-tab-content" id="rb-tab-gameplay" role="tabpanel">
         <h2>Gameplay Manual</h2>
-        <h3>Part 1: The Platformer Journey</h3>
-        <ul>
-          <li><strong>Movement</strong>: Use the <code>← / →</code> arrows or <code>A / D</code> keys to walk.</li>
-          <li><strong>Jumping</strong>: Press <code>Space</code>, <code>W</code>, or <code>↑</code> to jump.</li>
-          <li><strong>Objectives</strong>: Walk forward to reveal the story nodes. Collect the glowing orbs by walking into them to lock in your choices. Each choice adjusts your psychological alignment.</li>
-        </ul>
-        <h3>Part 2: The Trial of Personas (Board Game)</h3>
-        <ul>
-          <li><strong>Role Selection</strong>: Select your philosophical school (e.g., Rationalism, Empiricism) to gain a unique game ability.</li>
-          <li><strong>Opponent Selection</strong>: Choose which Philosopher AI you want to challenge (e.g., Thomas Hobbes, David Hume).</li>
-          <li><strong>Turns</strong>: On your turn, ask a question from the question bar, then click on suspect cards to manually eliminate them based on the answer.</li>
-          <li><strong>AI Turns</strong>: The Philosopher AI will ask questions about your identity and narrow down their board.</li>
-          <li><strong>Victory</strong>: Click <em>Make Final Guess</em> when you're confident you know the AI's secret persona card. Guess correctly before the AI guesses yours to win!</li>
-        </ul>
-      </div>
-      
-      <div class="rulebook-tab-content" id="rb-tab-sources">
-        <h2>Philosophical Sources</h2>
-        <div class="source-item">
-          <h3>Thomas Hobbes — <em>Leviathan</em> (1651)</h3>
-          <p>Hobbes argued that human life in a state of nature is "solitary, poor, nasty, brutish, and short." To escape this chaos, humans form a Social Contract, sacrificing some freedom for the safety and order of a sovereign state. In the game, Hobbes represents <strong>Conformity and Order</strong>.</p>
+        <div class="manual-section">
+          <h3><span class="manual-num">01</span> Identity Creation <span class="manual-tag">Phase I</span></h3>
+          <ul>
+            <li><strong>Name yourself.</strong> Enter any name — it echoes through the experience.</li>
+            <li><strong>Choose 3 Traits</strong> (e.g. Curious, Resilient, Bold). These seed your psychological alignment.</li>
+            <li><strong>Choose 2 Interests</strong> that reflect what genuinely draws you in the world.</li>
+            <li><strong>Select a Core Value</strong> — the one principle you refuse to compromise.</li>
+            <li><strong>Name your deepest Fear</strong> — what you most want to avoid becoming.</li>
+            <li><strong>Pick an Aesthetic</strong> — the emotional tone that feels most like <em>you</em>.</li>
+            <li>Your <strong>Archetype</strong> is revealed: a philosophical persona derived from your choices. Its backstory is a mirror — read it carefully.</li>
+          </ul>
         </div>
-        <div class="source-item">
-          <h3>David Hume — <em>A Treatise of Human Nature</em> (1739)</h3>
-          <p>Hume's "Bundle Theory" claims that there is no fixed, permanent "self." Instead, the self is merely a bundle of fleeting sensory perceptions and thoughts in constant motion. In the game, Hume represents <strong>Curiosity, Change, and Empiricism</strong>.</p>
+        <div class="manual-section">
+          <h3><span class="manual-num">02</span> The Platformer Journey <span class="manual-tag">Phases II–IV</span></h3>
+          <ul>
+            <li><strong>Move:</strong> <kbd>← / →</kbd> arrow keys or <kbd>A / D</kbd> to walk.</li>
+            <li><strong>Jump:</strong> <kbd>Space</kbd>, <kbd>W</kbd>, or <kbd>↑</kbd>. Coyote-time is built in — no unfair falls.</li>
+            <li><strong>Collect choices:</strong> Walk into glowing orbs to lock in a decision. Each choice adjusts your alignment vectors.</li>
+            <li><strong>Read the HUD:</strong> Scenario text at top; choices at bottom. No timer — take your time and reflect.</li>
+          </ul>
         </div>
-        <div class="source-item">
-          <h3>Ralph Waldo Emerson — <em>Self-Reliance</em> (1841)</h3>
-          <p>Emerson championed nonconformity and listening to one's own inner voice. He urged individuals to trust themselves and resist social pressures to fit in. In the game, Emerson represents <strong>Independence and Existentialism</strong>.</p>
-        </div>
-        <div class="source-item">
-          <h3>Frank Jackson — <em>Epiphenomenal Qualia</em> (1982)</h3>
-          <p>Jackson presented the "Mary's Room" thought experiment, arguing that subjective, conscious experiences (qualia) — like the feeling of seeing the color red — cannot be fully explained by physical facts. In the game, Jackson represents <strong>Empathy, Subjective Experience, and Qualia</strong>.</p>
+        <div class="manual-section">
+          <h3><span class="manual-num">03</span> Trial of Personas <span class="manual-tag">Phase VI</span></h3>
+          <ul>
+            <li><strong>Choose a Philosophical Role</strong> to unlock a one-time strategic ability (Rationalism auto-eliminates 2 suspects; Empiricism reveals the target's core value; Existentialism reveals if they're a nonconformist; Subjectivism senses their aesthetic warmth).</li>
+            <li><strong>Choose a Philosopher Opponent</strong> — Hobbes, Hume, Emerson, or Jackson. Different difficulty and deductive strategy.</li>
+            <li><strong>Your turn:</strong> Ask a question → answer revealed → eliminate suspects by clicking them → <em>End Turn</em>.</li>
+            <li><strong>AI turn:</strong> The Philosopher strategically narrows their list. Watch their suspect count drop in real time.</li>
+            <li><strong>Activate your ability</strong> once per game at any point on your turn for a decisive advantage.</li>
+            <li><strong>Final Guess:</strong> Click <em>Make Final Guess</em> and select a character card. Beat the AI — or lose the trial.</li>
+          </ul>
         </div>
       </div>
+
+      <div class="rulebook-tab-content" id="rb-tab-sources" role="tabpanel">
+        <h2>Philosophy &amp; Sources</h2>
+        <p class="sources-intro">Each source shaped a question this game asks. They live inside the characters, the worlds, and every choice you face.</p>
+        <div class="source-item">
+          <h3>Frank Jackson &mdash; <em>Epiphenomenal Qualia</em> <span class="source-year">1982</span></h3>
+          <p class="source-cite">The Philosophical Quarterly, vol. 32, no. 127, pp. 127–136.</p>
+          <p>Jackson's Mary's Room: if a scientist learns every physical fact about color, does she learn something <em>new</em> when she finally sees red? Yes — suggesting subjective experience (<strong>qualia</strong>) cannot be reduced to any observable fact. Strip every label away and something deeply personal still remains. This powers Phase IV's stripping sequence and lives in <strong>Solara Vale</strong>, who believes an essential self persists beneath everything external.</p>
+        </div>
+        <div class="source-item">
+          <h3>Thomas Hobbes &mdash; <em>Leviathan</em> <span class="source-year">1651</span></h3>
+          <p class="source-cite">Project Gutenberg, gutenberg.org/files/3207/3207-h/3207-h.</p>
+          <p>Without social structure, life is "solitary, poor, nasty, brutish, and short." Identity for Hobbes is <strong>molded by environment, fear, and the systems we live under</strong>. Remove society's scaffolding and you don't uncover a true self — only a human shaped by survival instinct. Phase III's Iron Republic embodies this directly. <strong>Dylan Ward</strong> lives the thesis: identity is fully constructed by the forces around us.</p>
+        </div>
+        <div class="source-item">
+          <h3>Ralph Waldo Emerson &mdash; <em>Self-Reliance</em> <span class="source-year">1841</span></h3>
+          <p>Emerson urged radical nonconformity: trust your instincts, resist social pressure, act from your authentic inner voice. Identity is <strong>something you choose and assert</strong> — not passively discovered. Phase II's crossroads force exactly this tension. <strong>Skyler Drew</strong> embodies Emerson's creed: "I am what I choose to become in each moment."</p>
+        </div>
+        <div class="source-item">
+          <h3>Nelson Pike &mdash; <em>Hume's Bundle Theory: A Limited Defense</em> <span class="source-year">1967</span></h3>
+          <p class="source-cite">American Philosophical Quarterly, vol. 4, no. 2, pp. 159–165.</p>
+          <p>Drawing on Hume, Pike examines the claim that no cohesive "self" exists — we are merely a <strong>loose collection of shifting experiences</strong>. He brings in Buddhist philosophy and Parfit's idea that personal identity is not one stream but a flickering sequence. This drives <strong>Riley Flux</strong>, whose identity is always in motion — inconsistent, shifting, deliberately uncatchable.</p>
+        </div>
+        <div class="source-item">
+          <h3>Adrian D. Nelson &mdash; <em>Maslow's Matrix</em> <span class="source-year">2014</span></h3>
+          <p class="source-cite">Academia.edu, academia.edu/9447426.</p>
+          <p>Nelson reframes <em>The Matrix</em> as a story about <strong>self-actualization</strong>: identity only emerges when you break out of illusion and confront uncomfortable truth. If the world around you is simulated, can your identity be real? This shapes Phase IV's glitch environment and gives life to <strong>Axel Mirage</strong>, whose paradoxical answers suggest the self is a mental construction the brain tells itself.</p>
+        </div>
+        <div class="source-item">
+          <h3>Eric T. Olson &mdash; <em>Personal Identity</em> <span class="source-year">2023</span></h3>
+          <p class="source-cite">Stanford Encyclopedia of Philosophy, plato.stanford.edu/entries/identity-personal.</p>
+          <p>Olson maps every major theory of personal identity: psychological continuity, memory theory, bodily continuity, and the no-self view. What makes you the <em>same person</em> over time? <strong>Mira Lockwood</strong> answers with memory; <strong>Alex Mercer</strong> answers with labels. The Mirror phase uses Olson's frameworks to reflect your decision-making back with precision.</p>
+        </div>
+      </div>
+
     </div>
   </div>
+
 
   <div id="app">
     <canvas id="particles-canvas"></canvas>
