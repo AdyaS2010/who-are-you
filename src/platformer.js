@@ -335,23 +335,26 @@ export class Platformer {
           color: this.env.accent
         });
       }
-    } else if((isMira || isRiley) && !p.grounded && !this.doubleJumpUsed && jmpPressed){
-      if(isMira){
-        p.vy=jmpF;
-        this.doubleJumpUsed=true;
-        this.audio.playJump();
-        // Spawn double jump particles
-        for(let i=0;i<8;i++){
-          this.particles.push({x:p.x+4,y:p.y+14,vx:(Math.random()-0.5)*50,vy:(Math.random()-0.5)*30,life:0.6,color:'#ffdd66'});
-        }
-      } else if(isRiley){
+    } else if(!p.grounded && !this.doubleJumpUsed && jmpPressed){
+      // Universal double jump for all characters
+      if(isRiley){
+        // Riley: air dash instead of vertical jump
         p.vx=p.dir*280;
         p.vy=-40;
         this.doubleJumpUsed=true;
         this.audio.playJump();
-        // Spawn dash particles
         for(let i=0;i<10;i++){
           this.particles.push({x:p.x+4,y:p.y+8,vx:-p.dir*(Math.random()*60+20),vy:(Math.random()-0.5)*15,life:0.5,color:'#ff6666'});
+        }
+      } else {
+        // Everyone else: standard double jump
+        p.vy = isMira ? jmpF : jmpF * 0.85;
+        this.doubleJumpUsed=true;
+        this.audio.playJump();
+        const djColor = isMira ? '#ffdd66' : this.env.accent;
+        const djCount = isMira ? 10 : 6;
+        for(let i=0;i<djCount;i++){
+          this.particles.push({x:p.x+4,y:p.y+14,vx:(Math.random()-0.5)*45,vy:(Math.random()-0.5)*25,life:0.5,color:djColor});
         }
       }
     }

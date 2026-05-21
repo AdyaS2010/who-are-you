@@ -1207,3 +1207,115 @@ a:focus-visible {
   line-height: 1.1;
 }
 
+/* Secret title question mark interactive hover */
+#title-secret {
+  cursor: pointer;
+  user-select: none;
+  transition: text-shadow 0.3s, transform 0.2s;
+  outline: none;
+}
+#title-secret:hover {
+  text-shadow: 0 0 15px var(--accent);
+  transform: scale(1.1);
+}
+#title-secret:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 4px;
+  border-radius: 4px;
+}
+#title-secret.glitch-active {
+  animation: titleGlitch 0.25s linear infinite;
+}
+@keyframes titleGlitch {
+  0% { transform: translate(1px, -1px) skewX(2deg); filter: hue-rotate(90deg); }
+  20% { transform: translate(-1px, 2px) skewY(-2deg); }
+  40% { transform: translate(2px, 1px); }
+  60% { transform: translate(-2px, -2px) skewX(-4deg); filter: hue-rotate(180deg); }
+  80% { transform: translate(2px, 2px) skewY(4deg); }
+  100% { transform: translate(0, 0); }
+}
+
+/* Qualia Sandbox Fragment Reward Card */
+.qualia-fragment-reward {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(10, 8, 16, 0.95);
+  border: 1px solid rgba(255, 221, 102, 0.3);
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.8), 0 0 30px rgba(255, 221, 102, 0.15);
+  border-radius: var(--r);
+  padding: 2rem;
+  width: 90%;
+  max-width: 450px;
+  text-align: center;
+  z-index: 500;
+  backdrop-filter: blur(10px);
+  animation: rewardPop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  overflow: hidden;
+}
+@keyframes rewardPop {
+  0% { opacity: 0; transform: translate(-50%, -40%) scale(0.9); }
+  100% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+}
+.fragment-glow {
+  position: absolute;
+  top: -50px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 120px;
+  height: 120px;
+  background: radial-gradient(circle, rgba(255, 221, 102, 0.25) 0%, transparent 70%);
+  filter: blur(10px);
+  pointer-events: none;
+}
+.fragment-label {
+  font-family: var(--ff-m);
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: #ffdd66;
+  margin: 0 0 0.8rem;
+}
+.fragment-text {
+  font-family: var(--ff-b);
+  font-size: 1.05rem;
+  color: var(--text);
+  line-height: 1.5;
+  margin: 0 0 1.2rem;
+  font-style: italic;
+}
+.fragment-hint {
+  font-family: var(--ff-m);
+  font-size: 0.65rem;
+  color: rgba(255, 255, 255, 0.4);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin: 0;
+}
+
+/* Mirror Screen Bonus Fragment Row */
+.qualia-mirror-fragment {
+  margin: 1rem auto 0;
+  width: 100%;
+  max-width: 600px;
+  background: rgba(255, 221, 102, 0.03);
+  border: 1px solid rgba(255, 221, 102, 0.15);
+  border-left: 3px solid #ffdd66;
+  border-radius: var(--rs);
+  padding: 0.8rem 1.2rem;
+  text-align: left;
+  animation: slideDownFade 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  box-shadow: 0 0 15px rgba(255, 221, 102, 0.05);
+}
+.qualia-mirror-fragment .fragment-sparkle {
+  color: #ffdd66;
+  margin-right: 0.4rem;
+  animation: twinkle 2s infinite ease-in-out;
+  display: inline-block;
+}
+@keyframes twinkle {
+  0%, 100% { opacity: 0.3; transform: scale(0.9); }
+  50% { opacity: 1; transform: scale(1.2); }
+}

@@ -165,12 +165,11 @@
         <h1 class="title-text">
           <span class="title-word" data-delay="0">WHO</span><span class="title-separator">//</span>
           <span class="title-word" data-delay="200">ARE</span><span class="title-separator">//</span>
-          <span class="title-word" data-delay="400">YOU</span><span class="title-question">?</span>
+          <span class="title-word" data-delay="400">YOU</span><span class="title-question" id="title-secret" role="button" tabindex="0" aria-label="Secret">?</span>
         </h1>
         <p class="title-subtitle">An interactive philosophical exploration of identity</p>
         <div class="title-buttons-container">
           <button id="btn-start" class="btn-primary pulse-glow"><span>Begin the journey</span></button>
-          <button id="btn-sandbox-toggle" class="btn-secondary"><span>Weave Qualia (Zen Sandbox)</span></button>
         </div>
         <p class="title-credits">A philosophical game by Prisma, Adya & Breanna</p>
       </div>
@@ -230,6 +229,7 @@
         <div class="mirror-scene"><div class="mirror-silhouette" id="mirror-silhouette"></div><div class="mirror-glow"></div></div>
         <div class="identity-profile" id="identity-profile"></div>
         <div class="identity-insights" id="identity-insights"></div>
+        <div id="qualia-mirror-fragment" class="qualia-mirror-fragment hidden"></div>
         <div class="narrator-box"><p class="narrator-text" id="narrator-mirror-text"></p></div>
         <button class="btn-primary" id="btn-phase5-complete">Continue to The Game →</button>
       </div>
@@ -326,7 +326,7 @@
     <div class="sandbox-content">
       <div class="sandbox-header">
         <h2 id="sandbox-heading">The Qualia Sandbox</h2>
-        <p class="sandbox-subtitle">Click to place thought nodes. Drag to affect gravity. Tap nodes to hear their frequency. Weave your own shifting bundle of perceptions.</p>
+        <p class="sandbox-subtitle">You found a hidden space. Click to place thought nodes. Drag to shift gravity. Each node is a perception, each connection a thread of consciousness. Weave something only you can feel.</p>
         <div class="sandbox-actions">
           <button id="btn-sandbox-clear" class="btn-secondary-action" aria-label="Clear all thought nodes">Clear Canvas</button>
           <button id="btn-sandbox-close" class="btn-close-action" aria-label="Close Sandbox modal">&times;</button>
@@ -334,6 +334,12 @@
       </div>
       <div class="sandbox-canvas-container">
         <canvas id="sandbox-canvas"></canvas>
+      </div>
+      <div id="qualia-fragment-reward" class="qualia-fragment-reward hidden">
+        <div class="fragment-glow"></div>
+        <p class="fragment-label">Qualia Fragment Earned</p>
+        <p id="fragment-text" class="fragment-text"></p>
+        <p class="fragment-hint">This insight will appear during The Mirror.</p>
       </div>
     </div>
   </div>

@@ -50,22 +50,69 @@ export function initGame() {
   setupSettings();
   setupRulebook();
 
-  // Initialize Qualia Sandbox
+  // Initialize Qualia Sandbox (Secret click trigger on the title question mark)
   const sandbox = new QualiaSandbox('sandbox-canvas');
-  $('btn-sandbox-toggle').addEventListener('click', () => {
-    $('sandbox-modal').classList.remove('hidden');
-    sandbox.start();
-  });
+  let secretClicks = 0;
+  
+  const ts = $('title-secret');
+  if (ts) {
+    ts.addEventListener('click', () => {
+      secretClicks++;
+      ts.classList.add('glitch-active');
+      setTimeout(() => ts.classList.remove('glitch-active'), 300);
+      
+      if (secretClicks >= 3) {
+        secretClicks = 0;
+        $('sandbox-modal').classList.remove('hidden');
+        $('qualia-fragment-reward').classList.add('hidden');
+        sandbox.start();
+      }
+    });
+    
+    ts.addEventListener('keydown', e => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        ts.click();
+      }
+    });
+  }
+
   $('btn-sandbox-close').addEventListener('click', () => {
-    $('sandbox-modal').classList.add('hidden');
-    sandbox.stop();
+    const rewardVisible = !$('qualia-fragment-reward').classList.contains('hidden');
+    if (rewardVisible || sandbox.nodes.length < 11) {
+      $('sandbox-modal').classList.add('hidden');
+      $('qualia-fragment-reward').classList.add('hidden');
+      sandbox.stop();
+    } else {
+      const qQuotes = [
+        "Is the red you see the same red that paints my mind, or is it a color name for two different worlds?",
+        "If a machine mimics every spark of my brain, does it feel the warmth of the sun, or is it forever cold?",
+        "We are not built of static bricks, but of the moving water of our perceptions: a bundle of experiences flowing through time.",
+        "What is it like to be a bat? To map the night with echoes, and feel a space we can never imagine.",
+        "The scent of rain, the weight of a memory: these are the qualitative fabrics of the self, invisible to all but you."
+      ];
+      if (!state.qualiaFragment) {
+        state.qualiaFragment = qQuotes[Math.floor(Math.random() * qQuotes.length)];
+      }
+      $('fragment-text').textContent = state.qualiaFragment;
+      $('qualia-fragment-reward').classList.remove('hidden');
+      if (state.sandboxCloseTimeout) clearTimeout(state.sandboxCloseTimeout);
+      state.sandboxCloseTimeout = setTimeout(() => {
+        $('sandbox-modal').classList.add('hidden');
+        $('qualia-fragment-reward').classList.add('hidden');
+        sandbox.stop();
+      }, 5000);
+    }
   });
+
   $('btn-sandbox-clear').addEventListener('click', () => {
     sandbox.clear();
   });
+
   $('sandbox-modal').addEventListener('click', e => {
     if (e.target === $('sandbox-modal')) {
       $('sandbox-modal').classList.add('hidden');
+      $('qualia-fragment-reward').classList.add('hidden');
       sandbox.stop();
     }
   });
@@ -347,6 +394,15 @@ function initPhase5() {
   }
   pe.appendChild(vd);
   $('identity-insights').innerHTML = genInsights(n).map(i => `<p class="insight-item">→ ${i}</p>`).join('');
+  
+  const qmf = $('qualia-mirror-fragment');
+  if (state.qualiaFragment && qmf) {
+    qmf.innerHTML = `<span class="fragment-sparkle">✦</span> <strong>Qualia Fragment:</strong> "${state.qualiaFragment}"`;
+    qmf.classList.remove('hidden');
+  } else if (qmf) {
+    qmf.classList.add('hidden');
+  }
+
   $('narrator-mirror-text').textContent = '"There you are. Not who you said you were. Not who the world made you. Something in between. Something real."';
 }
 function genProfile(n) {
