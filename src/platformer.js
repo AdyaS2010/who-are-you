@@ -28,7 +28,9 @@ export class Platformer {
     this.paths = []; this.questionTriggered = false;
     this.signs = []; this.movingPlats = [];
     this.decorations = []; this.storyNodes = [];
-    this.footT = 0;
+    this.footT = 0; this.trail = [];
+    this.motes = [];
+    for(let i=0;i<25;i++) this.motes.push({x:Math.random()*560,y:Math.random()*150,vx:(Math.random()-.5)*4,vy:-Math.random()*3-.5,s:Math.random()*1.5+.5,life:Math.random()*8+4,maxLife:8,t:Math.random()*6.28});
     this.keys = {};
     for(let i=0;i<60;i++) this.stars.push({x:Math.random()*800,y:Math.random()*90,s:Math.random()*1.2+.3,t:Math.random()*6.28});
     this._bind();this._resize();
@@ -205,6 +207,7 @@ export class Platformer {
     nar.textContent=scenario.narrator?.replace(/"/g,'')||'';
     this.hud.appendChild(nar);
     this._scenarioText=scenario.text;
+    this._scenarioChoices=scenario.choices;
     this._showBanner(false);
   }
 
@@ -213,7 +216,17 @@ export class Platformer {
     if(!el&&show){
       el=document.createElement('div');el.className='ghud-scenario';
       let h=`<div class="ghud-question">${this._scenarioText}</div>`;
-      h+='<div class="ghud-hint">Explore the paths ahead and touch an orb to choose</div>';
+      // Show choice previews with colored dots
+      if(this._scenarioChoices){
+        const colors = this._scenarioChoices.length===2 ? ['#ffcc66','#66ccff'] : ['#ff8888','#88ff88','#8888ff'];
+        h+='<div class="ghud-choices">';
+        this._scenarioChoices.forEach((c,i)=>{
+          const short = c.text.length>55 ? c.text.slice(0,52)+'...' : c.text;
+          h+=`<div class="ghud-choice-row"><span class="ghud-dot" style="background:${colors[i]}"></span><span>${short}</span></div>`;
+        });
+        h+='</div>';
+      }
+      h+='<div class="ghud-hint">Walk into a glowing orb to lock in your choice</div>';
       el.innerHTML=h; this.hud.appendChild(el);
     }
     if(el) el.style.opacity=(show && !this.collected)?'1':'0';
@@ -261,11 +274,11 @@ export class Platformer {
     const isRiley = this.playerArchetype === 'riley';
     const isMira = this.playerArchetype === 'mira';
 
-    const spd = isSkyler ? 145 : 100;
-    const acc = isSkyler ? 950 : 750;
+    const spd = isSkyler ? 145 : 105;
+    const acc = isSkyler ? 950 : 800;
     const fric = isAlex ? 180 : 500;
-    const grav = isAxel ? 440 : (isSolara && p.vy > 0 && (this.keys.Space||this.keys.ArrowUp||this.keys.KeyW||this.keys._tj) ? 220 : 550);
-    const jmpF = isAxel ? -225 : -200;
+    const grav = isAxel ? 500 : (isSolara && p.vy > 0 && (this.keys.Space||this.keys.ArrowUp||this.keys.KeyW||this.keys._tj) ? 280 : 620);
+    const jmpF = isAxel ? -180 : -155;
 
     // Magnetic pull for Dylan
     if(isDylan){
@@ -287,7 +300,9 @@ export class Platformer {
     // Horizontal movement
     if(dir){p.vx+=dir*acc*dt;p.vx=Math.max(-spd,Math.min(spd,p.vx));p.dir=dir;
       if(p.grounded){p.frame+=dt*10;this.footT+=dt;
-        if(this.footT>.2){this.audio.playFootstep();this.footT=0;this._dust(p.x+4,p.y+14);}}}
+        if(this.footT>.2){this.audio.playFootstep();this.footT=0;this._dust(p.x+4,p.y+14);}}
+      // Movement trail
+      if(Math.abs(p.vx)>30) this.trail.push({x:p.x+4,y:p.y+7,a:0.4,life:0.3});}
     else{p.vx*=(1-fric*dt/80);if(Math.abs(p.vx)<.5)p.vx=0;p.frame=0;}
 
     // Jump with coyote time + buffer
@@ -341,7 +356,7 @@ export class Platformer {
       }
     }
     // Variable jump height: release early = lower jump
-    if(!wantJmp&&p.vy<-50) p.vy*=.85;
+    if(!wantJmp&&p.vy<-40) p.vy*=.8;
 
     p.vy+=grav*dt; p.x+=p.vx*dt; p.y+=p.vy*dt;
 
@@ -372,7 +387,11 @@ export class Platformer {
     }
 
     if(p.grounded) p.coyote=.12;
-    if(p.grounded&&!p.wasG){this.shakeY=1.5;this.audio.playLand();}
+    if(p.grounded&&!p.wasG){
+      this.shakeY=1.2;this.audio.playLand();
+      // Landing dust burst
+      for(let i=0;i<5;i++) this.particles.push({x:p.x+4+Math.random()*4-2,y:p.y+14,vx:(Math.random()-.5)*25,vy:-Math.random()*10-2,life:0.35,color:this.env.accent});
+    }
     p.wasG=p.grounded;
 
     // Crumbling platforms
@@ -389,9 +408,9 @@ export class Platformer {
     p.x=Math.max(0,Math.min(560,p.x));
     if(p.y>190){p.x=20;p.y=120;p.vy=0;p.vx=0;} // fell off: respawn at start
 
-    // Camera
+    // Camera (smooth lerp)
     const tx=p.x-NW/2+30;
-    this.cam.x+=(tx-this.cam.x)*.07;
+    this.cam.x+=(tx-this.cam.x)*.09;
     this.cam.x=Math.max(0,Math.min(280,this.cam.x));
 
     // Crystal
@@ -419,6 +438,10 @@ export class Platformer {
 
     // Particles
     this.particles=this.particles.filter(pt=>{pt.x+=pt.vx*dt;pt.y+=pt.vy*dt;pt.vy+=120*dt;pt.life-=dt*1.5;return pt.life>0;});
+    // Trail fade
+    this.trail=this.trail.filter(tr=>{tr.a-=dt*2;tr.life-=dt;return tr.life>0;});
+    // Ambient motes
+    this.motes.forEach(m=>{m.x+=m.vx*dt;m.y+=m.vy*dt;m.t+=dt;if(m.y<-5||m.x<-5||m.x>565){m.x=Math.random()*560;m.y=155;m.t=0;}});
     this.shakeX*=.85;this.shakeY*=.85;
     this._updateProximity();
   }
@@ -438,6 +461,14 @@ export class Platformer {
       const sx=((s.x-cx*.1)%400+400)%400;if(sx>NW)return;
       b.globalAlpha=.3+Math.sin(t+s.t)*.2;
       b.fillRect(Math.floor(sx),Math.floor(s.y),Math.ceil(s.s),Math.ceil(s.s));});b.globalAlpha=1;}
+
+    // Ambient motes (floating particles in foreground)
+    for(const m of this.motes){
+      const mx=((m.x-cx*.3)%560+560)%560;if(mx>NW)continue;
+      b.fillStyle=this.env.accent;b.globalAlpha=0.15+Math.sin(m.t*1.5)*0.1;
+      b.fillRect(Math.floor(mx),Math.floor(m.y),Math.ceil(m.s),Math.ceil(m.s));
+    }
+    b.globalAlpha=1;
 
     // Void static
     if(isV){b.globalAlpha=.05;for(let i=0;i<15;i++){b.fillStyle=Math.random()>.5?'#fff':'#000';b.fillRect(0,Math.floor(Math.random()*NH),NW,1);}b.globalAlpha=1;}
@@ -537,6 +568,13 @@ export class Platformer {
       b.fillRect(ox-2,oy-3,4,1);b.fillRect(ox-3,oy-2,6,4);b.fillRect(ox-2,oy+2,4,1);
     }
 
+    // Trail
+    for(const tr of this.trail){
+      b.fillStyle=this.env.accent;b.globalAlpha=tr.a*0.3;
+      b.fillRect(Math.floor(tr.x-cx)-1,Math.floor(tr.y)-2,3,5);
+    }
+    b.globalAlpha=1;
+
     // Particles
     for(const pt of this.particles){b.fillStyle=pt.color||'#fff';b.globalAlpha=pt.life;b.fillRect(Math.floor(pt.x-cx),Math.floor(pt.y),2,2);}
     b.globalAlpha=1;
@@ -559,24 +597,23 @@ export class Platformer {
     const bob=p.grounded&&Math.abs(p.vx)>5?Math.sin(p.frame*2)*.5:0;
     const by=py+bob;
 
-    // Shield aura for Alex
+    // Alex: subtle ring only (no filled background)
     if (this.playerArchetype === 'alex') {
-      b.fillStyle = 'rgba(201, 184, 255, 0.15)';
-      b.strokeStyle = 'rgba(201, 184, 255, 0.4)';
-      b.lineWidth = 1;
+      b.strokeStyle = 'rgba(201, 184, 255, 0.25)';
+      b.lineWidth = 0.5;
       b.beginPath();
-      b.arc(px + 4, by + 8, 12, 0, Math.PI * 2);
-      b.fill();
+      b.arc(px + 4, by + 8, 10 + Math.sin(t*2)*1.5, 0, Math.PI * 2);
       b.stroke();
     }
 
-    // Glitched shadow offset for Axel
-    if (this.playerArchetype === 'axel' && Math.random() > 0.6) {
-      b.fillStyle = 'rgba(255, 102, 102, 0.3)';
-      b.fillRect(px + (Math.random() > 0.5 ? 3 : -3), Math.floor(by) + (Math.random() > 0.5 ? 1 : -1), 8, 14);
+    // Axel: tiny glitch flicker (not a rectangle, just pixel scatter)
+    if (this.playerArchetype === 'axel' && Math.random() > 0.75) {
+      b.fillStyle = 'rgba(255, 102, 102, 0.25)';
+      b.fillRect(px + Math.floor(Math.random()*6), Math.floor(by) + Math.floor(Math.random()*12), 2, 2);
     }
 
-    b.fillStyle='#000';b.globalAlpha=.2;b.fillRect(px+1,Math.floor(by)+15,6,1);b.globalAlpha=1;
+    // Shadow (tiny line, not a box)
+    b.fillStyle='#000';b.globalAlpha=.15;b.fillRect(px+1,Math.floor(by)+15,6,1);b.globalAlpha=1;
     b.fillStyle=col;
     b.fillRect(px+2,Math.floor(by),4,4); // head
     b.fillRect(px+1,Math.floor(by)+4,6,5); // body
@@ -585,8 +622,12 @@ export class Platformer {
     const arm=p.grounded?Math.sin(p.frame*2+Math.PI):(-1);
     b.fillRect(px-1,Math.floor(by)+5+Math.floor(arm),2,3); // arms
     b.fillRect(px+7,Math.floor(by)+5-Math.floor(arm),2,3);
-    if(isV){b.fillStyle='#444';b.globalAlpha=.3+Math.sin(t*4)*.15;b.fillRect(px+1,Math.floor(by)-1,6,16);b.globalAlpha=1;
-      if(Math.random()>.92){b.fillStyle=Math.random()>.5?'#ff004466':'#00ccff44';b.fillRect(px+2+(Math.random()-.5)*4,Math.floor(by),4,4);}}
+    // Phase 4: glitch pixels scattered around (no box overlay)
+    if(isV && Math.random()>.9){
+      const gc=Math.random()>.5?'rgba(255,0,80,0.2)':'rgba(0,200,255,0.2)';
+      b.fillStyle=gc;
+      b.fillRect(px+Math.floor(Math.random()*8-1),Math.floor(by)+Math.floor(Math.random()*14),2,2);
+    }
   }
 
   _wrap(text,maxW){
