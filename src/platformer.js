@@ -38,9 +38,8 @@ export class Platformer {
   }
   _resize(){
     const vw=window.innerWidth,vh=window.innerHeight;
-    let w=vw,h=vw*NH/NW; if(h>vh){h=vh;w=vh*NW/NH;}
-    this.c.width=w*(devicePixelRatio||1);this.c.height=h*(devicePixelRatio||1);
-    this.c.style.width=w+'px';this.c.style.height=h+'px';
+    this.c.width=vw*(devicePixelRatio||1);this.c.height=vh*(devicePixelRatio||1);
+    this.c.style.width='100vw';this.c.style.height='100vh';
   }
   _bind(){
     const k=(e,d)=>{
@@ -166,7 +165,7 @@ export class Platformer {
     // Wall separator at fork point
     for(let y=0;y<NH;y+=4){
       let blocked=true;
-      for(const py of pathYs){ if(y>=py-14&&y<=py+14) blocked=false; }
+      for(const py of pathYs){ if(y>=py-24&&y<=py+16) blocked=false; }
       if(blocked) this.platforms.push({x:295,y,w:4,h:4,solid:true,wall:true});
     }
 
@@ -278,8 +277,8 @@ export class Platformer {
     const spd = isSkyler ? 145 : 105;
     const acc = isSkyler ? 950 : 800;
     const fric = isAlex ? 180 : 500;
-    const grav = isAxel ? 480 : (isSolara && p.vy > 0 && (this.keys.Space||this.keys.ArrowUp||this.keys.KeyW||this.keys._tj) ? 260 : 580);
-    const jmpF = isAxel ? -185 : -160;
+    const grav = isAxel ? 500 : (isSolara && p.vy > 0 && (this.keys.Space||this.keys.ArrowUp||this.keys.KeyW||this.keys._tj) ? 280 : 620);
+    const jmpF = isAxel ? -180 : -155;
 
     // Magnetic pull for Dylan
     if(isDylan){
