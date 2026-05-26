@@ -68,13 +68,13 @@ export class Platformer {
       info = { name: 'Identity Dissolved', desc: 'Archetype powerups offline', icon: '❌' };
     } else {
       info = {
-        alex: { name: 'Shielded Mind', desc: 'Maintains steady velocity', icon: '🛡️' },
-        mira: { name: 'Continuity Jump', desc: 'Allows a Double Jump in mid-air', icon: '✨' },
-        riley: { name: 'Wind Dash', desc: 'Jump in mid-air to Dash forward', icon: '💨' },
-        solara: { name: 'Ethereal Float', desc: 'Hold Space to glide slowly', icon: '🪶' },
-        dylan: { name: 'Magnetic Pull', desc: 'Attracts orbs from a distance', icon: '🧲' },
-        axel: { name: 'Glitched Gravity', desc: 'Jump 15% higher and fall slower', icon: '⚡' },
-        skyler: { name: 'Super Speed', desc: 'Move 40% faster through the level', icon: '🏃' }
+        alex: { name: 'Role Scaffold', desc: 'Lowers friction, sliding further', icon: '🏷️' },
+        mira: { name: 'Memory Chain', desc: 'Chains a second jump in mid-air', icon: '✨' },
+        riley: { name: 'Fleeting Perception', desc: 'Dashes forward in mid-air', icon: '💨' },
+        solara: { name: 'Subjective Qualia', desc: 'Glides slowly when holding jump', icon: '🪶' },
+        dylan: { name: 'Leviathan Grip', desc: 'Increases friction to stop instantly', icon: '⚓' },
+        axel: { name: 'Perceptual Skepticism', desc: 'Jumps higher and falls slower', icon: '⚡' },
+        skyler: { name: 'Self-Reliance', desc: 'Moves 40% faster through space', icon: '🏃' }
       }[this.playerArchetype] || { name: 'Inner Self', desc: 'No active powerup', icon: '⭐' };
     }
 
@@ -295,22 +295,9 @@ export class Platformer {
 
     const spd = isSkyler ? 145 : 105;
     const acc = isSkyler ? 950 : 800;
-    const fric = isAlex ? 180 : 500;
+    const fric = isAlex ? 180 : (isDylan ? 2500 : 500);
     const grav = isAxel ? 500 : (isSolara && p.vy > 0 && (this.keys.Space||this.keys.ArrowUp||this.keys.KeyW||this.keys._tj) ? 280 : 620);
     const jmpF = isAxel ? -180 : -155;
-
-    // Magnetic pull for Dylan
-    if(isDylan){
-      this.orbs.forEach(orb=>{
-        if(orb.collected)return;
-        const dx=(p.x+4)-orb.x, dy=(p.y+8)-orb.y, dist=Math.sqrt(dx*dx+dy*dy);
-        if(dist<80){
-          const pullSpeed=90*(1-dist/80)*dt;
-          orb.x+= (dx>0?-1:1)*pullSpeed;
-          orb.y+= (dy>0?-1:1)*pullSpeed;
-        }
-      });
-    }
 
     let dir=0;
     if(this.keys.ArrowLeft||this.keys.KeyA||this.keys._tl) dir=-1;
@@ -322,7 +309,7 @@ export class Platformer {
         if(this.footT>.2){this.audio.playFootstep();this.footT=0;this._dust(p.x+4,p.y+14);}}
       // Movement trail
       if(Math.abs(p.vx)>30) this.trail.push({x:p.x+4,y:p.y+7,a:0.4,life:0.3});}
-    else{p.vx*=(1-fric*dt/80);if(Math.abs(p.vx)<.5)p.vx=0;p.frame=0;}
+    else{p.vx*=Math.max(0,1-fric*dt/80);if(Math.abs(p.vx)<.5)p.vx=0;p.frame=0;}
 
     // Jump with coyote time + buffer
     const wantJmp=this.keys.Space||this.keys.ArrowUp||this.keys.KeyW||this.keys._tj;
