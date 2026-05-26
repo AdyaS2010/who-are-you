@@ -920,6 +920,20 @@ function revealGuess(idx) {
       const certOpp = $('cert-opp-name');
       if (certPlayer) certPlayer.textContent = state.name || 'The Wanderer';
       if (certOpp) certOpp.textContent = opp.name;
+
+      // Unlock golden filter option
+      const filterSelect = $('prism-filter');
+      if (filterSelect && !filterSelect.querySelector('option[value="gold"]')) {
+        const opt = document.createElement('option');
+        opt.value = 'gold';
+        opt.textContent = '🌟 Golden Transcendence';
+        filterSelect.appendChild(opt);
+      }
+      if (state.purchased.prism) {
+        const prismRow = $('prism-settings-row');
+        if (prismRow) prismRow.style.display = 'flex';
+      }
+
       $('treat-modal').classList.remove('hidden');
     }, 3000);
 
@@ -1245,8 +1259,8 @@ function setupShop() {
       state.purchased[item] = true;
       if (plat) {
         plat.audio.playCollect();
-        if (item === 'wings') plat.hasWings = true;
-        if (item === 'shield') plat.hasShield = true;
+        if (item === 'wings') { plat.hasWings = true; plat._renderPowerupBadge(); }
+        if (item === 'shield') { plat.hasShield = true; plat._renderPowerupBadge(); }
       }
       if (item === 'prism') {
         const prismRow = $('prism-settings-row');
@@ -1266,7 +1280,7 @@ function setupShop() {
     filterSelect.addEventListener('change', e => {
       const filter = e.target.value;
       state.activeFilter = filter;
-      document.body.classList.remove('filter-dreamy', 'filter-vintage', 'filter-glitched');
+      document.body.classList.remove('filter-dreamy', 'filter-vintage', 'filter-glitched', 'filter-gold');
       if (filter !== 'none') {
         document.body.classList.add(`filter-${filter}`);
       }
@@ -1293,6 +1307,20 @@ function updateShopUI() {
       btn.classList.remove('owned');
     }
   });
+
+  const canBuyAny = Object.entries(state.purchased).some(([item, owned]) => {
+    if (owned) return false;
+    const cost = { wings: 2, shield: 2, prism: 3, elixir: 4 }[item];
+    return state.fragments >= cost;
+  });
+  const shopToggle = $('shop-toggle');
+  if (shopToggle) {
+    if (canBuyAny) {
+      shopToggle.classList.add('shop-pulse-glow');
+    } else {
+      shopToggle.classList.remove('shop-pulse-glow');
+    }
+  }
   
   const list = $('shop-choice-history');
   if (list) {

@@ -63,23 +63,37 @@ export class Platformer {
       badge.className = 'ghud-powerup-badge';
       this.hud.appendChild(badge);
     }
-    const info = {
-      alex: { name: 'Shielded Mind', desc: 'Maintains steady velocity', icon: '🛡️' },
-      mira: { name: 'Continuity Jump', desc: 'Allows a Double Jump in mid-air', icon: '✨' },
-      riley: { name: 'Wind Dash', desc: 'Jump in mid-air to Dash forward', icon: '💨' },
-      solara: { name: 'Ethereal Float', desc: 'Hold Space to glide slowly', icon: '🪶' },
-      dylan: { name: 'Magnetic Pull', desc: 'Attracts orbs from a distance', icon: '🧲' },
-      axel: { name: 'Glitched Gravity', desc: 'Jump 15% higher and fall slower', icon: '⚡' },
-      skyler: { name: 'Super Speed', desc: 'Move 40% faster through the level', icon: '🏃' }
-    }[this.playerArchetype] || { name: 'Inner Self', desc: 'No active powerup', icon: '⭐' };
+    let info;
+    if (this.phase === 4) {
+      info = { name: 'Identity Dissolved', desc: 'Archetype powerups offline', icon: '❌' };
+    } else {
+      info = {
+        alex: { name: 'Shielded Mind', desc: 'Maintains steady velocity', icon: '🛡️' },
+        mira: { name: 'Continuity Jump', desc: 'Allows a Double Jump in mid-air', icon: '✨' },
+        riley: { name: 'Wind Dash', desc: 'Jump in mid-air to Dash forward', icon: '💨' },
+        solara: { name: 'Ethereal Float', desc: 'Hold Space to glide slowly', icon: '🪶' },
+        dylan: { name: 'Magnetic Pull', desc: 'Attracts orbs from a distance', icon: '🧲' },
+        axel: { name: 'Glitched Gravity', desc: 'Jump 15% higher and fall slower', icon: '⚡' },
+        skyler: { name: 'Super Speed', desc: 'Move 40% faster through the level', icon: '🏃' }
+      }[this.playerArchetype] || { name: 'Inner Self', desc: 'No active powerup', icon: '⭐' };
+    }
 
-    badge.innerHTML = `
+    let html = `
       <span class="powerup-icon">${info.icon}</span>
       <div class="powerup-info">
         <span class="powerup-name">${info.name}</span>
         <span class="powerup-source">${info.desc}</span>
       </div>
     `;
+
+    if (this.hasWings || this.hasShield) {
+      html += `<div class="shop-upgrades-hud-row">`;
+      if (this.hasWings) html += `<span class="shop-upgrade-badge" title="Triple Jump Active">🪶 Wings</span>`;
+      if (this.hasShield) html += `<span class="shop-upgrade-badge" title="Hobbesian Fall Protection Active">🛡️ Shield</span>`;
+      html += `</div>`;
+    }
+
+    badge.innerHTML = html;
   }
   setPhase(p){this.phase=p;}
   onChoice(cb){this.choiceCb=cb;}
@@ -158,9 +172,9 @@ export class Platformer {
 
     // Crystal at approach end (positioned dynamically to prevent overlap with platforms)
     let cx = 255, cy = 118;
-    if (ph === 2) { cx = 218; cy = 120; }
-    else if (ph === 3) { cx = 238; cy = 124; }
-    else if (ph === 4) { cx = 230; cy = 122; }
+    if (ph === 2) { cx = 214; cy = 124; }
+    else if (ph === 3) { cx = 236; cy = 126; }
+    else if (ph === 4) { cx = 222; cy = 124; }
     this.crystal = { x: cx, y: cy, triggered: false, t: 0 };
 
     // --- CHOICE PATHS with meaningful labels ---
@@ -226,6 +240,7 @@ export class Platformer {
     this._scenarioText=scenario.text;
     this._scenarioChoices=scenario.choices;
     this._showBanner(false);
+    this._renderPowerupBadge();
   }
 
   _showBanner(show){
@@ -269,14 +284,14 @@ export class Platformer {
     }
     const p=this.player;
 
-    // Archetype powerup attributes
-    const isSkyler = this.playerArchetype === 'skyler';
-    const isAlex = this.playerArchetype === 'alex';
-    const isAxel = this.playerArchetype === 'axel';
-    const isSolara = this.playerArchetype === 'solara';
-    const isDylan = this.playerArchetype === 'dylan';
-    const isRiley = this.playerArchetype === 'riley';
-    const isMira = this.playerArchetype === 'mira';
+    // Archetype powerup attributes (disabled in the glitch phase)
+    const isSkyler = this.phase !== 4 && this.playerArchetype === 'skyler';
+    const isAlex = this.phase !== 4 && this.playerArchetype === 'alex';
+    const isAxel = this.phase !== 4 && this.playerArchetype === 'axel';
+    const isSolara = this.phase !== 4 && this.playerArchetype === 'solara';
+    const isDylan = this.phase !== 4 && this.playerArchetype === 'dylan';
+    const isRiley = this.phase !== 4 && this.playerArchetype === 'riley';
+    const isMira = this.phase !== 4 && this.playerArchetype === 'mira';
 
     const spd = isSkyler ? 145 : 105;
     const acc = isSkyler ? 950 : 800;
@@ -623,7 +638,7 @@ export class Platformer {
     const by=py+bob;
 
     // Alex: subtle ring only (no filled background)
-    if (this.playerArchetype === 'alex') {
+    if (this.phase !== 4 && this.playerArchetype === 'alex') {
       b.strokeStyle = 'rgba(201, 184, 255, 0.25)';
       b.lineWidth = 0.5;
       b.beginPath();
@@ -632,7 +647,7 @@ export class Platformer {
     }
 
     // Axel: tiny glitch flicker (not a rectangle, just pixel scatter)
-    if (this.playerArchetype === 'axel' && Math.random() > 0.75) {
+    if (this.phase !== 4 && this.playerArchetype === 'axel' && Math.random() > 0.75) {
       b.fillStyle = 'rgba(255, 102, 102, 0.25)';
       b.fillRect(px + Math.floor(Math.random()*6), Math.floor(by) + Math.floor(Math.random()*12), 2, 2);
     }

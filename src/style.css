@@ -1749,6 +1749,36 @@ a:focus-visible {
 .filter-glitched {
   filter: hue-rotate(85deg) contrast(1.2) brightness(1.02);
 }
+.filter-gold {
+  filter: sepia(0.25) saturate(1.75) contrast(1.08) brightness(1.05) drop-shadow(0 0 4px rgba(255, 215, 0, 0.25));
+}
+
+/* Shop Upgrades in HUD & Pulsing Alerts */
+.shop-upgrades-hud-row {
+  display: flex;
+  gap: 0.35rem;
+  margin-top: 0.4rem;
+  border-top: 1px dashed rgba(255, 255, 255, 0.1);
+  padding-top: 0.4rem;
+}
+.shop-upgrade-badge {
+  font-family: var(--ff-m);
+  font-size: 0.52rem;
+  background: rgba(201, 184, 255, 0.15);
+  color: var(--accent);
+  border: 1px solid var(--card-border);
+  padding: 0.1rem 0.35rem;
+  border-radius: 4px;
+  text-shadow: 0 0 3px var(--glow);
+}
+@keyframes shopPulse {
+  0%, 100% { box-shadow: 0 0 5px var(--glow); }
+  50% { box-shadow: 0 0 15px var(--accent); transform: scale(1.08); }
+}
+.shop-pulse-glow {
+  animation: shopPulse 2s infinite ease-in-out;
+  border-color: var(--accent) !important;
+}
 
 /* Responsive grid modifications */
 @media(max-width: 600px) {
