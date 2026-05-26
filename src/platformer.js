@@ -240,6 +240,15 @@ export class Platformer {
     if(!el&&show){
       el=document.createElement('div');el.className='ghud-scenario';
       let h=`<div class="ghud-question">${this._scenarioText}</div>`;
+      if(this._scenarioChoices){
+        const colors = this._scenarioChoices.length===2 ? ['#ffcc66','#66ccff'] : ['#ff8888','#88ff88','#8888ff'];
+        h+='<div class="ghud-choices">';
+        this._scenarioChoices.forEach((c,i)=>{
+          const short = c.text.length>55 ? c.text.slice(0,52)+'...' : c.text;
+          h+=`<div class="ghud-choice-row"><span class="ghud-dot" style="background:${colors[i]}"></span><span>${short}</span></div>`;
+        });
+        h+='</div>';
+      }
       h+='<div class="ghud-hint">Climb the path of your intuition and claim a glowing orb</div>';
       el.innerHTML=h; this.hud.appendChild(el);
     }
