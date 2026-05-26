@@ -156,8 +156,12 @@ export class Platformer {
       this.platforms.push({x:255,y:98,w:14,h:4,solid:false,crumble:true,crumbleT:null});
     }
 
-    // Crystal at approach end
-    this.crystal={x:255,y:118,triggered:false,t:0};
+    // Crystal at approach end (positioned dynamically to prevent overlap with platforms)
+    let cx = 255, cy = 118;
+    if (ph === 2) { cx = 218; cy = 120; }
+    else if (ph === 3) { cx = 238; cy = 124; }
+    else if (ph === 4) { cx = 230; cy = 122; }
+    this.crystal = { x: cx, y: cy, triggered: false, t: 0 };
 
     // --- CHOICE PATHS with meaningful labels ---
     const pathYs = nc===2 ? [95,145] : [80,118,148];

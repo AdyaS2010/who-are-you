@@ -1691,7 +1691,7 @@ a:focus-visible {
   border: 1px solid rgba(201, 184, 255, 0.08);
   border-radius: var(--rs);
   padding: 1.1rem 0.9rem;
-  text-align: left;
+  text-align: center;
   overflow: hidden;
   transition: transform 0.4s var(--ease), border-color 0.4s var(--ease), box-shadow 0.4s var(--ease);
   display: flex;
