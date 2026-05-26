@@ -39,7 +39,7 @@ export class Platformer {
   _resize(){
     const vw=window.innerWidth,vh=window.innerHeight;
     this.c.width=vw*(devicePixelRatio||1);this.c.height=vh*(devicePixelRatio||1);
-    this.c.style.width='100vw';this.c.style.height='100vh';
+    this.c.style.width='100%';this.c.style.height='100%';
   }
   _bind(){
     const k=(e,d)=>{
@@ -165,7 +165,7 @@ export class Platformer {
     // Wall separator at fork point
     for(let y=0;y<NH;y+=4){
       let blocked=true;
-      for(const py of pathYs){ if(y>=py-24&&y<=py+16) blocked=false; }
+      for(const py of pathYs){ if(y>=py-48&&y<=py+16) blocked=false; }
       if(blocked) this.platforms.push({x:295,y,w:4,h:4,solid:true,wall:true});
     }
 

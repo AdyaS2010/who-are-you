@@ -115,7 +115,7 @@ body{font-family:var(--ff-b);background:var(--bg);color:var(--text);min-height:1
 
 /* Full-screen game canvas */
 .game-screen{position:fixed;top:0;left:0;width:100vw;height:100vh;z-index:50;background:#000;display:flex;align-items:center;justify-content:center;}
-.game-screen canvas{image-rendering:pixelated;image-rendering:crisp-edges;}
+.game-screen canvas{position:absolute;top:0;left:0;width:100vw;height:100vh;image-rendering:pixelated;image-rendering:crisp-edges;}
 .game-hud{position:absolute;top:0;left:0;right:0;bottom:0;pointer-events:none;display:flex;flex-direction:column;padding:1.5rem 2rem;}
 .ghud-narrator {
   font-family: var(--ff-b);
