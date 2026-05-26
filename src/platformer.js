@@ -46,7 +46,12 @@ export class Platformer {
       if(document.activeElement&&(document.activeElement.tagName==='INPUT'||document.activeElement.tagName==='TEXTAREA'))return;
       if(['ArrowLeft','ArrowRight','ArrowUp','Space','KeyA','KeyD','KeyW'].includes(e.code)){e.preventDefault();this.keys[e.code]=d;if(d&&!this.audio.initialized){this.audio.init();this.audio.resume();this.audio.startAmbient(this.phase);}}
     };
-    window.addEventListener('keydown',e=>k(e,true));window.addEventListener('keyup',e=>k(e,false));
+    window.addEventListener('keydown',e=>{
+      if(document.activeElement&&(document.activeElement.tagName==='INPUT'||document.activeElement.tagName==='TEXTAREA'))return;
+      if(e.code==='KeyR'){e.preventDefault();this.resetLevel();}
+      k(e,true);
+    });
+    window.addEventListener('keyup',e=>k(e,false));
     this.c.addEventListener('touchstart',e=>{if(!this.audio.initialized){this.audio.init();this.audio.resume();this.audio.startAmbient(this.phase);}for(const t of e.changedTouches){const r=t.clientX/window.innerWidth;if(r<.3)this.keys._tl=true;else if(r>.7)this.keys._tr=true;else this.keys._tj=true;}e.preventDefault();},{passive:false});
     this.c.addEventListener('touchend',()=>{this.keys._tl=false;this.keys._tr=false;this.keys._tj=false;});
   }
@@ -89,8 +94,16 @@ export class Platformer {
   }
   setPhase(p){this.phase=p;}
   onChoice(cb){this.choiceCb=cb;}
+  resetLevel() {
+    if (this.collected) return;
+    if (this._currentScenario && this._currentEnvKey !== undefined) {
+      this.loadScenario(this._currentScenario, this._currentEnvKey);
+    }
+  }
 
   loadScenario(scenario, envKey){
+    this._currentScenario = scenario;
+    this._currentEnvKey = envKey;
     this.env = ENVS[envKey]||ENVS.twilight;
     if(this.phase===4) this.env=ENVS.void;
     this.collected=false; this.questionTriggered=false;
@@ -233,6 +246,7 @@ export class Platformer {
     this._scenarioChoices=scenario.choices;
     this._showBanner(false);
     this._renderPowerupBadge();
+    this._renderChoicesPanel();
   }
 
   _showBanner(show){
@@ -240,19 +254,60 @@ export class Platformer {
     if(!el&&show){
       el=document.createElement('div');el.className='ghud-scenario';
       let h=`<div class="ghud-question">${this._scenarioText}</div>`;
-      if(this._scenarioChoices){
-        const colors = this._scenarioChoices.length===2 ? ['#ffcc66','#66ccff'] : ['#ff8888','#88ff88','#8888ff'];
-        h+='<div class="ghud-choices">';
-        this._scenarioChoices.forEach((c,i)=>{
-          const short = c.text.length>55 ? c.text.slice(0,52)+'...' : c.text;
-          h+=`<div class="ghud-choice-row"><span class="ghud-dot" style="background:${colors[i]}"></span><span>${short}</span></div>`;
-        });
-        h+='</div>';
-      }
-      h+='<div class="ghud-hint">Climb the path of your intuition and claim a glowing orb</div>';
+      h+='<div class="ghud-hint">Hover over the intuition runes on the left to reveal the choices, then claim an orb. (Press [R] to Reset level)</div>';
       el.innerHTML=h; this.hud.appendChild(el);
     }
     if(el) el.style.opacity=(show && !this.collected)?'1':'0';
+  }
+
+  _renderChoicesPanel() {
+    const panel = document.getElementById('game-choices-panel');
+    if (!panel) return;
+    panel.innerHTML = '';
+    if (!this._scenarioChoices) return;
+
+    const colors = this._scenarioChoices.length === 2 ? ['yellow', 'blue'] : ['red', 'green', 'blue'];
+    const dotColors = this._scenarioChoices.length === 2 ? ['#ffcc66', '#66ccff'] : ['#ff8888', '#88ff88', '#8888ff'];
+    const letters = ['A', 'B', 'C'];
+
+    this._scenarioChoices.forEach((choice, i) => {
+      const color = colors[i];
+      const dotColor = dotColors[i];
+      const letter = letters[i];
+      const isLocked = !this.questionTriggered;
+
+      const rune = document.createElement('div');
+      rune.className = `choice-rune ${isLocked ? 'locked' : 'unlocked'}`;
+      rune.setAttribute('data-color', color);
+
+      // Create rune circle
+      const circle = document.createElement('div');
+      circle.className = 'rune-circle';
+      circle.innerHTML = isLocked ? '🔒' : letter;
+      circle.style.borderColor = isLocked ? 'rgba(255, 255, 255, 0.15)' : dotColor;
+      rune.appendChild(circle);
+
+      // Create tooltip
+      const tooltip = document.createElement('div');
+      tooltip.className = 'rune-tooltip';
+      
+      const header = document.createElement('div');
+      header.className = 'rune-tooltip-header';
+      header.innerHTML = isLocked 
+        ? `<span class="ghud-dot" style="background:#555"></span> Option ${letter} (Locked)`
+        : `<span class="ghud-dot" style="background:${dotColor}"></span> Option ${letter}`;
+      tooltip.appendChild(header);
+
+      const body = document.createElement('div');
+      body.className = 'rune-tooltip-body';
+      body.textContent = isLocked 
+        ? 'Find and touch the unlock crystal to reveal this path\'s intuition.'
+        : choice.text;
+      tooltip.appendChild(body);
+
+      rune.appendChild(tooltip);
+      panel.appendChild(rune);
+    });
   }
   _showCollect(text, color){
     let el=this.hud.querySelector('.ghud-collect');
@@ -422,7 +477,9 @@ export class Platformer {
     if(this.crystal&&!this.crystal.triggered){
       if(Math.abs(p.x+4-this.crystal.x)<14&&Math.abs(p.y+8-this.crystal.y)<16){
         this.crystal.triggered=true;this.questionTriggered=true;
-        this.audio.playCrystal();this._showBanner(true);
+        this.audio.playCrystal();
+        this._showBanner(true);
+        this._renderChoicesPanel();
       }
     }
     if(this.crystal) this.crystal.t+=dt;
@@ -433,6 +490,8 @@ export class Platformer {
       if(Math.abs(p.x+4-orb.x)<10&&Math.abs(p.y+8-orb.y)<12){
         orb.collected=true;this.collected=true;
         this._showBanner(false);
+        const panel = document.getElementById('game-choices-panel');
+        if(panel) panel.innerHTML = '';
         this.audio.playCollect();this.shakeX=3;this.shakeY=3;
         if(this.phase===4) this.audio.playGlitch();
         for(let i=0;i<20;i++) this.particles.push({x:orb.x,y:orb.y,vx:(Math.random()-.5)*100,vy:(Math.random()-.5)*100,life:1,color:orb.color});
@@ -627,5 +686,9 @@ export class Platformer {
     words.forEach(w=>{const t=line+w+' ';if(t.length*2.5>maxW&&line){lines.push(line.trim());line=w+' ';}else line=t;});
     if(line.trim())lines.push(line.trim());return lines;
   }
-  destroy(){this.stop();}
+  destroy(){
+    this.stop();
+    const panel = document.getElementById('game-choices-panel');
+    if(panel) panel.innerHTML = '';
+  }
 }
