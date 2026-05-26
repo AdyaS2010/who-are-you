@@ -65,17 +65,9 @@ export class Platformer {
     }
     let info;
     if (this.phase === 4) {
-      info = { name: 'Identity Dissolved', desc: 'Archetype powerups offline', icon: '❌' };
+      info = { name: 'Glitched Self', desc: 'Identity is unstable', icon: '👾' };
     } else {
-      info = {
-        alex: { name: 'Role Scaffold', desc: 'Lowers friction, sliding further', icon: '🏷️' },
-        mira: { name: 'Memory Chain', desc: 'Chains a second jump in mid-air', icon: '✨' },
-        riley: { name: 'Fleeting Perception', desc: 'Dashes forward in mid-air', icon: '💨' },
-        solara: { name: 'Subjective Qualia', desc: 'Glides slowly when holding jump', icon: '🪶' },
-        dylan: { name: 'Leviathan Grip', desc: 'Increases friction to stop instantly', icon: '⚓' },
-        axel: { name: 'Perceptual Skepticism', desc: 'Jumps higher and falls slower', icon: '⚡' },
-        skyler: { name: 'Self-Reliance', desc: 'Moves 40% faster through space', icon: '🏃' }
-      }[this.playerArchetype] || { name: 'Inner Self', desc: 'No active powerup', icon: '⭐' };
+      info = { name: 'Inner Self', desc: 'Seeking personal identity', icon: '⭐' };
     }
 
     let html = `
@@ -284,20 +276,11 @@ export class Platformer {
     }
     const p=this.player;
 
-    // Archetype powerup attributes (disabled in the glitch phase)
-    const isSkyler = this.phase !== 4 && this.playerArchetype === 'skyler';
-    const isAlex = this.phase !== 4 && this.playerArchetype === 'alex';
-    const isAxel = this.phase !== 4 && this.playerArchetype === 'axel';
-    const isSolara = this.phase !== 4 && this.playerArchetype === 'solara';
-    const isDylan = this.phase !== 4 && this.playerArchetype === 'dylan';
-    const isRiley = this.phase !== 4 && this.playerArchetype === 'riley';
-    const isMira = this.phase !== 4 && this.playerArchetype === 'mira';
-
-    const spd = isSkyler ? 145 : 105;
-    const acc = isSkyler ? 950 : 800;
-    const fric = isAlex ? 180 : (isDylan ? 2500 : 500);
-    const grav = isAxel ? 500 : (isSolara && p.vy > 0 && (this.keys.Space||this.keys.ArrowUp||this.keys.KeyW||this.keys._tj) ? 280 : 620);
-    const jmpF = isAxel ? -180 : -155;
+    const spd = 105;
+    const acc = 800;
+    const fric = 500;
+    const grav = 620;
+    const jmpF = -155;
 
     let dir=0;
     if(this.keys.ArrowLeft||this.keys.KeyA||this.keys._tl) dir=-1;
@@ -344,25 +327,11 @@ export class Platformer {
       }
     } else if(!p.grounded && !this.doubleJumpUsed && jmpPressed){
       // Universal double jump for all characters
-      if(isRiley){
-        // Riley: air dash instead of vertical jump
-        p.vx=p.dir*280;
-        p.vy=-40;
-        this.doubleJumpUsed=true;
-        this.audio.playJump();
-        for(let i=0;i<10;i++){
-          this.particles.push({x:p.x+4,y:p.y+8,vx:-p.dir*(Math.random()*60+20),vy:(Math.random()-0.5)*15,life:0.5,color:'#ff6666'});
-        }
-      } else {
-        // Everyone else: standard double jump
-        p.vy = isMira ? jmpF : jmpF * 0.85;
-        this.doubleJumpUsed=true;
-        this.audio.playJump();
-        const djColor = isMira ? '#ffdd66' : this.env.accent;
-        const djCount = isMira ? 10 : 6;
-        for(let i=0;i<djCount;i++){
-          this.particles.push({x:p.x+4,y:p.y+14,vx:(Math.random()-0.5)*45,vy:(Math.random()-0.5)*25,life:0.5,color:djColor});
-        }
+      p.vy = jmpF * 0.85;
+      this.doubleJumpUsed=true;
+      this.audio.playJump();
+      for(let i=0;i<6;i++){
+        this.particles.push({x:p.x+4,y:p.y+14,vx:(Math.random()-0.5)*45,vy:(Math.random()-0.5)*25,life:0.5,color:this.env.accent});
       }
     } else if(!p.grounded && this.doubleJumpUsed && !this.tripleJumpUsed && jmpPressed && this.hasWings){
       // Emersonian Wings: TRIPLE JUMP
@@ -624,20 +593,7 @@ export class Platformer {
     const bob=p.grounded&&Math.abs(p.vx)>5?Math.sin(p.frame*2)*.5:0;
     const by=py+bob;
 
-    // Alex: subtle ring only (no filled background)
-    if (this.phase !== 4 && this.playerArchetype === 'alex') {
-      b.strokeStyle = 'rgba(201, 184, 255, 0.25)';
-      b.lineWidth = 0.5;
-      b.beginPath();
-      b.arc(px + 4, by + 8, 10 + Math.sin(t*2)*1.5, 0, Math.PI * 2);
-      b.stroke();
-    }
 
-    // Axel: tiny glitch flicker (not a rectangle, just pixel scatter)
-    if (this.phase !== 4 && this.playerArchetype === 'axel' && Math.random() > 0.75) {
-      b.fillStyle = 'rgba(255, 102, 102, 0.25)';
-      b.fillRect(px + Math.floor(Math.random()*6), Math.floor(by) + Math.floor(Math.random()*12), 2, 2);
-    }
 
     // Shadow (tiny line, not a box)
     b.fillStyle='#000';b.globalAlpha=.15;b.fillRect(px+1,Math.floor(by)+15,6,1);b.globalAlpha=1;
