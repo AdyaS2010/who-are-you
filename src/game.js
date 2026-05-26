@@ -547,12 +547,16 @@ function startGuessWhoDuel() {
   // Initialize game state
   state.gwEliminated = new Set();
   if (state.purchased.elixir) {
-    // Socratic Elixir: pre-eliminate 1 incorrect suspect (excluding AI secret)
+    // Socratic Elixir: pre-eliminate 1 random incorrect suspect (excluding AI secret)
+    const candidates = [];
     for (let i = 0; i < GW_SUSPECTS.length; i++) {
       if (i !== state.gwAiSecret) {
-        state.gwEliminated.add(i);
-        break;
+        candidates.push(i);
       }
+    }
+    if (candidates.length > 0) {
+      const randIdx = candidates[Math.floor(Math.random() * candidates.length)];
+      state.gwEliminated.add(randIdx);
     }
   }
   state.gwUsedQs = new Set();
@@ -731,16 +735,24 @@ function activateAbility() {
 
   switch (state.gwRole.abilityId) {
     case 'rationalism':
-      // Hobbes Order: Eliminate 2 wrong suspects automatically
-      let count = 0, eliminatedNames = [];
+      // Hobbes Order: Eliminate 2 random wrong suspects automatically
+      const wrongSuspects = [];
       for (let i = 0; i < GW_SUSPECTS.length; i++) {
         if (i !== state.gwAiSecret && !state.gwEliminated.has(i)) {
-          state.gwEliminated.add(i);
-          eliminatedNames.push(GW_SUSPECTS[i].name);
-          count++;
-          if (count >= 2) break;
+          wrongSuspects.push(i);
         }
       }
+      const toEliminate = [];
+      while (wrongSuspects.length > 0 && toEliminate.length < 2) {
+        const randIndex = Math.floor(Math.random() * wrongSuspects.length);
+        const [chosen] = wrongSuspects.splice(randIndex, 1);
+        toEliminate.push(chosen);
+      }
+      const eliminatedNames = [];
+      toEliminate.forEach(idx => {
+        state.gwEliminated.add(idx);
+        eliminatedNames.push(GW_SUSPECTS[idx].name);
+      });
       renderBoard();
       message = `Deduction completed. Eliminated: ${eliminatedNames.join(', ')}`;
       break;
@@ -792,17 +804,16 @@ function runAiTurnLogic() {
 
   // AI Strategic deduction: finds a question it hasn't used that splits its remaining suspects closest to 50/50
   let bestQIdx = -1;
-  let bestQDiff = 999;
   
   // Create a list of questions that AI has not asked yet (simulated by checking index)
-  // Let's pick a random unasked question to keep it simple but realistic, or strategic
   const unasked = GUESS_QUESTIONS.map((_, i) => i).filter(i => !state.gwUsedQs.has(i));
   
   if (unasked.length === 0) {
     // Fallback: pick a random question
     bestQIdx = Math.floor(Math.random() * GUESS_QUESTIONS.length);
   } else {
-    // Strategy: find the question that splits the possible suspects best
+    // Strategy: evaluate how well each question splits the remaining possibilities
+    const candidates = [];
     unasked.forEach(qIdx => {
       const q = GUESS_QUESTIONS[qIdx];
       let yesCount = 0;
@@ -810,11 +821,17 @@ function runAiTurnLogic() {
         if (q.check(GW_SUSPECTS[sIdx])) yesCount++;
       });
       const diff = Math.abs(state.gwAiPossibleSuspects.length / 2 - yesCount);
-      if (diff < bestQDiff) {
-        bestQDiff = diff;
-        bestQIdx = qIdx;
-      }
+      candidates.push({ qIdx, diff });
     });
+    
+    // Sort candidates so the ones that split closest to 50/50 are first
+    candidates.sort((a, b) => a.diff - b.diff);
+    
+    // To make the AI feel realistic and less predictable, we pick randomly from the top 3 best splits.
+    // This allows it to explore different angles instead of always taking the absolute exact same mathematical move first.
+    const poolSize = Math.min(3, candidates.length);
+    const chosenCandidate = candidates[Math.floor(Math.random() * poolSize)];
+    bestQIdx = chosenCandidate.qIdx;
   }
 
   const chosenQ = GUESS_QUESTIONS[bestQIdx];

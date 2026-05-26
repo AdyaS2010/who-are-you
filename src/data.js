@@ -497,14 +497,14 @@ export const PHILOSOPHERS = [
 // ---- QUOTES ----
 
 export const PHILOSOPHICAL_QUOTES = [
-  {text:'"Trust thyself: every heart vibrates to that iron string."',source:', Emerson, Self-Reliance'},
-  {text:'"There is something it is like to be a conscious being, something it is like for the being itself."',source:', Frank Jackson, Epiphenomenal Qualia'},
-  {text:'"The life of man: solitary, poor, nasty, brutish, and short."',source:', Thomas Hobbes, Leviathan'},
-  {text:'"What I call \'the self\' is nothing but a bundle of perceptions."',source:', David Hume, A Treatise of Human Nature'},
-  {text:'"Have you ever had a dream that you were so sure was real?"',source:', The Matrix (1999)'},
-  {text:'"The unexamined life is not worth living."',source:', Plato, Apology'},
-  {text:'"Human nature is not a machine to be built after a model."',source:', John Stuart Mill, On Liberty'},
-  {text:'"There is no single, unified self, only a constantly shifting stream of consciousness."',source:', The No-Self Theory'}
+  {text:'"Trust thyself: every heart vibrates to that iron string."',source:'Emerson, Self-Reliance'},
+  {text:'"There is something it is like to be a conscious being, something it is like for the being itself."',source:'Frank Jackson, Epiphenomenal Qualia'},
+  {text:'"The life of man: solitary, poor, nasty, brutish, and short."',source:'Thomas Hobbes, Leviathan'},
+  {text:'"What I call \'the self\' is nothing but a bundle of perceptions."',source:'David Hume, A Treatise of Human Nature'},
+  {text:'"Have you ever had a dream that you were so sure was real?"',source:'The Matrix (1999)'},
+  {text:'"The unexamined life is not worth living."',source:'Plato, Apology'},
+  {text:'"Human nature is not a machine to be built after a model."',source:'John Stuart Mill, On Liberty'},
+  {text:'"There is no single, unified self, only a constantly shifting stream of consciousness."',source:'The No-Self Theory'}
 ];
 
 export const VECTOR_DESCRIPTIONS = {
