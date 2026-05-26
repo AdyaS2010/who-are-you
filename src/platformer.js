@@ -164,9 +164,9 @@ export class Platformer {
 
     // Crystal at approach end (positioned dynamically to prevent overlap with platforms)
     let cx = 255, cy = 118;
-    if (ph === 2) { cx = 214; cy = 124; }
-    else if (ph === 3) { cx = 236; cy = 126; }
-    else if (ph === 4) { cx = 222; cy = 124; }
+    if (ph === 2) { cx = 220; cy = 114; }
+    else if (ph === 3) { cx = 240; cy = 116; }
+    else if (ph === 4) { cx = 226; cy = 114; }
     this.crystal = { x: cx, y: cy, triggered: false, t: 0 };
 
     // --- CHOICE PATHS with meaningful labels ---
