@@ -277,17 +277,11 @@ function revealArchetype() {
   const valueInsight = VALUE_INSIGHTS[state.coreValue] || 'Your core value anchors your decisions.';
   const aestheticInsight = AESTHETIC_INSIGHTS[state.aesthetic] || 'Your aesthetic colors your worldview.';
   
-  // Determine matching icons for the tarot spread
-  const traitIcon = '🧬';
-  const valueIcon = '🔑';
-  const aestheticIcon = '🌅';
-  
   $('commonality-reveal').innerHTML = `
     <div class="soul-tarot-deck">
       <div class="tarot-card trait-card">
         <div class="tarot-glow-effect"></div>
         <div class="tarot-header">
-          <span class="tarot-icon">${traitIcon}</span>
           <span class="tarot-label">Primary Trait</span>
         </div>
         <div class="tarot-value">${traitInsight}</div>
@@ -295,7 +289,6 @@ function revealArchetype() {
       <div class="tarot-card principle-card">
         <div class="tarot-glow-effect"></div>
         <div class="tarot-header">
-          <span class="tarot-icon">${valueIcon}</span>
           <span class="tarot-label">Core Principle</span>
         </div>
         <div class="tarot-value">${valueInsight}</div>
@@ -303,7 +296,6 @@ function revealArchetype() {
       <div class="tarot-card aesthetic-card-soul">
         <div class="tarot-glow-effect"></div>
         <div class="tarot-header">
-          <span class="tarot-icon">${aestheticIcon}</span>
           <span class="tarot-label">Aesthetic Vibe</span>
         </div>
         <div class="tarot-value">${aestheticInsight}</div>

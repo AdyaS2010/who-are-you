@@ -1719,12 +1719,10 @@ a:focus-visible {
 .tarot-header {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 0.4rem;
   border-bottom: 1px solid rgba(255, 255, 255, 0.06);
   padding-bottom: 0.4rem;
-}
-.tarot-icon {
-  font-size: 1rem;
 }
 .tarot-label {
   font-family: var(--ff-m);
