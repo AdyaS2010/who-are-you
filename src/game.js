@@ -801,6 +801,7 @@ function runAiTurnLogic() {
   
   const opp = state.gwOpponent;
   const pCard = GW_SUSPECTS[state.gwPlayerSecret];
+  const diff = opp.difficulty || 'Normal';
 
   // AI Strategic deduction: finds a question it hasn't used that splits its remaining suspects closest to 50/50
   let bestQIdx = -1;
@@ -820,18 +821,42 @@ function runAiTurnLogic() {
       state.gwAiPossibleSuspects.forEach(sIdx => {
         if (q.check(GW_SUSPECTS[sIdx])) yesCount++;
       });
-      const diff = Math.abs(state.gwAiPossibleSuspects.length / 2 - yesCount);
-      candidates.push({ qIdx, diff });
+      const diffVal = Math.abs(state.gwAiPossibleSuspects.length / 2 - yesCount);
+      candidates.push({ qIdx, diff: diffVal });
     });
     
     // Sort candidates so the ones that split closest to 50/50 are first
     candidates.sort((a, b) => a.diff - b.diff);
     
-    // To make the AI feel realistic and less predictable, we pick randomly from the top 3 best splits.
-    // This allows it to explore different angles instead of always taking the absolute exact same mathematical move first.
-    const poolSize = Math.min(3, candidates.length);
-    const chosenCandidate = candidates[Math.floor(Math.random() * poolSize)];
-    bestQIdx = chosenCandidate.qIdx;
+    // Adjust choice pool size and random chance based on difficulty
+    if (diff === 'Easy') {
+      // Easy: 50% chance to pick a completely random question, or pick from top 5 splits
+      if (Math.random() > 0.5) {
+        bestQIdx = unasked[Math.floor(Math.random() * unasked.length)];
+      } else {
+        const poolSize = Math.min(5, candidates.length);
+        const chosenCandidate = candidates[Math.floor(Math.random() * poolSize)];
+        bestQIdx = chosenCandidate.qIdx;
+      }
+    } else if (diff === 'Hard') {
+      // Hard: 85% chance to pick the absolute best split, otherwise top 2
+      if (Math.random() < 0.85 && candidates.length > 0) {
+        bestQIdx = candidates[0].qIdx;
+      } else {
+        const poolSize = Math.min(2, candidates.length);
+        const chosenCandidate = candidates[Math.floor(Math.random() * poolSize)];
+        bestQIdx = chosenCandidate.qIdx;
+      }
+    } else {
+      // Normal: 15% chance to pick a completely random question, or pick from top 3 splits
+      if (Math.random() < 0.15) {
+        bestQIdx = unasked[Math.floor(Math.random() * unasked.length)];
+      } else {
+        const poolSize = Math.min(3, candidates.length);
+        const chosenCandidate = candidates[Math.floor(Math.random() * poolSize)];
+        bestQIdx = chosenCandidate.qIdx;
+      }
+    }
   }
 
   const chosenQ = GUESS_QUESTIONS[bestQIdx];
@@ -864,20 +889,25 @@ function runAiTurnLogic() {
         if (finalGuessIdx === state.gwPlayerSecret) {
           triggerAiWin();
         } else {
-          // AI guessed wrong (should not happen with perfect logic, but safeguard)
+          // AI guessed wrong (safeguard)
           state.gwAiPossibleSuspects = state.gwAiPossibleSuspects.filter(id => id !== finalGuessIdx);
           returnToPlayerTurn();
         }
-      } else if (state.gwAiPossibleSuspects.length === 2 && Math.random() > 0.6) {
-        // AI takes a risk on hard/normal
-        const finalGuessIdx = state.gwAiPossibleSuspects[Math.floor(Math.random() * 2)];
-        if (finalGuessIdx === state.gwPlayerSecret) {
-          triggerAiWin();
+      } else if (state.gwAiPossibleSuspects.length === 2) {
+        // Risk assessment based on difficulty
+        const riskChance = diff === 'Hard' ? 0.75 : (diff === 'Easy' ? 0.15 : 0.4);
+        if (Math.random() < riskChance) {
+          const finalGuessIdx = state.gwAiPossibleSuspects[Math.floor(Math.random() * 2)];
+          if (finalGuessIdx === state.gwPlayerSecret) {
+            triggerAiWin();
+          } else {
+            // AI guessed wrong
+            state.gwAiPossibleSuspects = state.gwAiPossibleSuspects.filter(id => id !== finalGuessIdx);
+            $('gw-ai-dialogue').textContent = `"${opp.name}: 'Blast! My deduction was imperfect. I assumed you were ${GW_SUSPECTS[finalGuessIdx].name}.'"`;
+            setTimeout(returnToPlayerTurn, 2000);
+          }
         } else {
-          // AI guessed wrong
-          state.gwAiPossibleSuspects = state.gwAiPossibleSuspects.filter(id => id !== finalGuessIdx);
-          $('gw-ai-dialogue').textContent = `"${opp.name}: 'Blast! My deduction was imperfect. I assumed you were ${GW_SUSPECTS[finalGuessIdx].name}.'"`;
-          setTimeout(returnToPlayerTurn, 2000);
+          returnToPlayerTurn();
         }
       } else {
         returnToPlayerTurn();
