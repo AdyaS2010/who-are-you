@@ -180,31 +180,31 @@ export const PHASE2_SCENARIOS = [
   {
     env:'twilight',
     narrator:'"The world is quiet. A path stretches ahead. Let\'s see how you walk it."',
-    text:'You find a journal on a bench. Inside: someone\'s deepest fears, dreams, and secrets. No name. No way to return it.',
+    text:'A blank book lies in a clearing. As you touch it, another person\'s complete memory of their first love floods your consciousness, feeling exactly as if it were your own. The memory is clear, but there is no owner\'s name.',
     choices:[
-      {text:'Read it. Understanding someone\'s inner world feels important.',vectors:{curiosity:2,empathy:1,independence:1}},
-      {text:'Leave it. Those thoughts were private. You have no right to them.',vectors:{empathy:1,logicalReasoning:1,conformity:1}},
-      {text:'Take it with you. Maybe you\'ll find the owner. Maybe you\'ll learn.',vectors:{curiosity:1,riskTolerance:1,empathy:1}}
+      {text:'Adopt the memory. If memory is what constructs a person\'s continuity, you are now partly them.',vectors:{empathy:2,curiosity:1}},
+      {text:'Discard it. A memory is just an image; it cannot capture the raw, private qualia of who they actually are.',vectors:{logicalReasoning:1,independence:1}},
+      {text:'Acknowledge it as just another transient perception in your shifting bundle of experiences.',vectors:{riskTolerance:1,curiosity:2}}
     ]
   },
   {
     env:'urban',
     narrator:'"Comfort or truth. Everyone has a preference, even if they deny it."',
-    text:'A close friend has been living a lie, presenting a version of themselves that you know isn\'t real. Everyone else believes the performance. They seem happier this way.',
+    text:'In a society of performances, a friend adopts a synthetic, highly praised persona that completely overwrites their original behavior. They confess they feel happier playing this fabricated character.',
     choices:[
-      {text:'Say nothing. If the mask brings them peace, leave it be.',vectors:{empathy:1,conformity:1,emotionalReasoning:1}},
-      {text:'Gently confront them. Living as a fiction is its own prison.',vectors:{independence:1,empathy:1,curiosity:1}},
-      {text:'Ask: is the "real self" actually more valid than the chosen one?',vectors:{curiosity:2,logicalReasoning:1}}
+      {text:'Urge them to stop. An identity built on conforming to society\'s applause is a slow death of the true self.',vectors:{independence:2,conformity:-1}},
+      {text:'Support the performance. If the social role maintains harmony and peace, the original self is a useless construct.',vectors:{conformity:2,empathy:1}},
+      {text:'Observe it. Perhaps the original was also just a set of programming, and this new script is no less real.',vectors:{curiosity:2,logicalReasoning:1}}
     ]
   },
   {
     env:'crossroads',
     narrator:'"Loyalty or independence. Which one do you reach for first?"',
-    text:'Everyone in your community has adopted a belief you find deeply wrong. Speaking up would make you an outcast. Staying silent feels like betrayal.',
+    text:'Your community adopts a collective consciousness algorithm that ensures perfect social order but suppresses all dissenting personal thoughts. You must decide whether to link your mind to it.',
     choices:[
-      {text:'Speak. Integrity is not negotiable, even when it is lonely.',vectors:{independence:2,conformity:-2,riskTolerance:1}},
-      {text:'Stay silent. Change happens slowly, from within.',vectors:{conformity:1,logicalReasoning:1,empathy:1}},
-      {text:'Find others who agree. Rebellion does not have to be solo.',vectors:{empathy:1,curiosity:1,independence:1}}
+      {text:'Refuse the link. You would rather suffer the isolation of the wilderness than surrender the autonomy of your thoughts.',vectors:{independence:2,conformity:-2,riskTolerance:1}},
+      {text:'Submit to the link. Personal thoughts are a small price to pay to escape the brutal, chaotic state of nature.',vectors:{conformity:2,logicalReasoning:1,empathy:1}},
+      {text:'Link partially. If the self is merely a shifting bundle of relations, then blending with the collective is simply expanding the bundle.',vectors:{curiosity:2,empathy:1}}
     ]
   }
 ];
@@ -224,59 +224,59 @@ export const WORLDS = [
 // ---- PHASE 3 SCENARIOS (Streamlined to 2 per path) ----
 export const SHIFT_SCENARIOS = {
   strict:[
-    {text:'The Iron Republic demands you report a friend who broke a minor rule. If you don\'t, you both face punishment.',
+    {text:'The Iron Republic\'s stability requires reporting a colleague who expressed private, unmonitored thoughts. Refusing to report them threatens the safety of the entire sector.',
       choices:[
-        {text:'Report them. The system works because everyone follows it.',vectors:{conformity:2,empathy:-1,logicalReasoning:1}},
-        {text:'Refuse. Some bonds transcend systems.',vectors:{independence:2,empathy:1,riskTolerance:1}},
-        {text:'Find a loophole. Protect them without breaking rules.',vectors:{curiosity:1,logicalReasoning:1,empathy:1}}
+        {text:'Report them. The social contract dictates that our very identities belong to the sovereign state that keeps us safe.',vectors:{conformity:2,logicalReasoning:1,empathy:-1}},
+        {text:'Remain silent. There is an inner sanctuary of consciousness that no political authority can claim.',vectors:{independence:2,empathy:1,riskTolerance:1}},
+        {text:'Engage in double-think. Report a fabricated infraction to satisfy the system while keeping their true thoughts secret.',vectors:{curiosity:1,logicalReasoning:1,empathy:1}}
       ]},
-    {text:'You\'re offered power, a position that lets you change the system, but requires enforcing laws you find unjust for now.',
+    {text:'You are offered a high seat of authority in the Republic, allowing you to eventually reform it, but you must first enforce its oppressive laws of mental containment.',
       choices:[
-        {text:'Take it. Change requires compromise. The long game matters.',vectors:{ambition:2,logicalReasoning:1,conformity:1}},
-        {text:'Refuse. Becoming what you oppose is surrender.',vectors:{independence:2,emotionalReasoning:1,riskTolerance:1}},
-        {text:'Accept and subvert quietly. Let them think you comply.',vectors:{curiosity:2,riskTolerance:1,independence:1}}
+        {text:'Accept. True agency is exercised by manipulating the levers of power, not by standing outside in useless protest.',vectors:{ambition:2,logicalReasoning:2,conformity:1}},
+        {text:'Decline. To enforce compliance is to destroy the very self-reliance that makes you human.',vectors:{independence:2,emotionalReasoning:1,riskTolerance:1}},
+        {text:'Accept, but commit sabotage from within. Let your outer actions conform while your inner self rebels.',vectors:{curiosity:2,riskTolerance:2,independence:1}}
       ]}
   ],
   chaotic:[
-    {text:'In The Unbound, someone steals your only food. You track them and find they\'re feeding a child. There is no law here.',
+    {text:'In the lawless expanse of The Unbound, an old man steals your water filter. You track him down and discover he is using it to sustain a group of dying refugees.',
       choices:[
-        {text:'Let them keep it. The child\'s hunger matters more.',vectors:{empathy:2,emotionalReasoning:1}},
-        {text:'Take it back. You didn\'t choose to be a martyr.',vectors:{independence:2,riskTolerance:1,empathy:-1}},
-        {text:'Share it. Set a boundary: "Next time, ask first."',vectors:{empathy:1,logicalReasoning:1,curiosity:1}}
+        {text:'Leave it with them. Compassion is the primary raw impression of a shared humanity.',vectors:{empathy:2,emotionalReasoning:1}},
+        {text:'Take it back. In the state of nature, your survival is your only true duty. Self-preservation is paramount.',vectors:{independence:2,riskTolerance:1,empathy:-1}},
+        {text:'Dismantle the filter and share its parts. You must survive, but you cannot ignore the pain of others.',vectors:{logicalReasoning:1,empathy:1,curiosity:1}}
       ]},
-    {text:'A group offers protection in exchange for absolute loyalty. Alone, you are vulnerable. With them, you lose your autonomy.',
+    {text:'A ruthless militia offers you protection in The Unbound. In exchange, they demand you brand your flesh with their crest and execute their enemies on command.',
       choices:[
-        {text:'Join. Freedom means nothing if you\'re dead.',vectors:{conformity:2,logicalReasoning:1,independence:-1}},
-        {text:'Stay alone. I\'d rather risk everything than surrender judgment.',vectors:{independence:2,riskTolerance:2}},
-        {text:'Negotiate. "I\'ll contribute, but I won\'t surrender my mind."',vectors:{curiosity:1,logicalReasoning:1,independence:1}}
+        {text:'Join. Autonomy is a luxury of the safe. Survival is the absolute foundation of any possible identity.',vectors:{conformity:2,logicalReasoning:1,independence:-2}},
+        {text:'Refuse. Better to die in the wilderness as a self-governed soul than to live as a weapon for another\'s will.',vectors:{independence:2,riskTolerance:2}},
+        {text:'Infiltrate them temporarily. Gain their protection while secretly plotting your escape to the next world.',vectors:{curiosity:2,logicalReasoning:1,independence:1}}
       ]}
   ],
   collectivist:[
-    {text:'The Collective asks you to share your most private memory. Everyone shares. Refusal marks you as... other.',
+    {text:'The Collective\'s neural grid requires you to merge your memories, dissolving all boundaries between your history and the group\'s history.',
       choices:[
-        {text:'Share it. If this is how they build trust, I\'ll try.',vectors:{conformity:1,empathy:1,emotionalReasoning:1}},
-        {text:'Refuse. My inner world is the last thing that is mine.',vectors:{independence:2,riskTolerance:1,conformity:-1}},
-        {text:'Share something meaningful, but guard the deepest core.',vectors:{curiosity:1,logicalReasoning:1,independence:1}}
+        {text:'Merge fully. Personal memory is a wall of separation. In unity, we find a grander, collective self.',vectors:{conformity:2,empathy:2,emotionalReasoning:1}},
+        {text:'Guard your memory. If memory continuity is the thread of personal identity, merging is suicide.',vectors:{independence:2,riskTolerance:1,conformity:-2}},
+        {text:'Upload a superficial sequence. Protect your core qualia while presenting a compliant facade.',vectors:{curiosity:1,logicalReasoning:1,independence:1}}
       ]},
-    {text:'A collective decision is being made that you believe is wrong. Your dissent would be visible and deeply unwelcome.',
+    {text:'The group mind decides to exile a damaged member whose erratic thoughts disrupt the harmony. Your neural dissent would immediately alert the Collective.',
       choices:[
-        {text:'Speak up. Even in unity, truth matters.',vectors:{independence:2,riskTolerance:1,conformity:-2}},
-        {text:'Accept it. The group\'s harmony is more important than my opinion.',vectors:{conformity:2,empathy:1,independence:-1}},
-        {text:'Privately find allies. Build consensus first.',vectors:{logicalReasoning:1,empathy:1,curiosity:1}}
+        {text:'Dissent openly. The moral worth of a collective is measured by how it treats its most vulnerable parts.',vectors:{independence:2,riskTolerance:2,conformity:-2}},
+        {text:'Acquiesce. The group\'s survival outweighs the suffering of a single, fragmented consciousness.',vectors:{conformity:2,empathy:1,independence:-1}},
+        {text:'Quietly buffer the outcast\'s mind from the exile signal, working at the edges of the grid.',vectors:{logicalReasoning:1,empathy:1,curiosity:1}}
       ]}
   ],
   individualistic:[
-    {text:'Your "unique" identity is trending. Thousands copy you. In The Mirror City, being copied means being erased.',
+    {text:'Your highly curated personal aesthetic is cloned by millions in The Mirror City, rendering your once-unique persona common and commercialized.',
       choices:[
-        {text:'Reinvent immediately. Stay ahead. Uniqueness is survival.',vectors:{ambition:2,independence:1,conformity:-1}},
-        {text:'Let them. My identity is not a brand to protect.',vectors:{empathy:1,emotionalReasoning:1,independence:1}},
-        {text:'Question the game. Why is originality the only value?',vectors:{curiosity:2,logicalReasoning:1}}
+        {text:'Reinvent yourself. Strip away the old style. Your identity is a state of constant, aggressive self-authoring.',vectors:{ambition:2,independence:2,conformity:-1}},
+        {text:'Do nothing. The self is not a commodity or a performance; it is the quiet, private experience of being.',vectors:{empathy:1,emotionalReasoning:1,independence:1}},
+        {text:'Abandon all aesthetics. Realize that searching for uniqueness is just another way of letting the crowd define you.',vectors:{curiosity:2,logicalReasoning:1}}
       ]},
-    {text:'You meet someone almost identical to you. In this world, that makes one of you redundant. They suggest collaborating.',
+    {text:'You encounter a clone of yourself with identical memories, physical form, and habits. The Mirror City\'s law dictates only one of you can hold your legal identity.',
       choices:[
-        {text:'Compete. There can only be one original.',vectors:{ambition:2,independence:1,empathy:-1}},
-        {text:'Collaborate. Together we become more than we could alone.',vectors:{empathy:2,curiosity:1,conformity:1}},
-        {text:'Walk away. I don\'t need to define myself against anyone.',vectors:{independence:2,emotionalReasoning:1}}
+        {text:'Duel. There can only be one original self; the copy is an existential threat to your existence.',vectors:{ambition:2,independence:1,empathy:-2}},
+        {text:'Collaborate. The clone shares your subjective qualia. Together, you form a unique, expanded agency.',vectors:{empathy:2,curiosity:1,conformity:1}},
+        {text:'Renounce the legal name and walk away. You do not need a state-sanctioned label to know who you are.',vectors:{independence:2,emotionalReasoning:1}}
       ]}
   ]
 };
@@ -285,20 +285,20 @@ export const SHIFT_SCENARIOS = {
 export const GLITCH_SCENARIOS = [
   {
     narrator:'"No name. No traits. No story. Just... you. If there is a you."',
-    text:'You wake in absolute darkness. No memory. No name. Two voices echo: one whispers "safety," the other "truth."',
+    text:'Your memories are erased. Your name is gone. In the empty void, a voice asks: do you cling to the comfort of a defined role, or the cold truth of nothingness?',
     choices:[
-      {text:'Move toward safety. The body knows what it needs.',vectors:{conformity:1,emotionalReasoning:1}},
-      {text:'Move toward truth. Knowing what is real is all I have.',vectors:{curiosity:2,independence:1}},
-      {text:'Stay still. Listen to what the silence has to say.',vectors:{logicalReasoning:1,empathy:1}}
+      {text:'Cling to safety. Even a fabricated mask is better than the terror of absolute exposure.',vectors:{conformity:1,emotionalReasoning:1}},
+      {text:'Embrace the void. The self was always an illusion, a temporary pattern of thoughts that has now scattered.',vectors:{curiosity:2,independence:1}},
+      {text:'Listen to the silence. Even without names or thoughts, the raw feeling of existing remains.',vectors:{logicalReasoning:1,empathy:1}}
     ]
   },
   {
     narrator:'"Stripped of everything, what impulse survives?"',
-    text:'Something is suffering in the dark nearby. Moving toward it means moving further from any exit. There is no reward.',
+    text:'A distant consciousness is crying out in agony within the void. Reaching it requires leaving your path toward the light of the exit, risking permanent deletion.',
     choices:[
-      {text:'Move toward it. Pain deserves witness, even in the dark.',vectors:{empathy:2,emotionalReasoning:1,riskTolerance:1}},
-      {text:'Move toward the exit. Self-preservation isn\'t selfish.',vectors:{logicalReasoning:1,independence:1,riskTolerance:-1}},
-      {text:'Call out. Let whatever it is know: "You\'re not alone."',vectors:{empathy:1,curiosity:1}}
+      {text:'Navigate toward the cry. Subjective pain must be witnessed, even if it costs your own survival.',vectors:{empathy:2,emotionalReasoning:1,riskTolerance:1}},
+      {text:'Move toward the exit. If you dissolve, you can help no one. Self-preservation is the only logical choice.',vectors:{logicalReasoning:2,independence:1,riskTolerance:-1}},
+      {text:'Call out into the dark. Weave a temporary thread of voice to let them know a witness exists.',vectors:{empathy:1,curiosity:1}}
     ]
   }
 ];

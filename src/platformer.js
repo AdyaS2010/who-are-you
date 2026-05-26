@@ -43,7 +43,10 @@ export class Platformer {
     this.c.style.width=w+'px';this.c.style.height=h+'px';
   }
   _bind(){
-    const k=(e,d)=>{if(['ArrowLeft','ArrowRight','ArrowUp','Space','KeyA','KeyD','KeyW'].includes(e.code)){e.preventDefault();this.keys[e.code]=d;if(d&&!this.audio.initialized){this.audio.init();this.audio.resume();this.audio.startAmbient(this.phase);}}};
+    const k=(e,d)=>{
+      if(document.activeElement&&(document.activeElement.tagName==='INPUT'||document.activeElement.tagName==='TEXTAREA'))return;
+      if(['ArrowLeft','ArrowRight','ArrowUp','Space','KeyA','KeyD','KeyW'].includes(e.code)){e.preventDefault();this.keys[e.code]=d;if(d&&!this.audio.initialized){this.audio.init();this.audio.resume();this.audio.startAmbient(this.phase);}}
+    };
     window.addEventListener('keydown',e=>k(e,true));window.addEventListener('keyup',e=>k(e,false));
     this.c.addEventListener('touchstart',e=>{if(!this.audio.initialized){this.audio.init();this.audio.resume();this.audio.startAmbient(this.phase);}for(const t of e.changedTouches){const r=t.clientX/window.innerWidth;if(r<.3)this.keys._tl=true;else if(r>.7)this.keys._tr=true;else this.keys._tj=true;}e.preventDefault();},{passive:false});
     this.c.addEventListener('touchend',()=>{this.keys._tl=false;this.keys._tr=false;this.keys._tj=false;});
@@ -127,6 +130,9 @@ export class Platformer {
       this.platforms.push({x:70,y:135,w:28,h:4,solid:false});
       this.platforms.push({x:130,y:125,w:24,h:4,solid:false});
       this.platforms.push({x:190,y:130,w:20,h:4,solid:false});
+      // Intermediate climbing platforms for highest path accessibility
+      this.platforms.push({x:235,y:112,w:22,h:4,solid:false});
+      this.platforms.push({x:265,y:96,w:18,h:4,solid:false});
     } else if(ph===3){
       // Phase 3: Constrained world, tighter spaces, ceiling pressure
       for(let x=0;x<300;x+=4) this.platforms.push({x,y:GY,w:4,h:28,solid:true});
@@ -134,6 +140,9 @@ export class Platformer {
       for(let x=60;x<280;x+=4) this.platforms.push({x,y:60,w:4,h:4,solid:true,ceiling:true});
       this.platforms.push({x:100,y:135,w:16,h:4,solid:false});
       this.platforms.push({x:170,y:128,w:14,h:4,solid:false});
+      // Intermediate climbing platforms for Phase 3
+      this.platforms.push({x:215,y:115,w:16,h:4,solid:false});
+      this.platforms.push({x:250,y:100,w:14,h:4,solid:false});
     } else {
       // Phase 4: Crumbling void, ground breaks apart
       for(let x=0;x<280;x+=4){
@@ -141,6 +150,11 @@ export class Platformer {
         this.platforms.push({x,y:GY,w:4,h:28,solid:true,
           crumble:x>80&&Math.random()>.5,crumbleT:null});
       }
+      // Stepping stones in Phase 4
+      this.platforms.push({x:90,y:135,w:16,h:4,solid:false,crumble:true,crumbleT:null});
+      this.platforms.push({x:150,y:125,w:14,h:4,solid:false,crumble:true,crumbleT:null});
+      this.platforms.push({x:205,y:112,w:14,h:4,solid:false,crumble:true,crumbleT:null});
+      this.platforms.push({x:255,y:98,w:14,h:4,solid:false,crumble:true,crumbleT:null});
     }
 
     // Crystal at approach end
@@ -160,7 +174,7 @@ export class Platformer {
     pathYs.forEach((py,i)=>{
       const startX=308, endX=510, orbX=endX-10;
       const label=scenario.choices[i].text;
-      const shortLabel=label.length>35?label.slice(0,32)+'…':label;
+      const shortLabel = `Option ${String.fromCharCode(65 + i)}`;
       this.signs.push({x:282,y:py-6,text:shortLabel,color:pathColors[i]});
 
       if(ph===2){
@@ -216,36 +230,23 @@ export class Platformer {
     if(!el&&show){
       el=document.createElement('div');el.className='ghud-scenario';
       let h=`<div class="ghud-question">${this._scenarioText}</div>`;
-      // Show choice previews with colored dots
-      if(this._scenarioChoices){
-        const colors = this._scenarioChoices.length===2 ? ['#ffcc66','#66ccff'] : ['#ff8888','#88ff88','#8888ff'];
-        h+='<div class="ghud-choices">';
-        this._scenarioChoices.forEach((c,i)=>{
-          const short = c.text.length>55 ? c.text.slice(0,52)+'...' : c.text;
-          h+=`<div class="ghud-choice-row"><span class="ghud-dot" style="background:${colors[i]}"></span><span>${short}</span></div>`;
-        });
-        h+='</div>';
-      }
-      h+='<div class="ghud-hint">Walk into a glowing orb to lock in your choice</div>';
+      h+='<div class="ghud-hint">Climb the path of your intuition and claim a glowing orb</div>';
       el.innerHTML=h; this.hud.appendChild(el);
     }
     if(el) el.style.opacity=(show && !this.collected)?'1':'0';
   }
-  _showCollect(text){
+  _showCollect(text, color){
     let el=this.hud.querySelector('.ghud-collect');
     if(!el){el=document.createElement('div');el.className='ghud-collect';this.hud.appendChild(el);}
-    el.textContent='✦ '+text;el.style.opacity='1';
-    setTimeout(()=>{el.style.opacity='0';},1400);
+    el.textContent='✦ Chosen: ' + text;
+    el.style.background = color || 'var(--accent)';
+    el.style.color = '#0a0810';
+    el.style.borderColor = '#ffffff';
+    el.style.opacity='1';
+    setTimeout(()=>{el.style.opacity='0';},2800);
   }
   _updateProximity(){
-    let el=this.hud.querySelector('.ghud-proximity');
-    if(!this.questionTriggered || this.collected){if(el)el.style.opacity='0';return;}
-    let closest=null,minD=999;
-    for(const o of this.orbs){if(o.collected)continue;const d=Math.abs(this.player.x+4-o.x)+Math.abs(this.player.y+8-o.y);if(d<minD){minD=d;closest=o;}}
-    if(closest&&minD<40){
-      if(!el){el=document.createElement('div');el.className='ghud-proximity';this.hud.appendChild(el);}
-      el.textContent=closest.fullText;el.style.borderColor=closest.color;el.style.opacity='1';
-    } else if(el) el.style.opacity='0';
+    // Disabled to keep selection blind until touched
   }
 
   start(){this.running=true;this.audio.init();this.audio.resume();this.audio.startAmbient(this.phase);this._last=performance.now();this._loop();}
@@ -277,8 +278,8 @@ export class Platformer {
     const spd = isSkyler ? 145 : 105;
     const acc = isSkyler ? 950 : 800;
     const fric = isAlex ? 180 : 500;
-    const grav = isAxel ? 500 : (isSolara && p.vy > 0 && (this.keys.Space||this.keys.ArrowUp||this.keys.KeyW||this.keys._tj) ? 280 : 620);
-    const jmpF = isAxel ? -180 : -155;
+    const grav = isAxel ? 480 : (isSolara && p.vy > 0 && (this.keys.Space||this.keys.ArrowUp||this.keys.KeyW||this.keys._tj) ? 260 : 580);
+    const jmpF = isAxel ? -185 : -160;
 
     // Magnetic pull for Dylan
     if(isDylan){
@@ -316,6 +317,7 @@ export class Platformer {
 
     if(p.grounded){
       this.doubleJumpUsed = false;
+      this.tripleJumpUsed = false;
     }
 
     if(p.jumpBuf>0&&p.coyote>0){
@@ -356,6 +358,14 @@ export class Platformer {
         for(let i=0;i<djCount;i++){
           this.particles.push({x:p.x+4,y:p.y+14,vx:(Math.random()-0.5)*45,vy:(Math.random()-0.5)*25,life:0.5,color:djColor});
         }
+      }
+    } else if(!p.grounded && this.doubleJumpUsed && !this.tripleJumpUsed && jmpPressed && this.hasWings){
+      // Emersonian Wings: TRIPLE JUMP
+      p.vy = jmpF * 0.8;
+      this.tripleJumpUsed = true;
+      this.audio.playJump();
+      for(let i=0;i<10;i++){
+        this.particles.push({x:p.x+4,y:p.y+14,vx:(Math.random()-0.5)*40,vy:(Math.random()-0.5)*25,life:0.5,color:'#66ffdd'});
       }
     }
     // Variable jump height: release early = lower jump
@@ -409,7 +419,16 @@ export class Platformer {
 
     // Bounds & respawn
     p.x=Math.max(0,Math.min(560,p.x));
-    if(p.y>190){p.x=20;p.y=120;p.vy=0;p.vx=0;} // fell off: respawn at start
+    if(p.y>190){
+      if(this.hasShield) {
+        // Hobbesian Shield: Teleport slightly back to safety
+        p.x = Math.max(40, p.x - 35);
+        p.y = 80; p.vy = 0; p.vx = 0;
+        this.audio.playLand();
+      } else {
+        p.x=20;p.y=120;p.vy=0;p.vx=0;
+      }
+    }
 
     // Camera (smooth lerp)
     const tx=p.x-NW/2+30;
@@ -434,7 +453,7 @@ export class Platformer {
         this.audio.playCollect();this.shakeX=3;this.shakeY=3;
         if(this.phase===4) this.audio.playGlitch();
         for(let i=0;i<20;i++) this.particles.push({x:orb.x,y:orb.y,vx:(Math.random()-.5)*100,vy:(Math.random()-.5)*100,life:1,color:orb.color});
-        this._showCollect(orb.fullText);
+        this._showCollect(orb.fullText, orb.color);
         setTimeout(()=>{if(this.choiceCb) this.choiceCb(this.orbs.indexOf(orb),orb.vectors);},1800);
       }
     }

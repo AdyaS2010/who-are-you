@@ -14,8 +14,9 @@
   <!-- Accessibility: skip to main content -->
   <a href="#app" class="skip-link">Skip to main content</a>
 
-  <!-- Settings Toggle -->
+  <!-- Settings & Shop Toggles -->
   <button id="settings-toggle" class="settings-toggle" aria-label="Open settings panel">⚙</button>
+  <button id="shop-toggle" class="shop-toggle" aria-label="Open soul shop" aria-haspopup="dialog">🔮</button>
   <div id="settings-modal" class="settings-modal hidden" role="dialog" aria-modal="true" aria-label="Settings Modal">
     <div id="settings-panel" class="settings-panel" role="document">
       <div class="settings-header">
@@ -32,6 +33,15 @@
       </div>
       <div class="setting-row">
         <label><input type="checkbox" id="mute-all" aria-label="Mute all audio"> 🔇 Mute All</label>
+      </div>
+      <div class="setting-row" id="prism-settings-row" style="display:none; margin-top: 0.5rem; border-top: 1px dashed var(--card-border); padding-top: 0.5rem;">
+        <label for="prism-filter">🌈 Visual filter</label>
+        <select id="prism-filter" style="background: var(--bg); color: var(--text); border: 1px solid var(--card-border); border-radius: 4px; padding: 0.1rem 0.3rem; outline: none; font-size: 0.7rem; font-family: var(--ff-m);">
+          <option value="none">None</option>
+          <option value="dreamy">Dreamy Glow</option>
+          <option value="vintage">Vintage Sepia</option>
+          <option value="glitched">Glitched Matrix</option>
+        </select>
       </div>
     </div>
   </div>
@@ -171,7 +181,7 @@
         <div class="title-buttons-container">
           <button id="btn-start" class="btn-primary pulse-glow"><span>Begin the journey</span></button>
         </div>
-        <p class="title-credits">A philosophical game by Prisma, Adya & Breanna</p>
+        <p class="title-credits">A philosophical game by Adya, Prisma & Breanna</p>
       </div>
     </section>
 
@@ -311,12 +321,13 @@
     <section id="screen-final" class="screen">
       <div class="final-container">
         <div class="final-silhouette" id="final-silhouette"></div>
-        <div class="final-question"><h2>"Which version of you felt the most real — and why?"</h2></div>
+        <div class="final-question"><h2>"Which version of you felt the most real, and why?"</h2></div>
         <textarea id="reflection-input" class="reflection-textarea" placeholder="Take a moment to reflect..." rows="4"></textarea>
+        <button id="btn-submit-reflection" class="btn-primary" style="margin-top: 0.5rem; margin-bottom: 1.5rem; display: block;">Submit Reflection</button>
         <div class="final-message" id="final-message"><p class="final-narrator"></p></div>
         <div class="philosophical-quotes" id="philosophical-quotes"></div>
         <button class="btn-primary" id="btn-restart">Experience again ↻</button>
-        <p class="final-credits">WHO//ARE//YOU? — Created by Prisma Shrestha, Adya Sastry & Breanna Barrera<br/><span class="final-credits-sub">Great Ideas Final Project · Spring 2026 · Ms. Rejino</span></p>
+        <p class="final-credits">WHO//ARE//YOU? &middot; Created by Adya Sastry, Prisma Shrestha & Breanna Barrera<br/><span class="final-credits-sub">Great Ideas Final Project · Spring 2026 · Ms. Rejino</span></p>
       </div>
     </section>
   </div>
@@ -341,6 +352,113 @@
         <p id="fragment-text" class="fragment-text"></p>
         <p class="fragment-hint">This insight will appear during The Mirror.</p>
       </div>
+    </div>
+  </div>
+
+  <!-- SOUL SHOP / QUALIA MARKETPLACE MODAL -->
+  <div id="shop-modal" class="shop-modal hidden" role="dialog" aria-modal="true" aria-labelledby="shop-heading">
+    <div class="shop-content">
+      <div class="shop-header">
+        <h2 id="shop-heading">The Qualia Marketplace</h2>
+        <p class="shop-subtitle">Exchange your Identity Fragments for custom selfhood expansions. Earn fragments by making choices and discovering truths.</p>
+        <div class="shop-actions-top">
+          <span class="shop-currency-display">Balance: <span id="shop-fragments-count">0</span> Fragments</span>
+          <button id="shop-close" class="btn-close-action" aria-label="Close Shop">&times;</button>
+        </div>
+      </div>
+      <div class="shop-items-grid">
+        <div class="shop-item" data-item="wings">
+          <div class="shop-item-icon">🪶</div>
+          <div class="shop-item-details">
+            <span class="shop-item-name">Emersonian Wings</span>
+            <span class="shop-item-desc">Unlocks a TRIPLE JUMP in the platformer for ultimate self-reliance. (Press Space twice in mid-air!)</span>
+            <button class="btn-buy" id="btn-buy-wings" data-cost="2">Buy (2 Fragments)</button>
+          </div>
+        </div>
+        <div class="shop-item" data-item="shield">
+          <div class="shop-item-icon">🛡️</div>
+          <div class="shop-item-details">
+            <span class="shop-item-name">Hobbesian Shield</span>
+            <span class="shop-item-desc">Prevents resetting the level on falling. Automatically teleports you back to last safe ground.</span>
+            <button class="btn-buy" id="btn-buy-shield" data-cost="2">Buy (2 Fragments)</button>
+          </div>
+        </div>
+        <div class="shop-item" data-item="prism">
+          <div class="shop-item-icon">🌈</div>
+          <div class="shop-item-details">
+            <span class="shop-item-name">Jackson's Prism</span>
+            <span class="shop-item-desc">Unlocks custom visual qualia filters (Dreamy Glow, Vintage, Glitched Matrix). Toggle in Settings.</span>
+            <button class="btn-buy" id="btn-buy-prism" data-cost="3">Buy (3 Fragments)</button>
+          </div>
+        </div>
+        <div class="shop-item" data-item="elixir">
+          <div class="shop-item-icon">🧪</div>
+          <div class="shop-item-details">
+            <span class="shop-item-name">Socratic Elixir</span>
+            <span class="shop-item-desc">Trial of Personas: Automatically eliminates one incorrect suspect at the start.</span>
+            <button class="btn-buy" id="btn-buy-elixir" data-cost="4">Buy (4 Fragments)</button>
+          </div>
+        </div>
+      </div>
+      <div class="shop-footer">
+        <div class="shop-choices-log">
+          <h4>Your Choice Log:</h4>
+          <div id="shop-choice-history" class="shop-history-list">Make choices in Phase II to build history...</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DUEL VICTORY TREAT MODAL -->
+  <div id="treat-modal" class="treat-modal hidden" role="dialog" aria-modal="true" aria-labelledby="treat-heading">
+    <div class="treat-content">
+      <div class="treat-header">
+        <span class="treat-stars">✨ 🏆 ✨</span>
+        <h2 id="treat-heading">The Sovereign Certificate of Selfhood</h2>
+        <p class="treat-subtitle">You defeated the Philosopher AI in the Trial of Personas!</p>
+        <button id="treat-close" class="btn-close-action" aria-label="Close victory treat">&times;</button>
+      </div>
+      <div class="treat-body">
+        <div class="certificate-badge">
+          <div class="cert-seal">📜</div>
+          <div class="cert-text">
+            <p>This document officially declares that</p>
+            <h3 id="cert-player-name">The Wanderer</h3>
+            <p>has successfully resisted the logical subversion of <span id="cert-opp-name">Thomas Hobbes</span>.</p>
+            <p class="cert-quote">"You are neither a simple cog in the state nor a random stream of perceptions. You are you."</p>
+          </div>
+        </div>
+        
+        <div class="treat-meme-zone">
+          <h4>Philosopher Reaction Meme:</h4>
+          <div class="meme-card">
+            <div class="meme-header">HUME HAS AN IDENTITY CRISIS</div>
+            <div class="meme-visual">🧠 🔍 ❓</div>
+            <div class="meme-text">"Wait, you guys are actually finding a singular, continuous self? I looked in my brain and all I found was this lousy bundle of perceptions."</div>
+            <div class="meme-footer">#BundleLife #HumeGotBeaten</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- REFLECTION SUBMISSION EASTER EGG -->
+  <div id="reflection-modal" class="reflection-modal hidden" role="dialog" aria-modal="true" aria-labelledby="reflection-heading">
+    <div class="reflection-modal-content">
+      <div class="reflection-header-zone">
+        <h3 id="reflection-heading">Reflection Transmitted to the Cloud</h3>
+        <button id="reflection-close" class="btn-close-action" aria-label="Close reflection modal" style="position: absolute; top: 1rem; right: 1rem;">&times;</button>
+      </div>
+      <p class="reflection-desc">Your thoughts have been logged in the great ledger of consciousness.</p>
+      
+      <div class="meme-card" style="margin: 1.5rem 0;">
+        <div class="meme-header">EXISTENTIAL CRISIS DETECTED</div>
+        <div class="meme-visual">🎭 🤷 🪞</div>
+        <div class="meme-text">"When the teacher asks who you are, but you've played WHO//ARE//YOU? and now you have 5 different archetypes, 8 alignment vectors, and a certificate of selfhood signed by Thomas Hobbes."</div>
+        <div class="meme-footer">#IdentityCrisis #MsRejinoApproved</div>
+      </div>
+      
+      <button id="btn-reflection-modal-ok" class="btn-primary" style="margin: 0 auto; display: block;">Continue</button>
     </div>
   </div>
 

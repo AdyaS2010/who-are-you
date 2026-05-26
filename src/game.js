@@ -28,7 +28,13 @@ const state = {
   gwEliminated: new Set(),
   gwUsedQs: new Set(),
   gwGuessing: false,
-  gwOver: false
+  gwOver: false,
+
+  // Soul Shop and Choice Log extensions
+  fragments: 0,
+  purchased: { wings: false, shield: false, prism: false, elixir: false },
+  choiceHistory: [],
+  activeFilter: 'none'
 };
 let particles, plat;
 const $ = id => document.getElementById(id);
@@ -149,6 +155,9 @@ export function initGame() {
   $('btn-phase2-begin').addEventListener('click', startPlatformer2);
   $('btn-phase3-begin').addEventListener('click', startPlatformer3);
   setupPhase6();
+  setupShop();
+  setupVictoryTreat();
+  setupReflectionEasterEgg();
   $('btn-restart').addEventListener('click', () => location.reload());
 }
 
@@ -267,19 +276,37 @@ function revealArchetype() {
   const traitInsight = TRAIT_INSIGHTS[state.traits[0]] || 'Your chosen qualities guide your path.';
   const valueInsight = VALUE_INSIGHTS[state.coreValue] || 'Your core value anchors your decisions.';
   const aestheticInsight = AESTHETIC_INSIGHTS[state.aesthetic] || 'Your aesthetic colors your worldview.';
+  
+  // Determine matching icons for the tarot spread
+  const traitIcon = '🧬';
+  const valueIcon = '🔑';
+  const aestheticIcon = '🌅';
+  
   $('commonality-reveal').innerHTML = `
-    <div class="insight-form">
-      <div class="insight-row">
-        <span class="insight-label">Primary Trait</span>
-        <span class="insight-value">${traitInsight}</span>
+    <div class="soul-tarot-deck">
+      <div class="tarot-card trait-card">
+        <div class="tarot-glow-effect"></div>
+        <div class="tarot-header">
+          <span class="tarot-icon">${traitIcon}</span>
+          <span class="tarot-label">Primary Trait</span>
+        </div>
+        <div class="tarot-value">${traitInsight}</div>
       </div>
-      <div class="insight-row">
-        <span class="insight-label">Core Principle</span>
-        <span class="insight-value">${valueInsight}</span>
+      <div class="tarot-card principle-card">
+        <div class="tarot-glow-effect"></div>
+        <div class="tarot-header">
+          <span class="tarot-icon">${valueIcon}</span>
+          <span class="tarot-label">Core Principle</span>
+        </div>
+        <div class="tarot-value">${valueInsight}</div>
       </div>
-      <div class="insight-row">
-        <span class="insight-label">Aesthetic Vibe</span>
-        <span class="insight-value">${aestheticInsight}</span>
+      <div class="tarot-card aesthetic-card-soul">
+        <div class="tarot-glow-effect"></div>
+        <div class="tarot-header">
+          <span class="tarot-icon">${aestheticIcon}</span>
+          <span class="tarot-label">Aesthetic Vibe</span>
+        </div>
+        <div class="tarot-value">${aestheticInsight}</div>
       </div>
     </div>
   `;
@@ -300,6 +327,9 @@ function ensurePlatformer() {
   if (state.archetype) {
     plat.setArchetype(state.archetype.id);
   }
+  // Sync active Soul Shop items
+  plat.hasWings = state.purchased.wings;
+  plat.hasShield = state.purchased.shield;
   $('game-screen').classList.remove('hidden');
 }
 
@@ -316,6 +346,7 @@ function loadP2() {
   if (!sc) { plat.stop(); $('game-screen').classList.add('hidden'); setTimeout(() => { show('screen-phase3-intro'); setTheme(3); initPhase3(); }, 300); return; }
   plat.loadScenario(sc, sc.env);
   plat.onChoice((idx, vectors) => {
+    registerChoice(plat.orbs[idx]);
     addVectors(vectors); triggerGlitch($('glitch-overlay'));
     state.scenarioIndex++;
     setTimeout(loadP2, 1200);
@@ -348,6 +379,7 @@ function loadP3(world) {
   if (!sc) { plat.stop(); $('game-screen').classList.add('hidden'); setTimeout(() => { show('screen-phase4-intro'); setTheme(4); initPhase4(); }, 300); return; }
   plat.loadScenario({ ...sc, narrator: sc.narrator || world?.narrator || '' }, world?.env || 'iron');
   plat.onChoice((idx, vectors) => {
+    registerChoice(plat.orbs[idx]);
     addVectors(vectors); triggerGlitch($('glitch-overlay'));
     state.shiftScenarioIndex++;
     setTimeout(() => loadP3(world), 1200);
@@ -373,6 +405,7 @@ function loadP4() {
   if (!sc) { plat.stop(); $('game-screen').classList.add('hidden'); setTimeout(() => { show('screen-phase5'); setTheme(5); initPhase5(); }, 300); return; }
   plat.loadScenario(sc, 'void');
   plat.onChoice((idx, vectors) => {
+    registerChoice(plat.orbs[idx]);
     addVectors(vectors); triggerGlitch($('glitch-overlay'));
     state.glitchScenarioIndex++;
     setTimeout(loadP4, 1200);
@@ -521,6 +554,15 @@ function startGuessWhoDuel() {
 
   // Initialize game state
   state.gwEliminated = new Set();
+  if (state.purchased.elixir) {
+    // Socratic Elixir: pre-eliminate 1 incorrect suspect (excluding AI secret)
+    for (let i = 0; i < GW_SUSPECTS.length; i++) {
+      if (i !== state.gwAiSecret) {
+        state.gwEliminated.add(i);
+        break;
+      }
+    }
+  }
   state.gwUsedQs = new Set();
   state.gwGuessing = false;
   state.gwAbilityUsed = false;
@@ -880,6 +922,15 @@ function revealGuess(idx) {
       });
     }
 
+    // Show Victory Treat Modal after a short delay!
+    setTimeout(() => {
+      const certPlayer = $('cert-player-name');
+      const certOpp = $('cert-opp-name');
+      if (certPlayer) certPlayer.textContent = state.name || 'The Wanderer';
+      if (certOpp) certOpp.textContent = opp.name;
+      $('treat-modal').classList.remove('hidden');
+    }, 3000);
+
     $('gw-answer-box').innerHTML = `
       <div class="gw-answer" style="border-left-color: #ffd17e; background: rgba(255, 209, 126, 0.08);">
         🎉 <strong>VICTORY!</strong> You guessed correctly.<br/>
@@ -1165,5 +1216,140 @@ class QualiaSandbox {
       this.ctx.stroke();
     }
   }
+}
+
+function registerChoice(orb) {
+  if (!orb) return;
+  state.choiceHistory.push(orb.fullText);
+  state.fragments++;
+  updateShopUI();
+}
+
+function setupShop() {
+  const toggle = $('shop-toggle');
+  const modal = $('shop-modal');
+  const close = $('shop-close');
+  if (!toggle || !modal) return;
+  
+  toggle.addEventListener('click', () => {
+    modal.classList.toggle('hidden');
+    updateShopUI();
+  });
+  if (close) {
+    close.addEventListener('click', () => modal.classList.add('hidden'));
+  }
+  modal.addEventListener('click', e => {
+    if (e.target === modal) modal.classList.add('hidden');
+  });
+  
+  const buyWings = $('btn-buy-wings');
+  const buyShield = $('btn-buy-shield');
+  const buyPrism = $('btn-buy-prism');
+  const buyElixir = $('btn-buy-elixir');
+  
+  const buyItem = (item, cost, btn) => {
+    if (state.fragments >= cost && !state.purchased[item]) {
+      state.fragments -= cost;
+      state.purchased[item] = true;
+      if (plat) {
+        plat.audio.playCollect();
+        if (item === 'wings') plat.hasWings = true;
+        if (item === 'shield') plat.hasShield = true;
+      }
+      if (item === 'prism') {
+        const prismRow = $('prism-settings-row');
+        if (prismRow) prismRow.style.display = 'flex';
+      }
+      updateShopUI();
+    }
+  };
+  
+  buyWings.addEventListener('click', () => buyItem('wings', 2, buyWings));
+  buyShield.addEventListener('click', () => buyItem('shield', 2, buyShield));
+  buyPrism.addEventListener('click', () => buyItem('prism', 3, buyPrism));
+  buyElixir.addEventListener('click', () => buyItem('elixir', 4, buyElixir));
+  
+  const filterSelect = $('prism-filter');
+  if (filterSelect) {
+    filterSelect.addEventListener('change', e => {
+      const filter = e.target.value;
+      state.activeFilter = filter;
+      document.body.classList.remove('filter-dreamy', 'filter-vintage', 'filter-glitched');
+      if (filter !== 'none') {
+        document.body.classList.add(`filter-${filter}`);
+      }
+    });
+  }
+}
+
+function updateShopUI() {
+  const display = $('shop-fragments-count');
+  if (display) display.textContent = state.fragments;
+  
+  const items = ['wings', 'shield', 'prism', 'elixir'];
+  items.forEach(item => {
+    const btn = $(`btn-buy-${item}`);
+    if (!btn) return;
+    const cost = parseInt(btn.getAttribute('data-cost'));
+    if (state.purchased[item]) {
+      btn.disabled = true;
+      btn.textContent = 'Owned';
+      btn.classList.add('owned');
+    } else {
+      btn.disabled = state.fragments < cost;
+      btn.textContent = `Buy (${cost} Frags)`;
+      btn.classList.remove('owned');
+    }
+  });
+  
+  const list = $('shop-choice-history');
+  if (list) {
+    if (state.choiceHistory.length === 0) {
+      list.textContent = 'Make choices in the platformer to build history...';
+    } else {
+      list.innerHTML = state.choiceHistory.map((c, i) => {
+        let phaseLabel = 'Phase II';
+        if (i >= 3 && i < 5) phaseLabel = 'Phase III';
+        if (i >= 5) phaseLabel = 'Phase IV';
+        return `<div class="history-item"><span class="history-phase-tag">${phaseLabel}</span> ${c}</div>`;
+      }).join('');
+    }
+  }
+}
+
+function setupVictoryTreat() {
+  const modal = $('treat-modal');
+  const close = $('treat-close');
+  if (close && modal) {
+    close.addEventListener('click', () => modal.classList.add('hidden'));
+  }
+  if (modal) {
+    modal.addEventListener('click', e => {
+      if (e.target === modal) modal.classList.add('hidden');
+    });
+  }
+}
+
+function setupReflectionEasterEgg() {
+  const btn = $('btn-submit-reflection');
+  const modal = $('reflection-modal');
+  const close = $('reflection-close');
+  const okBtn = $('btn-reflection-modal-ok');
+  const text = $('reflection-input');
+  
+  if (!btn || !modal) return;
+  
+  btn.addEventListener('click', () => {
+    if (!text.value.trim()) return;
+    modal.classList.remove('hidden');
+    if (plat) plat.audio.playCollect();
+  });
+  
+  const closeModal = () => modal.classList.add('hidden');
+  if (close) close.addEventListener('click', closeModal);
+  if (okBtn) okBtn.addEventListener('click', closeModal);
+  modal.addEventListener('click', e => {
+    if (e.target === modal) closeModal();
+  });
 }
 
