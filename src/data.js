@@ -26,7 +26,7 @@ export const ARCHETYPES = [
   {
     id: 'alex',
     name: 'The Human',
-    title: 'The Social Node',
+    title: 'Social Node',
     backstory: 'You anchor your identity in social structures, relationships, and roles. Remove the names, roles, and community, and the self loses its frame.',
     stats: { Security: 'High', Roles: 'Max', Conformity: 'High' },
     score: (v, s) => {
@@ -41,7 +41,7 @@ export const ARCHETYPES = [
   {
     id: 'mira',
     name: 'The Chronicler',
-    title: 'The Continuous Memory',
+    title: 'Continuous Memory',
     backstory: 'You believe identity is a chain of memories. If you cannot remember yesterday, you are a different person today. Consciousness is held together by recollection.',
     stats: { Continuity: 'Max', Reflection: 'High', Adaptability: 'Moderate' },
     score: (v, s) => {
@@ -56,7 +56,7 @@ export const ARCHETYPES = [
   {
     id: 'riley',
     name: 'The Bundle',
-    title: 'The Perceptual Flux',
+    title: 'Perceptual Flux',
     backstory: 'There is no fixed core. You are a bundle of sensations, thoughts, and moods passing through time. You change constantly and accept the flux.',
     stats: { Fluidity: 'Max', Consistency: 'Low', Spontaneity: 'Very High' },
     score: (v, s) => {
@@ -71,7 +71,7 @@ export const ARCHETYPES = [
   {
     id: 'solara',
     name: 'The Experiencer',
-    title: 'The Raw Qualia',
+    title: 'Raw Qualia',
     backstory: 'Even if memory and roles vanish, raw subjective experience remains. There is a private, irreducible "what it is like to be you" at the center of consciousness.',
     stats: { InnerCore: 'Max', Subjectivity: 'High', Resilience: 'High' },
     score: (v, s) => {
@@ -86,7 +86,7 @@ export const ARCHETYPES = [
   {
     id: 'dylan',
     name: 'The Citizen',
-    title: 'The Social Contract',
+    title: 'Social Contract',
     backstory: 'The self is a product of social contracts, laws, and collective safety. Strip away the social framework, and you return to raw survival instinct.',
     stats: { Conformity: 'High', SystemReliance: 'Max', Autonomy: 'Moderate' },
     score: (v, s) => {
@@ -101,7 +101,7 @@ export const ARCHETYPES = [
   {
     id: 'axel',
     name: 'The Dreamer',
-    title: 'The Simulation',
+    title: 'Simulation',
     backstory: 'You treat the self as a mental projection, a simulation to help the mind interact with the world. Break the projection to see what is real.',
     stats: { Skepticism: 'Max', Perception: 'High', Grounding: 'Low' },
     score: (v, s) => {
@@ -116,7 +116,7 @@ export const ARCHETYPES = [
   {
     id: 'skyler',
     name: 'The Independent',
-    title: 'The Self-Reliance',
+    title: 'Self-Reliance',
     backstory: 'Identity is a series of self-reliant choices. You are not found; you are built in each moment through direct action.',
     stats: { Autonomy: 'Max', Willpower: 'Very High', Adaptability: 'High' },
     score: (v, s) => {
@@ -131,7 +131,7 @@ export const ARCHETYPES = [
   {
     id: 'illusion',
     name: 'The Illusion',
-    title: 'The Shimmering Mirage',
+    title: 'Shimmering Mirage',
     backstory: 'The self is a conceptual fiction. There is no observer, only observation; no thinker, only thoughts. You accept the void.',
     stats: { Dissolution: 'Max', Detachment: 'High', Realism: 'High' },
     score: (v, s) => {
