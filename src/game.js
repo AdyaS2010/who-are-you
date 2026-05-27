@@ -568,8 +568,8 @@ function startGuessWhoDuel() {
 
   // Render Displays
   const playerCard = GW_SUSPECTS[state.gwPlayerSecret];
-  $('gw-secret-display').textContent = `${playerCard.icon} ${playerCard.name}`;
-  $('gw-opponent-display').textContent = `${state.gwOpponent.avatar} ${state.gwOpponent.name}`;
+  $('gw-secret-display').textContent = `${playerCard.name}`;
+  $('gw-opponent-display').textContent = `${state.gwOpponent.name}`;
   $('gw-ai-dialogue').textContent = `"${state.gwOpponent.intro}"`;
 
   // Turn tracker
