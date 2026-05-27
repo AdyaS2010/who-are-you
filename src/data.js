@@ -470,9 +470,9 @@ export const PHILOSOPHERS = [
     difficulty: 'Normal',
     intro: 'Human life in a state of nature is solitary, poor, nasty, brutish, and short. We require order. Let us see if your mind is structured enough to discover the truth.',
     dialogueAsk: [
-      '"Do you value the security of the group over the chaos of independence?"',
-      '"Is your logic governed by rules, or do you wander unchecked?"',
-      '"Tell me, does your persona fear betrayal? It is the inevitable result of lawlessness."'
+      '"In the state of nature, the life of man is \'solitary, poor, nasty, brutish, and short.\' Do you choose security under the sovereign, or do you cling to chaos?"',
+      '"Is your character governed by rules? \'Covenants, without the sword, are but words and of no strength to secure a man at all.\'"',
+      '"Does your persona seek protection under a unified social structure, or do they wander in the lawless wilderness?"'
     ],
     defeat: 'You let your thoughts run wild. Deductive failure.',
     victory: 'Clean deduction. You\'ve structured your search well.'
@@ -484,9 +484,10 @@ export const PHILOSOPHERS = [
     difficulty: 'Hard',
     intro: 'You search for a stable, permanent "self," but I see only a bundle of changing perceptions. If identity shifts like water, how can you locate me?',
     dialogueAsk: [
-      '"Is your persona driven by constant change, or do they cling to a static core?"',
-      '"Does your suspect lead with their feelings? All knowledge arises from raw impressions."',
-      '"Do you fear stagnation? The mind must always be in motion."'
+      '"I venture to affirm that we are \'nothing but a bundle or collection of different perceptions, which succeed each other with an inconceivable rapidity.\' Does your character shift in this flow?"',
+      '"Does your suspect lead with their feelings? All knowledge arises from raw impressions, \'fluid, unstable, and always in motion.\'"',
+      '"Do you claim a permanent identity? The self is a convenient fiction—a theatre where perceptions make their appearance."',
+      '"Does your persona believe in a unified self, or do they accept that there is no observer, only observation?"'
     ],
     defeat: 'You were looking for a solid core. I told you: there is only the flow.',
     victory: 'You managed to pin down the stream of perceptions. Well played.'
@@ -498,9 +499,9 @@ export const PHILOSOPHERS = [
     difficulty: 'Normal',
     intro: 'Do not follow where the path may lead. Go instead where there is no path and leave a trail. Trust yourself: can you find my independent spirit?',
     dialogueAsk: [
-      '"Is your character a nonconformist, or do they follow the herd?"',
-      '"Does your persona value freedom above all else? Confinement is the death of the soul."',
-      '"Do you fear conforming to what society expects of you?"'
+      '"Remember: \'Trust thyself: every heart vibrates to that iron string.\' Does your character stand autonomous?"',
+      '"To find yourself, \'whoso would be a man, must be a nonconformist.\' Does your suspect run with the herd or walk their own path?"',
+      '"Does your character fear conforming? \'Nothing is at last sacred but the integrity of your own mind.\'"'
     ],
     defeat: 'You conformed too closely to obvious patterns. You must trust your own intuition next time.',
     victory: 'You conformed too closely to obvious patterns. You must trust your own intuition next time.'
@@ -512,9 +513,9 @@ export const PHILOSOPHERS = [
     difficulty: 'Easy',
     intro: 'A scientist could know every physical fact about red, yet still not know what it feels like to actually see it. Let us explore the subjective nature of identity.',
     dialogueAsk: [
-      '"Does your character lead with empathy and raw feeling, or dry logical facts?"',
-      '"Does your persona value the raw experience of love and compassion?"',
-      '"Do you fear isolation? The feeling of being cut off from others\' subjective experiences is a heavy burden."'
+      '"Mary knew all the physical facts about color, yet learned something new when she saw a red rose. What is the raw, subjective feel of your character?"',
+      '"Does your persona value the raw experience of love and compassion? \'Physical information does not capture the qualitative character of experience.\'"',
+      '"Is your character defined by raw, private consciousness? There is \'something it is like\' to be them that cannot be reduced to physical facts."'
     ],
     defeat: 'You gathered the facts but missed the feeling. A physicalist trap.',
     victory: 'You grasped the qualia. Not everything can be reduced to data.'
