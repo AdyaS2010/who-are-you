@@ -62,35 +62,7 @@ export class Platformer {
     this._renderPowerupBadge();
   }
   _renderPowerupBadge(){
-    let badge = this.hud.querySelector('.ghud-powerup-badge');
-    if (!badge) {
-      badge = document.createElement('div');
-      badge.className = 'ghud-powerup-badge';
-      this.hud.appendChild(badge);
-    }
-    let info;
-    if (this.phase === 4) {
-      info = { name: 'Glitched Self', desc: 'Identity is unstable', icon: '👾' };
-    } else {
-      info = { name: 'Inner Self', desc: 'Seeking personal identity', icon: '⭐' };
-    }
-
-    let html = `
-      <span class="powerup-icon">${info.icon}</span>
-      <div class="powerup-info">
-        <span class="powerup-name">${info.name}</span>
-        <span class="powerup-source">${info.desc}</span>
-      </div>
-    `;
-
-    if (this.hasWings || this.hasShield) {
-      html += `<div class="shop-upgrades-hud-row">`;
-      if (this.hasWings) html += `<span class="shop-upgrade-badge" title="Triple Jump Active">🪶 Wings</span>`;
-      if (this.hasShield) html += `<span class="shop-upgrade-badge" title="Hobbesian Fall Protection Active">🛡️ Shield</span>`;
-      html += `</div>`;
-    }
-
-    badge.innerHTML = html;
+    // Removed to prevent overlap with the bottom question banner
   }
   setPhase(p){this.phase=p;}
   onChoice(cb){this.choiceCb=cb;}

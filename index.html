@@ -60,13 +60,13 @@
 
       <div class="rulebook-tab-content active" id="rb-tab-story" role="tabpanel">
         <h2 id="rulebook-heading">The Quest for the True Self</h2>
-        <p class="story-intro">At the heart of <strong>WHO//ARE//YOU?</strong> lies a single, disquieting question: one that philosophy has wrestled with for centuries. This is your personal journey into it. Not a game you win by being fast, but one you win by being honest.</p>
-        <div class="story-phase-block"><span class="story-phase-tag">Phase I : The Mask</span><p>You build yourself from scratch: traits, interests, a core value, a deepest fear, and an aesthetic. The game reveals your <strong>Archetype</strong>: a philosophical persona mirroring your selections. But is this profile actually you, or a costume you have chosen to wear?</p></div>
-        <div class="story-phase-block"><span class="story-phase-tag">Phase II : The World</span><p>You enter a living world and face real moral crossroads. Every choice, about loyalty, silence, rebellion, or compassion, invisibly shapes a psychological profile beneath your Mask. The world is watching and recording.</p></div>
-        <div class="story-phase-block"><span class="story-phase-tag">Phase III : The Shift</span><p>Your world transforms. Dropped into one of four societies (the Iron Republic, the Unbound, the Collective, or the Mirror City), does your identity hold under pressure, or does the environment reshape you? Hobbes would argue you never had a choice.</p></div>
-        <div class="story-phase-block"><span class="story-phase-tag">Phase IV : The Glitch</span><p>Everything breaks. Your name, your traits, your archetype: stripped away one by one. What remains when the labels dissolve? This phase channels Frank Jackson's haunting question: is there a raw, irreducible self that no description can capture?</p></div>
-        <div class="story-phase-block"><span class="story-phase-tag">Phase V : The Mirror</span><p>The game reflects your choices back at you. A full psychological profile emerges: not the self you declared in Phase I, but the self revealed by your decisions. The Mirror does not lie. Are the two selves the same?</p></div>
-        <div class="story-phase-block"><span class="story-phase-tag">Phase VI : Trial of Personas</span><p>Seven philosophical characters each hold a different answer to the question: "What remains when everything is removed?" You must deduce which one the Philosopher AI is playing, before they deduce you. Choose your school of thought and your opponent. The trial begins.</p></div>
+        <p class="story-intro"><strong>WHO//ARE//YOU?</strong> explores personal identity. Not a game you win by being fast, but one you navigate by being honest.</p>
+        <div class="story-phase-block"><span class="story-phase-tag">Phase I : The Mask</span><p>You outline your traits, core values, fears, and aesthetic. The game assigns a starting Archetype. Is this profile really you, or just a costume?</p></div>
+        <div class="story-phase-block"><span class="story-phase-tag">Phase II : Contextual Friction</span><p>Face moral decisions in the world. Every action invisibly builds a psychological profile under your mask.</p></div>
+        <div class="story-phase-block"><span class="story-phase-tag">Phase III : Systemic Pressure</span><p>Your environment changes. Placed in a specialized society, will you adapt and conform, or remain fiercely independent?</p></div>
+        <div class="story-phase-block"><span class="story-phase-tag">Phase IV : Coherence Failure</span><p>The system breaks. Your labels dissolve one by one. What is left of you when your files are corrupted?</p></div>
+        <div class="story-phase-block"><span class="story-phase-tag">Phase V : Feedback Loop</span><p>A direct reflection of your choices. Compare the self you declared with the self revealed by your actions.</p></div>
+        <div class="story-phase-block"><span class="story-phase-tag">Phase VI : Deductive Duel</span><p>Eight philosophical concepts each hold a different theory of identity. Deduce the AI's hidden concept before they solve yours.</p></div>
       </div>
 
       <div class="rulebook-tab-content" id="rb-tab-gameplay" role="tabpanel">
@@ -207,14 +207,14 @@
 
     <!-- PHASE 2 INTRO -->
     <section id="screen-phase2-intro" class="screen">
-      <div class="phase-intro"><div class="phase-header"><span class="phase-number">Phase II</span><h2 class="phase-title">The World Shapes You</h2><p class="phase-subtitle">Your choices reveal more than your labels ever could.</p></div>
+      <div class="phase-intro"><div class="phase-header"><span class="phase-number">Phase II</span><h2 class="phase-title">Contextual Friction</h2><p class="phase-subtitle">The world reacts to your decisions. What path will you build?</p></div>
       <p class="controls-hint">← → to walk · Space to jump · Collect glowing orbs to choose</p>
       <button class="btn-primary" id="btn-phase2-begin">Step into the world →</button></div>
     </section>
 
     <!-- PHASE 3 INTRO -->
     <section id="screen-phase3-intro" class="screen">
-      <div class="phase-intro"><div class="phase-header"><span class="phase-number">Phase III</span><h2 class="phase-title">The Shift</h2><p class="phase-subtitle">Identity bends under pressure.</p></div>
+      <div class="phase-intro"><div class="phase-header"><span class="phase-number">Phase III</span><h2 class="phase-title">Systemic Pressure</h2><p class="phase-subtitle">How much of yourself will you negotiate away under pressure?</p></div>
       <div class="world-reveal"><div class="world-name" id="world-name"></div><div class="world-description" id="world-description"></div></div>
       <p class="controls-hint">← → to walk · Space to jump · Collect glowing orbs to choose</p>
       <button class="btn-primary" id="btn-phase3-begin">Enter this world →</button></div>
@@ -222,7 +222,7 @@
 
     <!-- PHASE 4 INTRO -->
     <section id="screen-phase4-intro" class="screen">
-      <div class="phase-intro"><div class="phase-header glitch-header"><span class="phase-number">Phase IV</span><h2 class="phase-title glitch-text">The Glitch</h2><p class="phase-subtitle">Everything you thought you knew disappears.</p></div>
+      <div class="phase-intro"><div class="phase-header glitch-header"><span class="phase-number">Phase IV</span><h2 class="phase-title glitch-text">Coherence Failure</h2><p class="phase-subtitle">The framework breaks down. Navigate the remaining fragments.</p></div>
       <div class="dissolving-identity" id="dissolving-identity"></div></div>
     </section>
 
@@ -235,7 +235,7 @@
 
     <!-- PHASE 5: THE MIRROR -->
     <section id="screen-phase5" class="screen">
-      <div class="phase-header"><span class="phase-number">Phase V</span><h2 class="phase-title">The Mirror</h2><p class="phase-subtitle">The game reflects you back to yourself.</p></div>
+      <div class="phase-header"><span class="phase-number">Phase V</span><h2 class="phase-title">Feedback Loop</h2><p class="phase-subtitle">A direct reflection of your choices.</p></div>
       <div class="mirror-container" id="mirror-container">
         <div class="mirror-scene"><div class="mirror-silhouette" id="mirror-silhouette"></div><div class="mirror-glow"></div></div>
         <div class="identity-profile" id="identity-profile"></div>
@@ -250,8 +250,8 @@
     <section id="screen-phase6" class="screen">
       <div class="phase-header">
         <span class="phase-number">Phase VI</span>
-        <h2 class="phase-title">Trial of Personas</h2>
-        <p class="phase-subtitle">Duel against a historical philosopher. Ask questions. Eliminate suspects. Find the truth before they deduce yours.</p>
+        <h2 class="phase-title">Deductive Duel</h2>
+        <p class="phase-subtitle">Uncover the philosopher's card before they solve yours. Formulate your deduction.</p>
       </div>
       
       <div class="guess-container" id="guess-container">

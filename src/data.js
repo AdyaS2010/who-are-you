@@ -25,9 +25,9 @@ export const AESTHETICS = [
 export const ARCHETYPES = [
   {
     id: 'alex',
-    name: 'Alex Mercer',
-    title: 'The Label-Only Identity',
-    backstory: 'You define yourself through your relationships, titles, and community. To you, labels are not chains - they are the very structure that gives you shape. Without them, there is nothing to identify.',
+    name: 'The Human',
+    title: 'The Social Node',
+    backstory: 'You anchor your identity in social structures, relationships, and roles. Remove the names, roles, and community, and the self loses its frame.',
     stats: { Security: 'High', Roles: 'Max', Conformity: 'High' },
     score: (v, s) => {
       let pt = 0;
@@ -40,9 +40,9 @@ export const ARCHETYPES = [
   },
   {
     id: 'mira',
-    name: 'Mira Lockwood',
-    title: 'The Memory-Based Self',
-    backstory: 'You are defined by the accumulation of your memories and experiences. To you, personal identity is a continuous chain of conscious recollection. If the thread of memory breaks, the self ceases to exist.',
+    name: 'The Chronicler',
+    title: 'The Continuous Memory',
+    backstory: 'You believe identity is a chain of memories. If you cannot remember yesterday, you are a different person today. Consciousness is held together by recollection.',
     stats: { Continuity: 'Max', Reflection: 'High', Adaptability: 'Moderate' },
     score: (v, s) => {
       let pt = 0;
@@ -55,9 +55,9 @@ export const ARCHETYPES = [
   },
   {
     id: 'riley',
-    name: 'Riley Flux',
-    title: 'The Flowing Stream',
-    backstory: 'You believe there is no fixed, permanent "you." Instead, you are a shifting bundle of fleeting perceptions, experiences, and impulses. You embrace change and refuse to be pinned down.',
+    name: 'The Bundle',
+    title: 'The Perceptual Flux',
+    backstory: 'There is no fixed core. You are a bundle of sensations, thoughts, and moods passing through time. You change constantly and accept the flux.',
     stats: { Fluidity: 'Max', Consistency: 'Low', Spontaneity: 'Very High' },
     score: (v, s) => {
       let pt = 0;
@@ -70,9 +70,9 @@ export const ARCHETYPES = [
   },
   {
     id: 'solara',
-    name: 'Solara Vale',
-    title: 'The Inner Qualia',
-    backstory: 'You believe that even if every label, memory, and physical description is stripped away, a raw, private core of subjective consciousness remains. There is a fundamental "what it is like to be you" that can never be reduced or explained away.',
+    name: 'The Experiencer',
+    title: 'The Raw Qualia',
+    backstory: 'Even if memory and roles vanish, raw subjective experience remains. There is a private, irreducible "what it is like to be you" at the center of consciousness.',
     stats: { InnerCore: 'Max', Subjectivity: 'High', Resilience: 'High' },
     score: (v, s) => {
       let pt = 0;
@@ -85,9 +85,9 @@ export const ARCHETYPES = [
   },
   {
     id: 'dylan',
-    name: 'Dylan Ward',
+    name: 'The Citizen',
     title: 'The Social Contract',
-    backstory: 'You view the self as fully constructed and molded by the social systems, laws, and pressures around you. Strip away society\'s scaffolding, and you are left only with raw survival instincts.',
+    backstory: 'The self is a product of social contracts, laws, and collective safety. Strip away the social framework, and you return to raw survival instinct.',
     stats: { Conformity: 'High', SystemReliance: 'Max', Autonomy: 'Moderate' },
     score: (v, s) => {
       let pt = 0;
@@ -100,9 +100,9 @@ export const ARCHETYPES = [
   },
   {
     id: 'axel',
-    name: 'Axel Mirage',
-    title: 'The Glitched Mind',
-    backstory: 'You question the reality of the self itself, viewing it as a sophisticated mental illusion or simulation constructed by the brain to navigate existence. Break out of the illusion to discover who you truly are.',
+    name: 'The Dreamer',
+    title: 'The Simulation',
+    backstory: 'You treat the self as a mental projection, a simulation to help the mind interact with the world. Break the projection to see what is real.',
     stats: { Skepticism: 'Max', Perception: 'High', Grounding: 'Low' },
     score: (v, s) => {
       let pt = 0;
@@ -115,9 +115,9 @@ export const ARCHETYPES = [
   },
   {
     id: 'skyler',
-    name: 'Skyler Drew',
-    title: 'The Self-Author',
-    backstory: 'You believe identity is an active choice, not a discovery. You are what you choose to become in each moment through your actions and radical nonconformity. You author your own path.',
+    name: 'The Independent',
+    title: 'The Self-Reliance',
+    backstory: 'Identity is a series of self-reliant choices. You are not found; you are built in each moment through direct action.',
     stats: { Autonomy: 'Max', Willpower: 'Very High', Adaptability: 'High' },
     score: (v, s) => {
       let pt = 0;
@@ -126,6 +126,21 @@ export const ARCHETYPES = [
       if (s.fear === 'Being forgotten') pt += 1.5;
       s.traits.forEach(t => { if (['Confident', 'Passionate', 'Bold', 'Determined'].includes(t)) pt += 1; });
       return pt + (v.independence || 0);
+    }
+  },
+  {
+    id: 'illusion',
+    name: 'The Illusion',
+    title: 'The Shimmering Mirage',
+    backstory: 'The self is a conceptual fiction. There is no observer, only observation; no thinker, only thoughts. You accept the void.',
+    stats: { Dissolution: 'Max', Detachment: 'High', Realism: 'High' },
+    score: (v, s) => {
+      let pt = 0;
+      if (s.coreValue === 'Truth') pt += 2.5;
+      if (s.aesthetic === 'Midnight') pt += 2;
+      if (s.fear === 'Being trapped') pt += 1.5;
+      s.traits.forEach(t => { if (['Thoughtful', 'Curious', 'Patient'].includes(t)) pt += 1; });
+      return pt + (v.curiosity || 0);
     }
   }
 ];
@@ -306,7 +321,7 @@ export const GLITCH_SCENARIOS = [
 // ---- SUSPECTS FOR GUESS WHO (7 philosophy-linked characters) ----
 export const GW_SUSPECTS = [
   {
-    name: 'Alex Mercer',
+    name: 'The Human',
     icon: '🏷️',
     theory: 'Label-Only Identity',
     traits: ['Analytical', 'Confident'],
@@ -318,31 +333,31 @@ export const GW_SUSPECTS = [
     response: '"Without my roles and relationships, there is simply nothing to identify. Labels are not limitations, they are the self."'
   },
   {
-    name: 'Mira Lockwood',
+    name: 'The Chronicler',
     icon: '🧠',
     theory: 'Memory-Based Self',
     traits: ['Thoughtful', 'Patient'],
     value: 'Truth',
     fear: 'Losing loved ones',
     aesthetic: 'Ocean',
-    source: 'Olson / Personal Identity',
+    source: 'Locke / Memory Continuity',
     belief: 'I am the accumulation of everything I remember happening in my life. If I forget everything, I stop being me.',
     response: '"Memory is the thread that makes me continuous. Without it, I would be a stranger, even to myself."'
   },
   {
-    name: 'Riley Flux',
+    name: 'The Bundle',
     icon: '🌊',
     theory: 'Bundle Theory',
     traits: ['Spontaneous', 'Adaptable'],
     value: 'Freedom',
     fear: 'Being trapped',
     aesthetic: 'Storm',
-    source: 'Pike / Hume Bundle Theory',
+    source: 'Hume / Bundle Theory',
     belief: 'There is no "I", only a collection of past experiences loosely strung together. I am always shifting.',
     response: '"Ask me who I am tomorrow and I will give you a different answer. There is no fixed point. Only flux."'
   },
   {
-    name: 'Solara Vale',
+    name: 'The Experiencer',
     icon: '✨',
     theory: 'Essential Self',
     traits: ['Gentle', 'Resilient'],
@@ -354,7 +369,7 @@ export const GW_SUSPECTS = [
     response: '"There is something it is like to be me. That feeling cannot be taken away. It is what I am, at heart."'
   },
   {
-    name: 'Dylan Ward',
+    name: 'The Citizen',
     icon: '⚙️',
     theory: 'Society-Constructed Self',
     traits: ['Analytical', 'Independent'],
@@ -366,19 +381,19 @@ export const GW_SUSPECTS = [
     response: '"Strip away society and you strip away me. Identity is not discovered, it is manufactured by the world around us."'
   },
   {
-    name: 'Axel Mirage',
+    name: 'The Dreamer',
     icon: '🪞',
     theory: 'Illusion / Simulation',
     traits: ['Curious', 'Bold'],
     value: 'Knowledge',
     fear: 'Being ordinary',
     aesthetic: 'Neon',
-    source: 'Nelson / Maslow\'s Matrix',
+    source: 'The Matrix / Simulated Self',
     belief: 'The self is a mental illusion created by the brain to construct a false sense of reality.',
     response: '"What if the you asking this question is itself the illusion? I cannot answer what remains, because nothing was ever really there."'
   },
   {
-    name: 'Skyler Drew',
+    name: 'The Independent',
     icon: '🔥',
     theory: 'Self-Creator / Existential',
     traits: ['Confident', 'Passionate'],
@@ -388,18 +403,31 @@ export const GW_SUSPECTS = [
     source: 'Emerson / Self-Reliance',
     belief: 'Identity is actively chosen, not discovered. I am what I choose to become in each moment.',
     response: '"I am not something to be found, I am something to be made. Every choice is an act of self-creation."'
+  },
+  {
+    name: 'The Illusion',
+    icon: '🌀',
+    theory: 'No-Self Theory',
+    traits: ['Thoughtful', 'Curious'],
+    value: 'Truth',
+    fear: 'Being trapped',
+    aesthetic: 'Midnight',
+    source: 'Buddhism / No-Self',
+    belief: 'There is no fixed subject of experience, no permanent soul. The self is a convenient fiction.',
+    response: '"Look closely: there is no observer, only observation. The self is an illusion constructed by thought."'
   }
 ];
 
-// ---- PHASE 6 BOARD GAME QUESTIONS (tailored to the 7 characters) ----
+// ---- PHASE 6 BOARD GAME QUESTIONS (tailored to the 8 characters) ----
 export const GUESS_QUESTIONS = [
-  { q: 'Does this character believe a core self survives if everything is removed?', check: s => ['Solara Vale'].includes(s.name), field: 'theory', label: 'Essential Self' },
-  { q: 'Is their identity defined primarily by social labels and roles?', check: s => ['Alex Mercer'].includes(s.name), field: 'theory', label: 'Label Identity' },
-  { q: 'Do they believe identity is constructed by society and fear?', check: s => ['Dylan Ward'].includes(s.name), field: 'theory', label: 'Society-Constructed' },
-  { q: 'Is their sense of self always shifting and inconsistent?', check: s => ['Riley Flux'].includes(s.name), field: 'theory', label: 'Bundle/Flux' },
-  { q: 'Do they lead with memory as the foundation of who they are?', check: s => ['Mira Lockwood'].includes(s.name), field: 'theory', label: 'Memory-Based' },
-  { q: 'Do they treat identity as something actively chosen, not inherited?', check: s => ['Skyler Drew'].includes(s.name), field: 'theory', label: 'Self-Creator' },
-  { q: 'Do they believe the self is a mental illusion or simulation?', check: s => ['Axel Mirage'].includes(s.name), field: 'theory', label: 'Illusion Theory' },
+  { q: 'Does this character believe a core self survives if everything is removed?', check: s => ['The Experiencer'].includes(s.name), field: 'theory', label: 'Essential Self' },
+  { q: 'Is their identity defined primarily by social labels and roles?', check: s => ['The Human'].includes(s.name), field: 'theory', label: 'Label Identity' },
+  { q: 'Do they believe identity is constructed by society and fear?', check: s => ['The Citizen'].includes(s.name), field: 'theory', label: 'Society-Constructed' },
+  { q: 'Is their sense of self always shifting and inconsistent?', check: s => ['The Bundle'].includes(s.name), field: 'theory', label: 'Bundle/Flux' },
+  { q: 'Do they lead with memory as the foundation of who they are?', check: s => ['The Chronicler'].includes(s.name), field: 'theory', label: 'Memory-Based' },
+  { q: 'Do they treat identity as something actively chosen, not inherited?', check: s => ['The Independent'].includes(s.name), field: 'theory', label: 'Self-Creator' },
+  { q: 'Do they believe the self is a mental illusion or simulation?', check: s => ['The Dreamer'].includes(s.name), field: 'theory', label: 'Illusion Theory' },
+  { q: 'Do they believe the self is a complete illusion with no underlying entity?', check: s => ['The Illusion'].includes(s.name), field: 'theory', label: 'No-Self' },
   { q: 'Do they value Freedom or Growth above all else?', check: s => ['Freedom', 'Growth'].includes(s.value), field: 'value', label: 'Values Freedom/Growth' },
   { q: 'Are they Analytical or Confident in their personality?', check: s => s.traits.includes('Analytical') || s.traits.includes('Confident'), field: 'traits', label: 'Analytical/Confident' },
   { q: 'Is their aesthetic warm (Sunrise, Neon, Forest, Storm)?', check: s => ['Sunrise', 'Neon', 'Forest', 'Storm'].includes(s.aesthetic), field: 'aesthetic', label: 'Warm Aesthetic' }
@@ -446,8 +474,8 @@ export const PHILOSOPHERS = [
       '"Is your logic governed by rules, or do you wander unchecked?"',
       '"Tell me, does your persona fear betrayal? It is the inevitable result of lawlessness."'
     ],
-    defeat: 'A predictable result. Without structured rules, your deduction fell into chaos.',
-    victory: 'Impressive. You have successfully structured your inquiry. Perhaps there is hope for order.'
+    defeat: 'You let your thoughts run wild. Deductive failure.',
+    victory: 'Clean deduction. You\'ve structured your search well.'
   },
   {
     name: 'David Hume',
@@ -460,8 +488,8 @@ export const PHILOSOPHERS = [
       '"Does your suspect lead with their feelings? All knowledge arises from raw impressions."',
       '"Do you fear stagnation? The mind must always be in motion."'
     ],
-    defeat: 'The self you sought has slipped through your fingers. It was but a passing shadow of perceptions.',
-    victory: 'Remarkable. You traced my bundle of perceptions despite their constant flow. You found me.'
+    defeat: 'You were looking for a solid core. I told you: there is only the flow.',
+    victory: 'You managed to pin down the stream of perceptions. Well played.'
   },
   {
     name: 'Ralph Waldo Emerson',
@@ -475,7 +503,7 @@ export const PHILOSOPHERS = [
       '"Do you fear conforming to what society expects of you?"'
     ],
     defeat: 'You conformed too closely to obvious patterns. You must trust your own intuition next time.',
-    victory: 'Splendid! You stood firm in your own judgment and found my hidden trail. You trusted yourself.'
+    victory: 'You conformed too closely to obvious patterns. You must trust your own intuition next time.'
   },
   {
     name: 'Frank Jackson',
@@ -488,8 +516,8 @@ export const PHILOSOPHERS = [
       '"Does your persona value the raw experience of love and compassion?"',
       '"Do you fear isolation? The feeling of being cut off from others\' subjective experiences is a heavy burden."'
     ],
-    defeat: 'You relied too much on dry facts, forgetting the subjective feeling of the game.',
-    victory: 'Wonderful. You understood that identity is lived and felt, not just measured. You found me.'
+    defeat: 'You gathered the facts but missed the feeling. A physicalist trap.',
+    victory: 'You grasped the qualia. Not everything can be reduced to data.'
   }
 ];
 
