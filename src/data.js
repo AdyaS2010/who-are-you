@@ -25,7 +25,7 @@ export const AESTHETICS = [
 export const ARCHETYPES = [
   {
     id: 'alex',
-    name: 'The Human (Human Nature)',
+    name: 'The Human',
     title: 'The Social Node',
     backstory: 'You anchor your identity in social structures, relationships, and roles. Remove the names, roles, and community, and the self loses its frame.',
     stats: { Security: 'High', Roles: 'Max', Conformity: 'High' },
@@ -40,7 +40,7 @@ export const ARCHETYPES = [
   },
   {
     id: 'mira',
-    name: 'The Chronicler (Memory Chain)',
+    name: 'The Chronicler',
     title: 'The Continuous Memory',
     backstory: 'You believe identity is a chain of memories. If you cannot remember yesterday, you are a different person today. Consciousness is held together by recollection.',
     stats: { Continuity: 'Max', Reflection: 'High', Adaptability: 'Moderate' },
@@ -55,7 +55,7 @@ export const ARCHETYPES = [
   },
   {
     id: 'riley',
-    name: 'The Bundle (David Hume)',
+    name: 'The Bundle',
     title: 'The Perceptual Flux',
     backstory: 'There is no fixed core. You are a bundle of sensations, thoughts, and moods passing through time. You change constantly and accept the flux.',
     stats: { Fluidity: 'Max', Consistency: 'Low', Spontaneity: 'Very High' },
@@ -70,7 +70,7 @@ export const ARCHETYPES = [
   },
   {
     id: 'solara',
-    name: 'The Experiencer (Frank Jackson / Qualia)',
+    name: 'The Experiencer',
     title: 'The Raw Qualia',
     backstory: 'Even if memory and roles vanish, raw subjective experience remains. There is a private, irreducible "what it is like to be you" at the center of consciousness.',
     stats: { InnerCore: 'Max', Subjectivity: 'High', Resilience: 'High' },
@@ -85,7 +85,7 @@ export const ARCHETYPES = [
   },
   {
     id: 'dylan',
-    name: 'The Citizen (Hobbes)',
+    name: 'The Citizen',
     title: 'The Social Contract',
     backstory: 'The self is a product of social contracts, laws, and collective safety. Strip away the social framework, and you return to raw survival instinct.',
     stats: { Conformity: 'High', SystemReliance: 'Max', Autonomy: 'Moderate' },
@@ -100,7 +100,7 @@ export const ARCHETYPES = [
   },
   {
     id: 'axel',
-    name: 'The Dreamer (Matrix)',
+    name: 'The Dreamer',
     title: 'The Simulation',
     backstory: 'You treat the self as a mental projection, a simulation to help the mind interact with the world. Break the projection to see what is real.',
     stats: { Skepticism: 'Max', Perception: 'High', Grounding: 'Low' },
@@ -115,7 +115,7 @@ export const ARCHETYPES = [
   },
   {
     id: 'skyler',
-    name: 'The Independent (Emerson)',
+    name: 'The Independent',
     title: 'The Self-Reliance',
     backstory: 'Identity is a series of self-reliant choices. You are not found; you are built in each moment through direct action.',
     stats: { Autonomy: 'Max', Willpower: 'Very High', Adaptability: 'High' },
@@ -130,7 +130,7 @@ export const ARCHETYPES = [
   },
   {
     id: 'illusion',
-    name: 'The Illusion (No-Self Theory)',
+    name: 'The Illusion',
     title: 'The Shimmering Mirage',
     backstory: 'The self is a conceptual fiction. There is no observer, only observation; no thinker, only thoughts. You accept the void.',
     stats: { Dissolution: 'Max', Detachment: 'High', Realism: 'High' },
@@ -321,7 +321,7 @@ export const GLITCH_SCENARIOS = [
 // ---- SUSPECTS FOR GUESS WHO (7 philosophy-linked characters) ----
 export const GW_SUSPECTS = [
   {
-    name: 'The Human (Human Nature)',
+    name: 'The Human',
     icon: '🏷️',
     theory: 'Label-Only Identity',
     traits: ['Analytical', 'Confident'],
@@ -333,7 +333,7 @@ export const GW_SUSPECTS = [
     response: '"Without my roles and relationships, there is simply nothing to identify. Labels are not limitations, they are the self."'
   },
   {
-    name: 'The Chronicler (Memory Chain)',
+    name: 'The Chronicler',
     icon: '🧠',
     theory: 'Memory-Based Self',
     traits: ['Thoughtful', 'Patient'],
@@ -345,7 +345,7 @@ export const GW_SUSPECTS = [
     response: '"Memory is the thread that makes me continuous. Without it, I would be a stranger, even to myself."'
   },
   {
-    name: 'The Bundle (David Hume)',
+    name: 'The Bundle',
     icon: '🌊',
     theory: 'Bundle Theory',
     traits: ['Spontaneous', 'Adaptable'],
@@ -357,7 +357,7 @@ export const GW_SUSPECTS = [
     response: '"Ask me who I am tomorrow and I will give you a different answer. There is no fixed point. Only flux."'
   },
   {
-    name: 'The Experiencer (Frank Jackson / Qualia)',
+    name: 'The Experiencer',
     icon: '✨',
     theory: 'Essential Self',
     traits: ['Gentle', 'Resilient'],
@@ -369,7 +369,7 @@ export const GW_SUSPECTS = [
     response: '"There is something it is like to be me. That feeling cannot be taken away. It is what I am, at heart."'
   },
   {
-    name: 'The Citizen (Hobbes)',
+    name: 'The Citizen',
     icon: '⚙️',
     theory: 'Society-Constructed Self',
     traits: ['Analytical', 'Independent'],
@@ -381,7 +381,7 @@ export const GW_SUSPECTS = [
     response: '"Strip away society and you strip away me. Identity is not discovered, it is manufactured by the world around us."'
   },
   {
-    name: 'The Dreamer (Matrix)',
+    name: 'The Dreamer',
     icon: '🪞',
     theory: 'Illusion / Simulation',
     traits: ['Curious', 'Bold'],
@@ -393,7 +393,7 @@ export const GW_SUSPECTS = [
     response: '"What if the you asking this question is itself the illusion? I cannot answer what remains, because nothing was ever really there."'
   },
   {
-    name: 'The Independent (Emerson)',
+    name: 'The Independent',
     icon: '🔥',
     theory: 'Self-Creator / Existential',
     traits: ['Confident', 'Passionate'],
@@ -405,7 +405,7 @@ export const GW_SUSPECTS = [
     response: '"I am not something to be found, I am something to be made. Every choice is an act of self-creation."'
   },
   {
-    name: 'The Illusion (No-Self Theory)',
+    name: 'The Illusion',
     icon: '🌀',
     theory: 'No-Self Theory',
     traits: ['Thoughtful', 'Curious'],
@@ -420,14 +420,14 @@ export const GW_SUSPECTS = [
 
 // ---- PHASE 6 BOARD GAME QUESTIONS (tailored to the 8 characters) ----
 export const GUESS_QUESTIONS = [
-  { q: 'Does this character believe a core self survives if everything is removed?', check: s => ['The Experiencer (Frank Jackson / Qualia)'].includes(s.name), field: 'theory', label: 'Essential Self' },
-  { q: 'Is their identity defined primarily by social labels and roles?', check: s => ['The Human (Human Nature)'].includes(s.name), field: 'theory', label: 'Label Identity' },
-  { q: 'Do they believe identity is constructed by society and fear?', check: s => ['The Citizen (Hobbes)'].includes(s.name), field: 'theory', label: 'Society-Constructed' },
-  { q: 'Is their sense of self always shifting and inconsistent?', check: s => ['The Bundle (David Hume)'].includes(s.name), field: 'theory', label: 'Bundle/Flux' },
-  { q: 'Do they lead with memory as the foundation of who they are?', check: s => ['The Chronicler (Memory Chain)'].includes(s.name), field: 'theory', label: 'Memory-Based' },
-  { q: 'Do they treat identity as something actively chosen, not inherited?', check: s => ['The Independent (Emerson)'].includes(s.name), field: 'theory', label: 'Self-Creator' },
-  { q: 'Do they believe the self is a mental illusion or simulation?', check: s => ['The Dreamer (Matrix)'].includes(s.name), field: 'theory', label: 'Illusion Theory' },
-  { q: 'Do they believe the self is a complete illusion with no underlying entity?', check: s => ['The Illusion (No-Self Theory)'].includes(s.name), field: 'theory', label: 'No-Self' },
+  { q: 'Does this character believe a core self survives if everything is removed?', check: s => ['The Experiencer'].includes(s.name), field: 'theory', label: 'Essential Self' },
+  { q: 'Is their identity defined primarily by social labels and roles?', check: s => ['The Human'].includes(s.name), field: 'theory', label: 'Label Identity' },
+  { q: 'Do they believe identity is constructed by society and fear?', check: s => ['The Citizen'].includes(s.name), field: 'theory', label: 'Society-Constructed' },
+  { q: 'Is their sense of self always shifting and inconsistent?', check: s => ['The Bundle'].includes(s.name), field: 'theory', label: 'Bundle/Flux' },
+  { q: 'Do they lead with memory as the foundation of who they are?', check: s => ['The Chronicler'].includes(s.name), field: 'theory', label: 'Memory-Based' },
+  { q: 'Do they treat identity as something actively chosen, not inherited?', check: s => ['The Independent'].includes(s.name), field: 'theory', label: 'Self-Creator' },
+  { q: 'Do they believe the self is a mental illusion or simulation?', check: s => ['The Dreamer'].includes(s.name), field: 'theory', label: 'Illusion Theory' },
+  { q: 'Do they believe the self is a complete illusion with no underlying entity?', check: s => ['The Illusion'].includes(s.name), field: 'theory', label: 'No-Self' },
   { q: 'Do they value Freedom or Growth above all else?', check: s => ['Freedom', 'Growth'].includes(s.value), field: 'value', label: 'Values Freedom/Growth' },
   { q: 'Are they Analytical or Confident in their personality?', check: s => s.traits.includes('Analytical') || s.traits.includes('Confident'), field: 'traits', label: 'Analytical/Confident' },
   { q: 'Is their aesthetic warm (Sunrise, Neon, Forest, Storm)?', check: s => ['Sunrise', 'Neon', 'Forest', 'Storm'].includes(s.aesthetic), field: 'aesthetic', label: 'Warm Aesthetic' }
