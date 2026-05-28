@@ -1040,7 +1040,7 @@ function initFinal() {
   const sil = $('final-silhouette');
   sil.innerHTML = '';
   sil.appendChild(createGlowSilhouette('#c9b8ff', 0.6));
-  $('final-message').querySelector('.final-narrator').textContent = `"There is no single '${state.name || 'you'}.' You are a shifting constellation of choices, contexts, and stories."`;
+  $('final-message').querySelector('.final-narrator').textContent = `"There is no single '${state.name || 'you'}.' You are a shifting collection of choices, contexts, and stories."`;
   $('philosophical-quotes').innerHTML = [...PHILOSOPHICAL_QUOTES]
     .sort(() => Math.random() - 0.5)
     .slice(0, 4)
