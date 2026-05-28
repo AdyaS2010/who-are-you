@@ -428,7 +428,7 @@ function initPhase5() {
     qmf.classList.add('hidden');
   }
 
-  $('narrator-mirror-text').innerHTML = '"Ah, see, there you are: not who you said you were, and not even who the world made you. Rather, something in between. Dare say, something <span style=\'color: var(--accent); font-weight: 700; text-shadow: 0 0 10px var(--glow); font-family: var(--ff-d); font-style: normal; letter-spacing: 0.05em;\'>real ✨</span>"';
+  $('narrator-mirror-text').innerHTML = '"Ah, see, there you are: not who you said you were, and not even who the world made you. Rather, something in between. Dare we say, something <em>real</em>"';
 }
 function genProfile(n) {
   const p = [];
