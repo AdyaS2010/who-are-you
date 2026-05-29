@@ -1,5 +1,4 @@
-// WHO//ARE//YOU? : Audio Engine
-// Calm mystical ambient music + SFX, all settings-compliant
+// noise maker module
 export class AudioEngine {
   constructor() {
     this.ctx = null; this.initialized = false;
@@ -35,8 +34,7 @@ export class AudioEngine {
     if (this.master) this.master.gain.value = m ? 0 : 0.3;
   }
 
-  // ─── CALM MYSTICAL BACKGROUND MUSIC ─────────────────────────────────────────
-  // Layered sine/triangle/saw drones + slow melodic arpeggios + theme aesthetic
+  // background tunes
   startMusic(aestheticName) {
     if (!this.ctx) return;
     this.stopMusic();
@@ -46,7 +44,7 @@ export class AudioEngine {
 
     const t = this.ctx.currentTime;
 
-    // Default parameters
+    // defaults
     let filterFreq = 600;
     let basePitchMultiplier = 1.0;
     let arpSpeed = 2.1;
@@ -55,7 +53,7 @@ export class AudioEngine {
     let dryVol = 0.65;
     let revVol = 0.35;
 
-    // Apply aesthetic constraints (Midnight, Sunrise, Storm, Ocean, Forest, Neon)
+    // visual filters mapping to noise
     if (aes === 'Midnight') {
       filterFreq = 260;
       basePitchMultiplier = 0.75;
@@ -99,7 +97,7 @@ export class AudioEngine {
       dryVol = 0.7;
     }
 
-    // --- Reverb convolver for warmth ---
+    // echoes for warm vibes
     const revLen  = this.ctx.sampleRate * 2.5;
     const revBuf  = this.ctx.createBuffer(2, revLen, this.ctx.sampleRate);
     for (let ch = 0; ch < 2; ch++) {
@@ -110,11 +108,11 @@ export class AudioEngine {
     const revGain = this.ctx.createGain(); revGain.gain.value = revVol;
     reverb.connect(revGain); revGain.connect(this.musicBus);
 
-    // Dry gain path
+    // dry path
     const dryGain = this.ctx.createGain(); dryGain.gain.value = dryVol;
     dryGain.connect(this.musicBus);
 
-    // Helper: create a sustained drone oscillator
+    // make a hummer
     const drone = (freq, type, vol, attack = 3) => {
       const o = this.ctx.createOscillator();
       const g = this.ctx.createGain();
@@ -128,17 +126,17 @@ export class AudioEngine {
       o.start(t); return { o, g };
     };
 
-    // Root drone chord: Am/C/G ethereal cluster (mystical, open-ended)
+    // starting hums
     const nodes = [
-      drone(55,  'sine',        0.055, 4),  // A1 sub-bass
-      drone(110, droneOscType,  0.07,  3),  // A2 bass
-      drone(165, mainOscType,   0.05,  4),  // E3
-      drone(220, droneOscType,  0.06,  5),  // A3
-      drone(261, mainOscType,   0.04,  5),  // C4
-      drone(330, droneOscType,  0.035, 6),  // E4
+      drone(55,  'sine',        0.055, 4),  // note 1
+      drone(110, droneOscType,  0.07,  3),  // note 2
+      drone(165, mainOscType,   0.05,  4),  // note 3
+      drone(220, droneOscType,  0.06,  5),  // note 4
+      drone(261, mainOscType,   0.04,  5),  // note 5
+      drone(330, droneOscType,  0.035, 6),  // note 6
     ];
 
-    // Slow, barely perceptible vibrato on mid drones for life
+    // wiggle the mid notes
     nodes.slice(2).forEach(({ o }, i) => {
       const lfo = this.ctx.createOscillator();
       const lfoG = this.ctx.createGain();
@@ -146,11 +144,11 @@ export class AudioEngine {
       lfoG.gain.value = 0.8;
       lfo.connect(lfoG); lfoG.connect(o.frequency);
       lfo.start(t);
-      nodes.push({ o: lfo, g: lfoG }); // track for cleanup
+      nodes.push({ o: lfo, g: lfoG }); // bin it later
     });
 
-    // --- Melodic arpeggio layer (soft triangle, slow loop) ---
-    const scale = [220, 261.6, 293.7, 329.6, 392, 440, 523.3].map(p => p * basePitchMultiplier); // A minor pentatonic+
+    // slow bleep bloops
+    const scale = [220, 261.6, 293.7, 329.6, 392, 440, 523.3].map(p => p * basePitchMultiplier); // notes pool of notes
     let step = 0;
 
     const scheduleArp = () => {
@@ -171,7 +169,7 @@ export class AudioEngine {
     scheduleArp();
     const arpTimer = setInterval(scheduleArp, arpSpeed * 1000);
 
-    // --- High shimmer sparkles (rare, crystal-like) ---
+    // high twinkles
     const shimmerNotes = [880, 1047, 1319, 1568].map(p => p * basePitchMultiplier);
     let shimmerStep = 0;
     const shimmerTimer = setInterval(() => {
@@ -208,11 +206,11 @@ export class AudioEngine {
     this._music = null;
   }
 
-  // Adjust music to phase character (more unsettling for phase 4, etc.)
+  // change tunes for the phase
   setMusicPhase(phase) {
     this._musicPhase = phase;
     if (!this._music) return;
-    // Phase 4 (Glitch): add tension by slightly detuning drones
+    // glitchy detune tension
     if (phase === 4) {
       this._music.nodes.slice(0, 3).forEach(({ o }) => {
         try {
@@ -221,7 +219,7 @@ export class AudioEngine {
         } catch(e) {}
       });
     } else {
-      // restore warmth
+      // standard vibes
       this._music.nodes.slice(0, 3).forEach(({ o }) => {
         try {
           o.frequency.cancelScheduledValues(this.ctx.currentTime);
@@ -230,12 +228,12 @@ export class AudioEngine {
     }
   }
 
-  // ─── PLATFORMER AMBIENT (phase-specific atmosphere on top of music) ─────────
+  // background humming
   startAmbient(phase) {
     this.stopAmbient();
     if (!this.ctx) return;
     this.setMusicPhase(phase);
-    // Additional thin texture layer per phase
+    // background layer
     const chords = { 2: [110, 165], 3: [98, 131], 4: [55] };
     const notes  = chords[phase] || [];
     this._amb = notes.map(freq => {
@@ -260,7 +258,7 @@ export class AudioEngine {
     }); this._amb = null;
   }
 
-  // ─── SFX ───────────────────────────────────────────────────────────────────
+  // sound effects
   _noise(dur, freq, vol) {
     if (!this.ctx) return;
     const len = this.ctx.sampleRate * dur;
@@ -303,14 +301,14 @@ export class AudioEngine {
   }
   playGlitch() { this._noise(0.15, 3000, 0.12); }
 
-  // Card flip sound for Guess Who
+  // card flip click
   playCardFlip() {
     if (!this.ctx) return;
     this._noise(0.05, 1200, 0.07);
     setTimeout(() => this._noise(0.03, 2400, 0.04), 55);
   }
 
-  // Beautiful ambient note for sandbox thought nodes
+  // sandpit bleep bloop
   playSandboxNote(freq) {
     if (!this.ctx) return;
     const o = this.ctx.createOscillator();

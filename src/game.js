@@ -1,4 +1,4 @@
-// WHO//ARE//YOU? : Game Engine (Full-Screen Platformer)
+// who//are//you? : game motor (full-screen platformer)
 import {
   TRAITS, INTERESTS, CORE_VALUES, FEARS, AESTHETICS, ARCHETYPES,
   TRAIT_INSIGHTS, VALUE_INSIGHTS, AESTHETIC_INSIGHTS, PHASE2_SCENARIOS, WORLDS, SHIFT_SCENARIOS,
@@ -17,12 +17,12 @@ const state = {
   vectors:{empathy:0,conformity:0,independence:0,curiosity:0,emotionalReasoning:0,logicalReasoning:0,riskTolerance:0,ambition:0},
   scenarioIndex:0, shiftScenarioIndex:0, glitchScenarioIndex:0, worldType:'', guessQuestionIndex:0,
   
-  // Trial of Personas (Guess Who Duel) state
+  // trial of fancy outfits (guess who duel) state
   gwRole: null,
   gwOpponent: null,
   gwPlayerSecret: null,
   gwAiSecret: null,
-  gwTurn: 'player', // 'player' or 'ai'
+  gwTurn: 'player', // 'player' or 'robot'
   gwAiPossibleSuspects: [],
   gwAbilityUsed: false,
   gwEliminated: new Set(),
@@ -30,7 +30,7 @@ const state = {
   gwGuessing: false,
   gwOver: false,
 
-  // Soul Shop and Choice Log extensions
+  // vibes shop and path list extensions
   fragments: 0,
   purchased: { wings: false, shield: false, prism: false, elixir: false },
   choiceHistory: [],
@@ -49,14 +49,14 @@ function setTheme(n) {
 }
 function addVectors(v) { for (const k in v) if (state.vectors[k] !== undefined) state.vectors[k] += v[k]; }
 
-// ---- INIT ----
+// ---- firing up ----
 export function initGame() {
   particles = new ParticleSystem('particles-canvas');
   setTheme(1);
   setupSettings();
   setupRulebook();
 
-  // Initialize Qualia Sandbox (Secret click trigger on the title question mark)
+  // firing up raw feels sandpit (hidden click fire off on the title question mark)
   const sandbox = new QualiaSandbox('sandbox-canvas');
   let secretClicks = 0;
   
@@ -123,7 +123,7 @@ export function initGame() {
     }
   });
 
-  // Keyboard accessibility: Escape key closes modals
+  // buttons accessibility: escape key closes modals
   document.addEventListener('keydown', e => {
     if (e.key === 'Escape') {
       $('rulebook-modal').classList.add('hidden');
@@ -136,7 +136,7 @@ export function initGame() {
     }
   });
 
-  // Start calm mystical music on first user gesture
+  // start calm mystical jingles on first user gesture
   const startMusic = () => {
     if (!_titleAudio) {
       _titleAudio = new AudioEngine();
@@ -161,7 +161,7 @@ export function initGame() {
   $('btn-restart').addEventListener('click', () => location.reload());
 }
 
-// ---- SETTINGS ----
+// ---- gear toggles ----
 function setupSettings() {
   const toggle = $('settings-toggle'), modal = $('settings-modal'), close = $('settings-close');
   toggle.addEventListener('click', () => { modal.classList.toggle('hidden'); });
@@ -184,7 +184,7 @@ function setupSettings() {
   });
 }
 
-// ---- RULEBOOK ----
+// ---- guidebook ----
 function setupRulebook() {
   const toggle = $('rulebook-toggle'), modal = $('rulebook-modal'), close = $('rulebook-close');
   toggle.addEventListener('click', () => { modal.classList.toggle('hidden'); });
@@ -204,7 +204,7 @@ function setupRulebook() {
   });
 }
 
-// ---- PHASE 1 ----
+// ---- phase 1 ----
 function setupPhase1() {
   const ni = $('input-name'), bn = $('btn-name-next');
   ni.addEventListener('input', () => { bn.disabled = !ni.value.trim(); });
@@ -304,14 +304,14 @@ function revealArchetype() {
   `;
 }
 
-// ---- PLATFORMER PHASES ----
+// ---- platformer phases ----
 function ensurePlatformer() {
   if (!plat) {
     plat = new Platformer($('game-canvas'), $('game-hud'));
     plat.audio.setMusicVol($('vol-music').value / 100);
     plat.audio.setSfxVol($('vol-sfx').value / 100);
     plat.audio.setMute($('mute-all').checked);
-    // Seamlessly hand off music from title engine to platformer engine
+    // seamlessly hand off jingles from title motor to platformer motor
     if (_titleAudio) { _titleAudio.stopMusic(); }
     plat.audio.init();
     plat.audio.startMusic();
@@ -319,7 +319,7 @@ function ensurePlatformer() {
   if (state.archetype) {
     plat.setArchetype(state.archetype.id);
   }
-  // Sync active Soul Shop items
+  // matching active vibes shop items
   plat.hasWings = state.purchased.wings;
   plat.hasShield = state.purchased.shield;
   $('game-screen').classList.remove('hidden');
@@ -404,7 +404,7 @@ function loadP4() {
   });
 }
 
-// ---- PHASE 5: MIRROR ----
+// ---- phase 5: mirror ----
 function initPhase5() {
   $('mirror-silhouette').innerHTML = ''; $('mirror-silhouette').appendChild(createGlowSilhouette('#a8e6c3', 0.7));
   const mx = Math.max(1, ...Object.values(state.vectors).map(Math.abs));
@@ -453,7 +453,7 @@ function genInsights(n) {
   return ins;
 }
 
-// ---- PHASE 6: TRIAL OF PERSONAS (GUESS WHO DUEL) ----
+// ---- phase 6: trial of fancy outfits (guess who duel) ----
 
 function setupPhase6() {
   $('btn-phase5-complete').addEventListener('click', () => {
@@ -468,7 +468,7 @@ function initGuessWhoSetup() {
   state.gwOpponent = null;
   state.gwOver = false;
   
-  // Render Roles
+  // painting roles
   const roleGrid = $('gw-role-selection');
   roleGrid.innerHTML = '';
   ROLES.forEach(r => {
@@ -491,7 +491,7 @@ function initGuessWhoSetup() {
     roleGrid.appendChild(card);
   });
 
-  // Render Opponents
+  // painting other guy
   const oppGrid = $('gw-opponent-selection');
   oppGrid.innerHTML = '';
   PHILOSOPHERS.forEach((p, idx) => {
@@ -532,22 +532,22 @@ function startGuessWhoDuel() {
   $('gw-setup-panel').classList.add('hidden');
   $('gw-game-panel').classList.remove('hidden');
 
-  // Assign player secret identity from their Phase 1 archetype
+  // assign player hidden identity from their phase 1 vibe card
   const archName = state.archetype ? state.archetype.name : '';
   const matchedIdx = GW_SUSPECTS.findIndex(s => s.name === archName);
   state.gwPlayerSecret = matchedIdx !== -1 ? matchedIdx : 0;
 
-  // Choose AI secret card randomly (different from player)
+  // choose robot hidden card randomly (different from player)
   let aiIdx;
   do {
     aiIdx = Math.floor(Math.random() * GW_SUSPECTS.length);
   } while (aiIdx === state.gwPlayerSecret);
   state.gwAiSecret = aiIdx;
 
-  // Initialize game state
+  // firing up game state
   state.gwEliminated = new Set();
   if (state.purchased.elixir) {
-    // Socratic Elixir: pre-eliminate 1 random incorrect suspect (excluding AI secret)
+    // socratic elixir: pre-eliminate 1 random incorrect sus cards (excluding robot hidden)
     const candidates = [];
     for (let i = 0; i < GW_SUSPECTS.length; i++) {
       if (i !== state.gwAiSecret) {
@@ -566,16 +566,16 @@ function startGuessWhoDuel() {
   state.gwAiPossibleSuspects = GW_SUSPECTS.map((_, i) => i);
   state.gwOver = false;
 
-  // Render Displays
+  // painting show panels
   const playerCard = GW_SUSPECTS[state.gwPlayerSecret];
   $('gw-secret-display').textContent = `${playerCard.name}`;
   $('gw-opponent-display').textContent = `${state.gwOpponent.name}`;
   $('gw-ai-dialogue').textContent = `"${state.gwOpponent.intro}"`;
 
-  // Turn tracker
+  // whose go tracker
   updateTurnUI();
 
-  // Ability Button
+  // ability button
   const ab = $('gw-ability-btn');
   ab.disabled = false;
   ab.querySelector('.ability-icon').textContent = state.gwRole.icon;
@@ -583,7 +583,7 @@ function startGuessWhoDuel() {
   ab.querySelector('.ability-desc').textContent = state.gwRole.description;
   ab.onclick = activateAbility;
 
-  // Reset actions
+  // wipe out actions
   $('gw-final-guess').classList.remove('hidden');
   $('gw-continue').classList.add('hidden');
   $('gw-answer-box').innerHTML = '';
@@ -602,7 +602,7 @@ function startGuessWhoDuel() {
   renderQuestions();
   updateStatusText();
 
-  // Continue music in platformer context
+  // continue jingles in platformer context
   if (plat) { plat.audio.resume(); plat.audio.startMusic(); }
 }
 
@@ -690,7 +690,7 @@ function renderQuestions() {
       state.gwUsedQs.add(i);
       btn.classList.add('used');
       
-      // Get answer based on AI's secret card
+      // get answer based on robot's hidden card
       const target = GW_SUSPECTS[state.gwAiSecret];
       const answer = q.check(target);
       
@@ -705,7 +705,7 @@ function renderQuestions() {
 
       $('gw-status').textContent = 'Eliminate suspects on your board, then click "End Turn & Let AI Move".';
       
-      // Disable further questions until turn ends
+      // disable further questions until whose go ends
       bar.querySelectorAll('.gw-q-btn').forEach(b => b.disabled = true);
       $('gw-final-guess').classList.add('hidden');
       
@@ -717,7 +717,7 @@ function renderQuestions() {
     bar.appendChild(btn);
   });
 
-  // Keep disabled if it's not player turn
+  // keep disabled if it's not player whose go
   if (state.gwTurn !== 'player') {
     bar.querySelectorAll('.gw-q-btn').forEach(b => b.disabled = true);
   }
@@ -735,7 +735,7 @@ function activateAbility() {
 
   switch (state.gwRole.abilityId) {
     case 'rationalism':
-      // Hobbes Order: Eliminate 2 random wrong suspects automatically
+      // hobbes order: eliminate 2 random wrong sus cards automatically
       const wrongSuspects = [];
       for (let i = 0; i < GW_SUSPECTS.length; i++) {
         if (i !== state.gwAiSecret && !state.gwEliminated.has(i)) {
@@ -758,18 +758,18 @@ function activateAbility() {
       break;
 
     case 'empiricism':
-      // Hume Impressions: Reveal AI's secret card's core value
+      // hume impressions: reveal robot's hidden card's core value
       message = `Sensory Impression: The target identity values <strong>${target.value}</strong>.`;
       break;
 
     case 'existentialism':
-      // Emerson Self-reliance: Reveal if AI target is a nonconformist (Independent/Bold)
+      // emerson self-reliance: reveal if robot target is a nonconformist (independent/bold)
       const isNC = target.traits.includes('Independent') || target.traits.includes('Bold');
       message = `Intuition Sense: The target is ${isNC ? '<strong>a Nonconformist</strong> (Independent/Bold)' : '<strong>not a Nonconformist</strong>'}.`;
       break;
 
     case 'subjectivism':
-      // Jackson Qualia: Sense if aesthetic is warm or cool
+      // jackson raw feels: sense if aesthetic is warm or cool
       const isWarm = ['Sunrise', 'Neon', 'Storm'].includes(target.aesthetic);
       message = `Qualia Sense: The target card has a <strong>${isWarm ? 'Warm' : 'Cool'}</strong> aesthetic tone (${isWarm ? 'Sunrise/Neon/Storm' : 'Midnight/Ocean/Forest'}).`;
       break;
@@ -785,7 +785,7 @@ function passTurnToAi() {
   renderQuestions();
   updateStatusText();
 
-  // Philosopher speaks during turn
+  // big brain speaks during whose go
   const opp = state.gwOpponent;
   const qQuotes = opp.dialogueAsk;
   const quote = qQuotes[Math.floor(Math.random() * qQuotes.length)];
@@ -803,17 +803,17 @@ function runAiTurnLogic() {
   const pCard = GW_SUSPECTS[state.gwPlayerSecret];
   const diff = opp.difficulty || 'Normal';
 
-  // AI Strategic deduction: finds a question it hasn't used that splits its remaining suspects closest to 50/50
+  // robot strategic deduction: finds a question it hasn't used that splits its remaining sus cards closest to 50/50
   let bestQIdx = -1;
   
-  // Create a list of questions that AI has not asked yet (simulated by checking index)
+  // create a list of questions that robot has not asked yet (simulated by checking index)
   const unasked = GUESS_QUESTIONS.map((_, i) => i).filter(i => !state.gwUsedQs.has(i));
   
   if (unasked.length === 0) {
-    // Fallback: pick a random question
+    // fallback: pick a random question
     bestQIdx = Math.floor(Math.random() * GUESS_QUESTIONS.length);
   } else {
-    // Strategy: evaluate how well each question splits the remaining possibilities
+    // strategy: evaluate how well each question splits the remaining possibilities
     const candidates = [];
     unasked.forEach(qIdx => {
       const q = GUESS_QUESTIONS[qIdx];
@@ -825,12 +825,12 @@ function runAiTurnLogic() {
       candidates.push({ qIdx, diff: diffVal });
     });
     
-    // Sort candidates so the ones that split closest to 50/50 are first
+    // sort candidates so the ones that split closest to 50/50 are first
     candidates.sort((a, b) => a.diff - b.diff);
     
-    // Adjust choice pool size and random chance based on difficulty
+    // adjust choice pool size and random chance based on difficulty
     if (diff === 'Easy') {
-      // Easy: 50% chance to pick a completely random question, or pick from top 5 splits
+      // easy: 50% chance to pick a completely random question, or pick from top 5 splits
       if (Math.random() > 0.5) {
         bestQIdx = unasked[Math.floor(Math.random() * unasked.length)];
       } else {
@@ -839,7 +839,7 @@ function runAiTurnLogic() {
         bestQIdx = chosenCandidate.qIdx;
       }
     } else if (diff === 'Hard') {
-      // Hard: 85% chance to pick the absolute best split, otherwise top 2
+      // hard: 85% chance to pick the absolute best split, otherwise top 2
       if (Math.random() < 0.85 && candidates.length > 0) {
         bestQIdx = candidates[0].qIdx;
       } else {
@@ -848,7 +848,7 @@ function runAiTurnLogic() {
         bestQIdx = chosenCandidate.qIdx;
       }
     } else {
-      // Normal: 15% chance to pick a completely random question, or pick from top 3 splits
+      // normal: 15% chance to pick a completely random question, or pick from top 3 splits
       if (Math.random() < 0.15) {
         bestQIdx = unasked[Math.floor(Math.random() * unasked.length)];
       } else {
@@ -862,14 +862,14 @@ function runAiTurnLogic() {
   const chosenQ = GUESS_QUESTIONS[bestQIdx];
   const answer = chosenQ.check(pCard);
 
-  // AI dialogues its question
+  // robot dialogues its question
   $('gw-ai-dialogue').textContent = `"${opp.name} asks: ${chosenQ.q}"`;
 
   setTimeout(() => {
-    // AI processes answer
+    // robot processes answer
     if (plat) plat.audio.playGlitch();
 
-    // AI filters its suspects list
+    // robot filters its sus cards list
     state.gwAiPossibleSuspects = state.gwAiPossibleSuspects.filter(sIdx => {
       return chosenQ.check(GW_SUSPECTS[sIdx]) === answer;
     });
@@ -882,26 +882,26 @@ function runAiTurnLogic() {
     `;
 
     setTimeout(() => {
-      // AI checks for final guess
+      // robot checks for final guess
       if (state.gwAiPossibleSuspects.length === 1) {
-        // AI makes final guess
+        // robot makes final guess
         const finalGuessIdx = state.gwAiPossibleSuspects[0];
         if (finalGuessIdx === state.gwPlayerSecret) {
           triggerAiWin();
         } else {
-          // AI guessed wrong (safeguard)
+          // robot guessed wrong (safeguard)
           state.gwAiPossibleSuspects = state.gwAiPossibleSuspects.filter(id => id !== finalGuessIdx);
           returnToPlayerTurn();
         }
       } else if (state.gwAiPossibleSuspects.length === 2) {
-        // Risk assessment based on difficulty
+        // risk assessment based on difficulty
         const riskChance = diff === 'Hard' ? 0.75 : (diff === 'Easy' ? 0.15 : 0.4);
         if (Math.random() < riskChance) {
           const finalGuessIdx = state.gwAiPossibleSuspects[Math.floor(Math.random() * 2)];
           if (finalGuessIdx === state.gwPlayerSecret) {
             triggerAiWin();
           } else {
-            // AI guessed wrong
+            // robot guessed wrong
             state.gwAiPossibleSuspects = state.gwAiPossibleSuspects.filter(id => id !== finalGuessIdx);
             $('gw-ai-dialogue').textContent = `"${opp.name}: 'Blast! My deduction was imperfect. I assumed you were ${GW_SUSPECTS[finalGuessIdx].name}.'"`;
             setTimeout(returnToPlayerTurn, 2000);
@@ -924,7 +924,7 @@ function returnToPlayerTurn() {
   renderQuestions();
   updateStatusText();
   
-  // Re-enable final guess
+  // re-enable final guess
   $('gw-final-guess').classList.remove('hidden');
 }
 
@@ -943,13 +943,13 @@ function revealGuess(idx) {
   const target = GW_SUSPECTS[state.gwAiSecret];
   const opp = state.gwOpponent;
 
-  // Reveal correct card
+  // reveal correct card
   const cards = $('gw-board').querySelectorAll('.gw-card');
   cards[state.gwAiSecret].classList.add('target-reveal');
 
   if (correct) {
     if (plat) plat.audio.playCollect();
-    // Explode particles
+    // explode sparky bits
     for (let i = 0; i < 40; i++) {
       particles.particles.push({
         x: window.innerWidth / 2 + (Math.random() - 0.5) * 200,
@@ -961,14 +961,14 @@ function revealGuess(idx) {
       });
     }
 
-    // Show Victory Treat Modal after a short delay!
+    // show win win treat popup box after a short delay!
     setTimeout(() => {
       const certPlayer = $('cert-player-name');
       const certOpp = $('cert-opp-name');
       if (certPlayer) certPlayer.textContent = state.name || 'The Wanderer';
       if (certOpp) certOpp.textContent = opp.name;
 
-      // Unlock golden filter option
+      // unlock golden filter option
       const filterSelect = $('prism-filter');
       if (filterSelect && !filterSelect.querySelector('option[value="gold"]')) {
         const opt = document.createElement('option');
@@ -1016,7 +1016,7 @@ function triggerAiWin() {
   const target = GW_SUSPECTS[state.gwAiSecret];
   const pCard = GW_SUSPECTS[state.gwPlayerSecret];
 
-  // Reveal correct card
+  // reveal correct card
   const cards = $('gw-board').querySelectorAll('.gw-card');
   cards[state.gwAiSecret].classList.add('target-reveal');
 
@@ -1035,7 +1035,7 @@ function triggerAiWin() {
   $('gw-continue').classList.remove('hidden');
 }
 
-// ---- FINAL ----
+// ---- final ----
 function initFinal() {
   const sil = $('final-silhouette');
   sil.innerHTML = '';
@@ -1056,7 +1056,7 @@ class QualiaSandbox {
     this.ripples = [];
     this.active = false;
     this.mouse = { x: null, y: null };
-    this.notesScale = [220, 246.9, 277.2, 329.6, 369.9, 440, 493.9, 554.4, 659.3, 739.9, 880]; // Ethereal pentatonic scale
+    this.notesScale = [220, 246.9, 277.2, 329.6, 369.9, 440, 493.9, 554.4, 659.3, 739.9, 880]; // ethereal pentatonic notes pool
 
     window.addEventListener('resize', () => {
       if (this.active) this.resize();
@@ -1071,7 +1071,7 @@ class QualiaSandbox {
     this.resize();
     this.nodes = [];
     this.ripples = [];
-    // Spawn 8 starting random thought nodes
+    // spawn 8 starting random mind dots
     for (let i = 0; i < 8; i++) {
       this.spawnNode(
         Math.random() * this.canvas.width,

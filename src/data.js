@@ -1,7 +1,4 @@
-// ============================================
-// WHO // ARE // YOU? : Expanded Game Data
-// Character archetypes, deeper scenarios, worlds
-// ============================================
+// basic game data stuff
 
 export const TRAITS = [
   'Creative','Analytical','Empathetic','Ambitious','Curious',
@@ -21,7 +18,7 @@ export const AESTHETICS = [
   {name:'Ocean',icon:'🌊'},{name:'Forest',icon:'🌿'},{name:'Neon',icon:'💜'}
 ];
 
-// ---- CHARACTER ARCHETYPES (aligned with 7 Guess Who suspect characters) ----
+// startup characters aligned with guess who
 export const ARCHETYPES = [
   {
     id: 'alex',
@@ -190,7 +187,7 @@ export const AESTHETIC_INSIGHTS = {
   Neon: 'A Neon aesthetic signals a vibrant, expressive nature, comfortable in the artificial, electric pulse of modern life.'
 };
 
-// ---- PHASE 2 SCENARIOS (Streamlined to 3) ----
+// phase 2 choice stuff
 export const PHASE2_SCENARIOS = [
   {
     env:'twilight',
@@ -224,7 +221,7 @@ export const PHASE2_SCENARIOS = [
   }
 ];
 
-// ---- WORLDS ----
+// the cool worlds
 export const WORLDS = [
   {name:'The Iron Republic',description:'A society built on absolute order. Rules are everything. Safety is guaranteed, at the cost of freedom.',type:'strict',env:'iron',
     narrator:'"Welcome to a world that values structure above all else. Let\'s see if you bend or break."'},
@@ -236,7 +233,7 @@ export const WORLDS = [
     narrator:'"In this world, being ordinary is the only sin. You must be unique, or invisible."'}
 ];
 
-// ---- PHASE 3 SCENARIOS (Streamlined to 2 per path) ----
+// phase 3 shift choice stuff
 export const SHIFT_SCENARIOS = {
   strict:[
     {text:'The Iron Republic\'s stability requires reporting a colleague who expressed private, unmonitored thoughts. Refusing to report them threatens the safety of the entire sector.',
@@ -296,7 +293,7 @@ export const SHIFT_SCENARIOS = {
   ]
 };
 
-// ---- PHASE 4 SCENARIOS (Streamlined to 2) ----
+// phase 4 glitchy choice stuff
 export const GLITCH_SCENARIOS = [
   {
     narrator:'"No name. No traits. No story. Just... you. If there is a you."',
@@ -318,7 +315,7 @@ export const GLITCH_SCENARIOS = [
   }
 ];
 
-// ---- SUSPECTS FOR GUESS WHO (7 philosophy-linked characters) ----
+// the sus cards sus cards
 export const GW_SUSPECTS = [
   {
     name: 'The Human',
@@ -418,7 +415,7 @@ export const GW_SUSPECTS = [
   }
 ];
 
-// ---- PHASE 6 BOARD GAME QUESTIONS (tailored to the 8 characters) ----
+// questions for the board
 export const GUESS_QUESTIONS = [
   { q: 'Does this character believe a core self survives if everything is removed?', check: s => ['The Experiencer'].includes(s.name), field: 'theory', label: 'Essential Self' },
   { q: 'Is their identity defined primarily by social labels and roles?', check: s => ['The Human'].includes(s.name), field: 'theory', label: 'Label Identity' },
@@ -433,7 +430,7 @@ export const GUESS_QUESTIONS = [
   { q: 'Is their aesthetic warm (Sunrise, Neon, Forest, Storm)?', check: s => ['Sunrise', 'Neon', 'Forest', 'Storm'].includes(s.aesthetic), field: 'aesthetic', label: 'Warm Aesthetic' }
 ];
 
-// ---- STRATEGIC PLAYER ROLES ----
+// player powerups
 export const ROLES = [
   {
     name: 'Rationalist (Hobbes)',
@@ -461,7 +458,7 @@ export const ROLES = [
   }
 ];
 
-// ---- PHILOSOPHER AI OPPONENTS ----
+// robot brains
 export const PHILOSOPHERS = [
   {
     name: 'Thomas Hobbes',
@@ -523,7 +520,7 @@ export const PHILOSOPHERS = [
 ];
 
 
-// ---- QUOTES ----
+// smart quotes
 
 export const PHILOSOPHICAL_QUOTES = [
   {text:'"Trust thyself: every heart vibrates to that iron string."',source:'Emerson, Self-Reliance'},

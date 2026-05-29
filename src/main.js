@@ -1,9 +1,7 @@
-// ============================================
-// WHO // ARE // YOU? : Entry Point
-// ============================================
+// entry point silly goose
 
 import './style.css';
 import { initGame } from './game.js';
 
-// Initialize when DOM is ready
+// start when dom is ready freddy
 document.addEventListener('DOMContentLoaded', initGame);

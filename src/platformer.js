@@ -62,7 +62,7 @@ export class Platformer {
     this._renderPowerupBadge();
   }
   _renderPowerupBadge(){
-    // Removed to prevent overlap with the bottom question banner
+    // removed to prevent overlap with the bottom question banner
   }
   setPhase(p){this.phase=p;}
   onChoice(cb){this.choiceCb=cb;}
@@ -87,7 +87,7 @@ export class Platformer {
     const GY=152, nc=scenario.choices.length;
     const ph=this.phase;
 
-    // --- ENVIRONMENTAL DECORATIONS based on env ---
+    // --- environmental pretty details based on env ---
     const ek=envKey||'twilight';
     if(ek==='forest'||ek==='crossroads'){
       for(let x=20;x<280;x+=25+Math.random()*20)
@@ -106,65 +106,65 @@ export class Platformer {
         this.decorations.push({type:'pillar',x,h:10+Math.random()*18,w:3});
     }
 
-    // --- STORY TEXT that reveals as you walk through it ---
+    // --- story text that reveals as you walk through it ---
     const sentences=scenario.text.split(/(?<=[.!?])\s+/).filter(s=>s.trim());
     const storySpacing=200/(sentences.length+1);
     sentences.forEach((s,i)=>{
       this.storyNodes.push({x:40+storySpacing*(i+1),y:20+i*8,text:s.trim(),opacity:0});
     });
 
-    // --- PHASE-SPECIFIC LEVEL DESIGN ---
+    // --- phase-specific level design ---
     if(ph===2){
-      // Phase 2: Open journey, gentle ground, welcoming terrain
+      // phase 2: open journey, gentle floor, welcoming terrain
       for(let x=0;x<300;x+=4) this.platforms.push({x,y:GY,w:4,h:28,solid:true});
       this.platforms.push({x:70,y:135,w:28,h:4,solid:false});
       this.platforms.push({x:130,y:125,w:24,h:4,solid:false});
       this.platforms.push({x:190,y:130,w:20,h:4,solid:false});
-      // Intermediate climbing platforms for highest path accessibility
+      // intermediate climbing steps for highest path accessibility
       this.platforms.push({x:235,y:112,w:22,h:4,solid:false});
       this.platforms.push({x:265,y:96,w:18,h:4,solid:false});
     } else if(ph===3){
-      // Phase 3: Constrained world, tighter spaces, ceiling pressure
+      // phase 3: constrained world, tighter spaces, roof pressure
       for(let x=0;x<300;x+=4) this.platforms.push({x,y:GY,w:4,h:28,solid:true});
-      // Ceiling tiles to feel oppressive
+      // roof tiles to feel oppressive
       for(let x=60;x<280;x+=4) this.platforms.push({x,y:60,w:4,h:4,solid:true,ceiling:true});
       this.platforms.push({x:100,y:135,w:16,h:4,solid:false});
       this.platforms.push({x:170,y:128,w:14,h:4,solid:false});
-      // Intermediate climbing platforms for Phase 3
+      // intermediate climbing steps for phase 3
       this.platforms.push({x:215,y:115,w:16,h:4,solid:false});
       this.platforms.push({x:250,y:100,w:14,h:4,solid:false});
     } else {
-      // Phase 4: Crumbling void, ground breaks apart
+      // phase 4: crumbling void, floor breaks apart
       for(let x=0;x<280;x+=4){
         const isSafe=x<60||Math.random()>.25;
         this.platforms.push({x,y:GY,w:4,h:28,solid:true,
           crumble:x>80&&Math.random()>.5,crumbleT:null});
       }
-      // Stepping stones in Phase 4
+      // stepping stones in phase 4
       this.platforms.push({x:90,y:135,w:16,h:4,solid:false,crumble:true,crumbleT:null});
       this.platforms.push({x:150,y:125,w:14,h:4,solid:false,crumble:true,crumbleT:null});
       this.platforms.push({x:205,y:112,w:14,h:4,solid:false,crumble:true,crumbleT:null});
       this.platforms.push({x:255,y:98,w:14,h:4,solid:false,crumble:true,crumbleT:null});
     }
 
-    // Crystal at approach end (positioned dynamically to prevent overlap with platforms)
+    // crystal at approach end (positioned dynamically to prevent overlap with steps)
     let cx = 255, cy = 118;
     if (ph === 2) { cx = 220; cy = 114; }
     else if (ph === 3) { cx = 240; cy = 116; }
     else if (ph === 4) { cx = 226; cy = 114; }
     this.crystal = { x: cx, y: cy, triggered: false, t: 0 };
 
-    // --- CHOICE PATHS with meaningful labels ---
+    // --- choice paths with meaningful labels ---
     const pathYs = nc===2 ? [95,145] : [80,118,148];
     const pathColors = nc===2 ? ['#ffcc66','#66ccff'] : ['#ff8888','#88ff88','#8888ff'];
-    // Wall separator at fork point
+    // blocky block separator at fork point
     for(let y=0;y<NH;y+=4){
       let blocked=true;
       for(const py of pathYs){ if(y>=py-48&&y<=py+16) blocked=false; }
       if(blocked) this.platforms.push({x:295,y,w:4,h:4,solid:true,wall:true});
     }
 
-    // Build paths with phase-aware design
+    // build paths with phase-aware design
     pathYs.forEach((py,i)=>{
       const startX=308, endX=510, orbX=endX-10;
       const label=scenario.choices[i].text;
@@ -172,7 +172,7 @@ export class Platformer {
       this.signs.push({x:282,y:py-6,text:shortLabel,color:pathColors[i]});
 
       if(ph===2){
-        // P2: Each path is accessible but with increasing height = aspiration
+        // p2: each path is accessible but with increasing height = aspiration
         const pCount=4+Math.floor(Math.random()*2);
         for(let j=0;j<pCount;j++){
           const px=startX+j*((endX-startX-40)/pCount);
@@ -180,21 +180,21 @@ export class Platformer {
           this.platforms.push({x:px,y:py+Math.random()*4-2,w:pw,h:4,solid:false});
         }
       } else if(ph===3){
-        // P3: Paths are hostile, moving platforms, tight spaces
+        // p3: paths are hostile, moving steps, tight spaces
         let px=startX;
         while(px<endX-40){
           if(i===0){
-            // Top: sparse crumbling
+            // top: sparse crumbling
             this.platforms.push({x:px,y:py+Math.random()*6-3,w:14,h:4,solid:false,crumble:true,crumbleT:null});
             px+=35+Math.random()*10;
           } else {
-            // Others: moving
+            // others: moving
             this.movingPlats.push({x:px,y:py,w:18,h:4,baseX:px,baseY:py,mx:0,my:8+i*4,speed:.8+Math.random()*.4,t:Math.random()*6.28});
             px+=38+Math.random()*10;
           }
         }
       } else {
-        // P4: Everything is unstable, flickering platforms
+        // p4: everything is unstable, flickering steps
         let px=startX;
         while(px<endX-30){
           this.platforms.push({x:px,y:py+Math.random()*6-3,w:12+Math.random()*6,h:4,solid:false,
@@ -203,13 +203,13 @@ export class Platformer {
         }
       }
 
-      // Landing platform + orb at end
+      // landing steps + glowy ball at end
       this.platforms.push({x:orbX-14,y:py,w:30,h:4,solid:false});
       this.orbs.push({x:orbX,y:py-8,text:shortLabel,fullText:label,
         vectors:scenario.choices[i].vectors,collected:false,t:Math.random()*6.28,color:pathColors[i]});
     });
 
-    // HUD: only narrator, story reveals through walking
+    // hud: only narrator, story reveals through walking
     this.hud.innerHTML='';
     const nar=document.createElement('div');nar.className='ghud-narrator';
     nar.textContent=scenario.narrator?.replace(/"/g,'')||'';
@@ -252,14 +252,14 @@ export class Platformer {
       rune.className = `choice-rune ${isLocked ? 'locked' : 'unlocked'}`;
       rune.setAttribute('data-color', color);
 
-      // Create rune circle
+      // create rune circle
       const circle = document.createElement('div');
       circle.className = 'rune-circle';
       circle.innerHTML = isLocked ? '🔒' : letter;
       circle.style.borderColor = isLocked ? 'rgba(255, 255, 255, 0.15)' : dotColor;
       rune.appendChild(circle);
 
-      // Create tooltip
+      // create tooltip
       const tooltip = document.createElement('div');
       tooltip.className = 'rune-tooltip';
       
@@ -292,7 +292,7 @@ export class Platformer {
     setTimeout(()=>{el.style.opacity='0';},2800);
   }
   _updateProximity(){
-    // Disabled to keep selection blind until touched
+    // disabled to keep selection blind until touched
   }
 
   start(){this.running=true;this.audio.init();this.audio.resume();this.audio.startAmbient(this.phase);this._last=performance.now();this._loop();}
@@ -322,15 +322,15 @@ export class Platformer {
     if(this.keys.ArrowLeft||this.keys.KeyA||this.keys._tl) dir=-1;
     if(this.keys.ArrowRight||this.keys.KeyD||this.keys._tr) dir=1;
 
-    // Horizontal movement
+    // horizontal movement
     if(dir){p.vx+=dir*acc*dt;p.vx=Math.max(-spd,Math.min(spd,p.vx));p.dir=dir;
       if(p.grounded){p.frame+=dt*10;this.footT+=dt;
         if(this.footT>.2){this.audio.playFootstep();this.footT=0;this._dust(p.x+4,p.y+14);}}
-      // Movement trail
+      // movement footprints
       if(Math.abs(p.vx)>30) this.trail.push({x:p.x+4,y:p.y+7,a:0.4,life:0.3});}
     else{p.vx*=Math.max(0,1-fric*dt/80);if(Math.abs(p.vx)<.5)p.vx=0;p.frame=0;}
 
-    // Jump with coyote time + buffer
+    // boing with roadrunner physics time + holding zone
     const wantJmp=this.keys.Space||this.keys.ArrowUp||this.keys.KeyW||this.keys._tj;
     if(wantJmp) p.jumpBuf=.1;
     if(p.jumpBuf>0) p.jumpBuf-=dt;
@@ -350,7 +350,7 @@ export class Platformer {
       p.jumpBuf=0;
       p.grounded=false;
       this.audio.playJump();
-      // Burst of mystical dust particles on jump
+      // burst of mystical dust sparky bits on boing
       for(let i=0; i<8; i++){
         this.particles.push({
           x: p.x + 4,
@@ -362,7 +362,7 @@ export class Platformer {
         });
       }
     } else if(!p.grounded && !this.doubleJumpUsed && jmpPressed){
-      // Universal double jump for all characters
+      // universal double boing for all characters
       p.vy = jmpF * 0.85;
       this.doubleJumpUsed=true;
       this.audio.playJump();
@@ -370,7 +370,7 @@ export class Platformer {
         this.particles.push({x:p.x+4,y:p.y+14,vx:(Math.random()-0.5)*45,vy:(Math.random()-0.5)*25,life:0.5,color:this.env.accent});
       }
     } else if(!p.grounded && this.doubleJumpUsed && !this.tripleJumpUsed && jmpPressed && this.hasWings){
-      // Emersonian Wings: TRIPLE JUMP
+      // emersonian wings: triple boing
       p.vy = jmpF * 0.8;
       this.tripleJumpUsed = true;
       this.audio.playJump();
@@ -378,31 +378,31 @@ export class Platformer {
         this.particles.push({x:p.x+4,y:p.y+14,vx:(Math.random()-0.5)*40,vy:(Math.random()-0.5)*25,life:0.5,color:'#66ffdd'});
       }
     }
-    // Variable jump height: release early = lower jump
+    // variable boing height: release early = lower boing
     if(!wantJmp&&p.vy<-40) p.vy*=.8;
 
     p.vy+=grav*dt; p.x+=p.vx*dt; p.y+=p.vy*dt;
 
-    // Collision with static platforms
+    // bonk check with static steps
     p.grounded=false;
     const allPlats=[...this.platforms.filter(pl=>!pl.crumbleT||pl.crumbleT>.3),...this.movingPlats];
     for(const pl of allPlats){
       if(pl.wall||pl.solid){
-        // Solid walls: block horizontal movement
+        // solid walls: block horizontal movement
         if(pl.wall && p.x+7>pl.x && p.x+1<pl.x+pl.w && p.y+14>pl.y && p.y<pl.y+pl.h){
           if(p.vx>0) p.x=pl.x-8; else p.x=pl.x+pl.w;
           p.vx=0;
         }
-        // Solid ground
+        // solid floor
         if(pl.solid&&!pl.wall && p.x+7>pl.x && p.x+1<pl.x+pl.w && p.vy>=0){
           if(p.y+15>=pl.y && p.y+15<pl.y+10){p.y=pl.y-15;p.vy=0;p.grounded=true;}
         }
       } else {
-        // One-way platforms: land on top
+        // one-way steps: land on top
         if(p.x+7>pl.x && p.x+1<pl.x+pl.w && p.vy>=0){
           const feet=p.y+15;
           if(feet>=pl.y-1 && feet<pl.y+8){p.y=pl.y-15;p.vy=0;p.grounded=true;
-            // Crumble check
+            // dusty fall check
             if(pl.crumble&&pl.crumbleT===null){pl.crumbleT=0;}
           }
         }
@@ -412,26 +412,26 @@ export class Platformer {
     if(p.grounded) p.coyote=.12;
     if(p.grounded&&!p.wasG){
       this.shakeY=1.2;this.audio.playLand();
-      // Landing dust burst
+      // landing dust burst
       for(let i=0;i<5;i++) this.particles.push({x:p.x+4+Math.random()*4-2,y:p.y+14,vx:(Math.random()-.5)*25,vy:-Math.random()*10-2,life:0.35,color:this.env.accent});
     }
     p.wasG=p.grounded;
 
-    // Crumbling platforms
+    // crumbling steps
     this.platforms.forEach(pl=>{if(pl.crumbleT!==null&&pl.crumbleT<9) pl.crumbleT+=dt;});
 
-    // Moving platforms
+    // moving steps
     this.movingPlats.forEach(mp=>{
       mp.t+=dt*mp.speed;
       mp.x=mp.baseX+Math.sin(mp.t)*mp.mx;
       mp.y=mp.baseY+Math.sin(mp.t)*mp.my;
     });
 
-    // Bounds & respawn
+    // bounds & respawn
     p.x=Math.max(0,Math.min(560,p.x));
     if(p.y>190){
       if(this.hasShield) {
-        // Hobbesian Shield: Teleport slightly back to safety
+        // hobbesian shield: teleport slightly back to safety
         p.x = Math.max(40, p.x - 35);
         p.y = 80; p.vy = 0; p.vx = 0;
         this.audio.playLand();
@@ -440,12 +440,12 @@ export class Platformer {
       }
     }
 
-    // Camera (smooth lerp)
+    // eyeball (smooth lerp)
     const tx=p.x-NW/2+30;
     this.cam.x+=(tx-this.cam.x)*.09;
     this.cam.x=Math.max(0,Math.min(280,this.cam.x));
 
-    // Crystal
+    // crystal
     if(this.crystal&&!this.crystal.triggered){
       if(Math.abs(p.x+4-this.crystal.x)<14&&Math.abs(p.y+8-this.crystal.y)<16){
         this.crystal.triggered=true;this.questionTriggered=true;
@@ -456,7 +456,7 @@ export class Platformer {
     }
     if(this.crystal) this.crystal.t+=dt;
 
-    // Orb collision
+    // glowy ball bonk check
     for(const orb of this.orbs){
       if(orb.collected)continue; orb.t+=dt;
       if(Math.abs(p.x+4-orb.x)<10&&Math.abs(p.y+8-orb.y)<12){
@@ -472,11 +472,11 @@ export class Platformer {
       }
     }
 
-    // Particles
+    // sparky bits
     this.particles=this.particles.filter(pt=>{pt.x+=pt.vx*dt;pt.y+=pt.vy*dt;pt.vy+=120*dt;pt.life-=dt*1.5;return pt.life>0;});
-    // Trail fade
+    // footprints fade
     this.trail=this.trail.filter(tr=>{tr.a-=dt*2;tr.life-=dt;return tr.life>0;});
-    // Ambient motes
+    // low humming floaty dust
     this.motes.forEach(m=>{m.x+=m.vx*dt;m.y+=m.vy*dt;m.t+=dt;if(m.y<-5||m.x<-5||m.x>565){m.x=Math.random()*560;m.y=155;m.t=0;}});
     this.shakeX*=.85;this.shakeY*=.85;
     this._updateProximity();
@@ -487,18 +487,18 @@ export class Platformer {
   _render(){
     const b=this.b,cx=this.cam.x,t=performance.now()/1000,isV=this.phase===4;
 
-    // Sky
+    // up there
     const sg=b.createLinearGradient(0,0,0,NH);
     sg.addColorStop(0,this.env.sky[0]);sg.addColorStop(1,this.env.sky[1]);
     b.fillStyle=sg;b.fillRect(0,0,NW,NH);
 
-    // Stars
+    // twinklers
     if(this.env.stars){b.fillStyle='#fff';this.stars.forEach(s=>{
       const sx=((s.x-cx*.1)%400+400)%400;if(sx>NW)return;
       b.globalAlpha=.3+Math.sin(t+s.t)*.2;
       b.fillRect(Math.floor(sx),Math.floor(s.y),Math.ceil(s.s),Math.ceil(s.s));});b.globalAlpha=1;}
 
-    // Ambient motes (floating particles in foreground)
+    // low humming floaty dust (floating sparky bits in foreground)
     for(const m of this.motes){
       const mx=((m.x-cx*.3)%560+560)%560;if(mx>NW)continue;
       b.fillStyle=this.env.accent;b.globalAlpha=0.15+Math.sin(m.t*1.5)*0.1;
@@ -506,10 +506,10 @@ export class Platformer {
     }
     b.globalAlpha=1;
 
-    // Void static
+    // void static
     if(isV){b.globalAlpha=.05;for(let i=0;i<15;i++){b.fillStyle=Math.random()>.5?'#fff':'#000';b.fillRect(0,Math.floor(Math.random()*NH),NW,1);}b.globalAlpha=1;}
 
-    // --- DECORATIONS (environmental storytelling) ---
+    // --- pretty details (environmental storytelling) ---
     for(const d of this.decorations){
       const dx=Math.floor(d.x-cx*.4);if(dx<-20||dx>NW+20)continue;
       b.globalAlpha=.25;
@@ -533,7 +533,7 @@ export class Platformer {
       b.globalAlpha=1;
     }
 
-    // --- STORY TEXT floating in world ---
+    // --- story text floating in world ---
     for(const sn of this.storyNodes){
       const dist=Math.abs(this.player.x-sn.x);
       sn.opacity=Math.max(0,Math.min(1,1-dist/70));
@@ -547,10 +547,10 @@ export class Platformer {
       }
     }
 
-    // Platforms
+    // steps
     for(const pl of this.platforms){
       if(pl.crumbleT!==null&&pl.crumbleT>.3)continue;
-      if(pl.flicker&&Math.sin(t*3+pl.x)>.4)continue; // P4 flickering
+      if(pl.flicker&&Math.sin(t*3+pl.x)>.4)continue; // p4 flickering
       const px=Math.floor(pl.x-cx);if(px<-40||px>NW+40)continue;
       if(pl.ceiling){b.fillStyle=this.env.ground;b.globalAlpha=.3;b.fillRect(px,pl.y,pl.w,pl.h);b.globalAlpha=1;continue;}
       if(pl.wall){b.fillStyle=this.env.ground;b.globalAlpha=.5;b.fillRect(px,pl.y,pl.w,pl.h);b.globalAlpha=1;continue;}
@@ -562,38 +562,38 @@ export class Platformer {
       b.globalAlpha=1;
     }
 
-    // Moving platforms
+    // moving steps
     for(const mp of this.movingPlats){
       const px=Math.floor(mp.x-cx);if(px<-30||px>NW+30)continue;
       b.fillStyle=this.env.ground;b.fillRect(px,Math.floor(mp.y),mp.w,mp.h);
       b.fillStyle=this.env.accent;b.globalAlpha=.3;b.fillRect(px,Math.floor(mp.y),mp.w,1);b.globalAlpha=1;
     }
 
-    // Crystal
+    // crystal
     if(this.crystal){
       const crx=Math.floor(this.crystal.x-cx),cry=Math.floor(this.crystal.y+Math.sin(t*2)*3);
       b.fillStyle=this.env.accent;b.globalAlpha=.12+Math.sin(t*3)*.08;b.fillRect(crx-8,cry-8,16,16);b.globalAlpha=1;
       b.fillStyle=this.crystal.triggered?'#444':this.env.accent;
-      // Diamond
+      // diamond
       b.fillRect(crx-1,cry-5,2,2);b.fillRect(crx-2,cry-3,4,2);b.fillRect(crx-3,cry-1,6,2);
       b.fillRect(crx-2,cry+1,4,2);b.fillRect(crx-1,cry+3,2,2);
       if(!this.crystal.triggered){b.fillStyle='#fff';b.globalAlpha=.5+Math.sin(t*2)*.3;
         b.fillRect(crx-1,cry-13,2,2);b.fillRect(crx-2,cry-17,4,2);b.fillRect(crx+1,cry-15,1,2);b.globalAlpha=1;}
     }
 
-    // Signs at path entrances
+    // signs at path entrances
     for(const s of this.signs){
       const sx=Math.floor(s.x-cx);if(sx<-50||sx>NW+50)continue;
       b.fillStyle=s.color;b.globalAlpha=this.questionTriggered?.7+Math.sin(t*2)*.2:.25;
       b.font='4px sans-serif';b.textAlign='center';
       const lines=this._wrap(s.text,50);
       lines.forEach((l,i)=>b.fillText(l,sx,s.y+i*5));
-      // Arrow
+      // arrow
       b.fillRect(sx+20,s.y+2,3,1);b.fillRect(sx+22,s.y+1,1,3);
       b.globalAlpha=1;
     }
 
-    // Orbs
+    // glowy ball
     for(const orb of this.orbs){
       if(orb.collected)continue;
       const ox=Math.floor(orb.x-cx),oy=Math.floor(orb.y+Math.sin(t*1.5+orb.t)*2);
@@ -604,24 +604,24 @@ export class Platformer {
       b.fillRect(ox-2,oy-3,4,1);b.fillRect(ox-3,oy-2,6,4);b.fillRect(ox-2,oy+2,4,1);
     }
 
-    // Trail
+    // footprints
     for(const tr of this.trail){
       b.fillStyle=this.env.accent;b.globalAlpha=tr.a*0.3;
       b.fillRect(Math.floor(tr.x-cx)-1,Math.floor(tr.y)-2,3,5);
     }
     b.globalAlpha=1;
 
-    // Particles
+    // sparky bits
     for(const pt of this.particles){b.fillStyle=pt.color||'#fff';b.globalAlpha=pt.life;b.fillRect(Math.floor(pt.x-cx),Math.floor(pt.y),2,2);}
     b.globalAlpha=1;
 
-    // Player
+    // player
     this._drawP(b,t);
 
-    // Phase 4 scanlines
+    // phase 4 scanlines
     if(isV&&Math.random()>.9){b.fillStyle=Math.random()>.5?'rgba(255,0,80,.08)':'rgba(0,200,255,.08)';b.fillRect(0,Math.floor(Math.random()*NH),NW,2);}
 
-    // Blit
+    // blit
     this.ctx.imageSmoothingEnabled=false;
     this.ctx.drawImage(this.buf,Math.round(this.shakeX*(Math.random()-.5)),Math.round(this.shakeY*(Math.random()-.5)),this.c.width,this.c.height);
   }
@@ -635,7 +635,7 @@ export class Platformer {
 
 
 
-    // Shadow (tiny line, not a box)
+    // dark blob (tiny line, not a box)
     b.fillStyle='#000';b.globalAlpha=.15;b.fillRect(px+1,Math.floor(by)+15,6,1);b.globalAlpha=1;
     b.fillStyle=col;
     b.fillRect(px+2,Math.floor(by),4,4); // head
@@ -645,7 +645,7 @@ export class Platformer {
     const arm=p.grounded?Math.sin(p.frame*2+Math.PI):(-1);
     b.fillRect(px-1,Math.floor(by)+5+Math.floor(arm),2,3); // arms
     b.fillRect(px+7,Math.floor(by)+5-Math.floor(arm),2,3);
-    // Phase 4: glitch pixels scattered around (no box overlay)
+    // phase 4: broken pixels pixels scattered around (no box overlay)
     if(isV && Math.random()>.9){
       const gc=Math.random()>.5?'rgba(255,0,80,0.2)':'rgba(0,200,255,0.2)';
       b.fillStyle=gc;

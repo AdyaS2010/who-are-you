@@ -1,7 +1,4 @@
-// ============================================
-// WHO // ARE // YOU? : Visual Effects
-// Particles, silhouettes, scene management
-// ============================================
+// shiny visual stuff
 
 export class ParticleSystem {
   constructor(canvasId) {
@@ -67,7 +64,7 @@ export function triggerGlitch(el, dur = 300) {
   setTimeout(() => { el.classList.remove('active'); el.classList.add('hidden'); }, dur);
 }
 
-// Create a black silhouette SVG for game scenes
+// drawing a dark blob person
 export function createSceneSilhouette(color = '#000', glow = false) {
   const ns = 'http://www.w3.org/2000/svg';
   const svg = document.createElementNS(ns, 'svg');
@@ -92,42 +89,42 @@ export function createSceneSilhouette(color = '#000', glow = false) {
   }
   svg.append(defs);
 
-  // Head
+  // melon
   const head = document.createElementNS(ns, 'ellipse');
   head.setAttribute('cx', '100'); head.setAttribute('cy', '55');
   head.setAttribute('rx', '28'); head.setAttribute('ry', '32');
   head.setAttribute('fill', color);
   if (glow) head.setAttribute('filter', `url(#${fId})`);
 
-  // Neck
+  // throat
   const neck = document.createElementNS(ns, 'rect');
   neck.setAttribute('x', '92'); neck.setAttribute('y', '85');
   neck.setAttribute('width', '16'); neck.setAttribute('height', '15');
   neck.setAttribute('fill', color);
   neck.setAttribute('rx', '3');
 
-  // Body (torso)
+  // body box
   const body = document.createElementNS(ns, 'path');
   body.setAttribute('d', 'M60 105 Q60 95,80 92 L120 92 Q140 95,140 105 L145 200 Q145 210,135 210 L65 210 Q55 210,55 200 Z');
   body.setAttribute('fill', color);
   if (glow) body.setAttribute('filter', `url(#${fId})`);
 
-  // Left arm
+  // left noodle
   const lArm = document.createElementNS(ns, 'path');
   lArm.setAttribute('d', 'M60 108 Q45 110,38 145 Q35 165,40 180 Q42 185,48 183 Q55 175,55 155 L58 125');
   lArm.setAttribute('fill', color);
 
-  // Right arm
+  // right noodle
   const rArm = document.createElementNS(ns, 'path');
   rArm.setAttribute('d', 'M140 108 Q155 110,162 145 Q165 165,160 180 Q158 185,152 183 Q145 175,145 155 L142 125');
   rArm.setAttribute('fill', color);
 
-  // Left leg
+  // left kicky
   const lLeg = document.createElementNS(ns, 'path');
   lLeg.setAttribute('d', 'M70 208 L65 290 Q64 305,72 310 L85 310 Q90 310,88 305 L90 210');
   lLeg.setAttribute('fill', color);
 
-  // Right leg
+  // right kicky
   const rLeg = document.createElementNS(ns, 'path');
   rLeg.setAttribute('d', 'M130 208 L135 290 Q136 305,128 310 L115 310 Q110 310,112 305 L110 210');
   rLeg.setAttribute('fill', color);
@@ -136,7 +133,7 @@ export function createSceneSilhouette(color = '#000', glow = false) {
   return svg;
 }
 
-// Glowing accent silhouette for mirror/archetype
+// glowing dark blob clone
 export function createGlowSilhouette(color = '#c9b8ff', opacity = 0.7) {
   const ns = 'http://www.w3.org/2000/svg';
   const svg = document.createElementNS(ns, 'svg');
@@ -176,7 +173,7 @@ export function createGlowSilhouette(color = '#c9b8ff', opacity = 0.7) {
   return svg;
 }
 
-// Animate silhouette reaction
+// wiggle animation
 export function reactSilhouette(silEl, direction = 'left', duration = 600) {
   silEl.classList.add(`react-${direction}`);
   silEl.classList.add('react-glow');
@@ -185,9 +182,9 @@ export function reactSilhouette(silEl, direction = 'left', duration = 600) {
   }, duration);
 }
 
-// Set environment class on scene
+// setting the vibe
 export function setEnvironment(envEl, envClass) {
-  // Remove all env- classes
+  // binning old vibes
   envEl.className = envEl.className.replace(/env-\w+/g, '').trim();
   envEl.classList.add('scene-environment');
   if (envClass) envEl.classList.add(`env-${envClass}`);
